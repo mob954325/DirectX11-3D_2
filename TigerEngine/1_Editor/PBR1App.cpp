@@ -10,10 +10,10 @@
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-#include <stack>
 
-#include <string>
 #include <directxtk/DDSTextureLoader.h>
+#include <stack>
+#include <string>
 
 using namespace DirectX::SimpleMath;
 using namespace DirectX;

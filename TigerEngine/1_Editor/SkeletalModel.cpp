@@ -1,6 +1,6 @@
 #include "SkeletalModel.h"
 #include "../Common/Helper.h"
-#include "../Common/TimeSystem.h"
+#include "../Common/System/TimeSystem.h"
 
 SkeletalModel::SkeletalModel()
 {

@@ -27,10 +27,10 @@
     <ClInclude Include="BoneAnimation.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="DebugDraw.h">
+    <ClInclude Include="Util\DebugDraw.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="FBXImporter.h">
+    <ClInclude Include="Util\FBXImporter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="FBXResourceManager.h">
@@ -48,7 +48,7 @@
     <ClInclude Include="SkeletonInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TextureLoader.h">
+    <ClInclude Include="Util\TextureLoader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <ClCompile Include="Bone.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="DebugDraw.cpp">
+    <ClCompile Include="Util\DebugDraw.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="FBXResourceManager.cpp">
@@ -74,7 +74,7 @@
     <ClCompile Include="SkeletonInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TextureLoader.cpp">
+    <ClCompile Include="Util\TextureLoader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="WinMain.cpp">

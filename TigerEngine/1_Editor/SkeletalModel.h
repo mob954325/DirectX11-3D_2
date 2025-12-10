@@ -10,7 +10,7 @@
 #include <assimp\postprocess.h>
 
 #include "Mesh.h"
-#include "TextureLoader.h"
+#include "Util/TextureLoader.h"
 #include "SkeletonInfo.h"
 #include "Animation.h"
 #include "Bone.h"

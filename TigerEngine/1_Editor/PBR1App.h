@@ -18,7 +18,7 @@
 
 // other files
 #include "../Common/GameApp.h"
-#include "DebugDraw.h"
+#include "Util/DebugDraw.h"
 #include <deque>
 
 using namespace DirectX::SimpleMath;

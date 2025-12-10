@@ -1,6 +1,6 @@
 #pragma once
 #include <directxtk/SimpleMath.h>
-#include "InputSystem.h"
+#include "System/InputSystem.h"
 
 using namespace DirectX::SimpleMath;
 

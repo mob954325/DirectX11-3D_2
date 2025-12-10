@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
-#include "TimeSystem.h"
-#include "InputSystem.h"
+#include "System/TimeSystem.h"
+#include "System/InputSystem.h"
 #include "Camera.h"
 
 // dxgi 어뎁터 조회용

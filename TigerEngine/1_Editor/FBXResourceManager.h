@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "Mesh.h"
-#include "TextureLoader.h"
+#include "Util/TextureLoader.h"
 #include "SkeletonInfo.h"
 #include "Animation.h"
 

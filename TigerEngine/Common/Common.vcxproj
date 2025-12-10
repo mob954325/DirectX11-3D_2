@@ -22,18 +22,20 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameApp.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Helper.h" />
-    <ClInclude Include="InputSystem.h" />
+    <ClInclude Include="System\InputSystem.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="TimeSystem.h" />
+    <ClInclude Include="System\TimeSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameApp.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Helper.cpp" />
-    <ClCompile Include="InputSystem.cpp" />
+    <ClCompile Include="System\InputSystem.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="TimeSystem.cpp" />
+    <ClCompile Include="System\TimeSystem.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
