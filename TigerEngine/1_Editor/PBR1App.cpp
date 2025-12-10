@@ -357,7 +357,7 @@ void PBR1App::OnUpdate()
 
 void PBR1App::OnRender()
 {
-	DepthOnlyPass();
+	//DepthOnlyPass();
 
 #if USE_FLIPMODE == 1
 	// Flip 모드에서는 매프레임 설정해야한다.
@@ -391,8 +391,6 @@ void PBR1App::OnRender()
 	// Render ImGui
 	RenderImGUI();
 
-	// 스왑체인 교체
-	swapChain->Present(0, 0);
 }
 
 bool isplayed = false;

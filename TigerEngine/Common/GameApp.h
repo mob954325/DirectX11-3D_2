@@ -48,6 +48,11 @@ public:
 	ComPtr<ID3D11DeviceContext> deviceContext{};		// 디바이스 컨텍스트
 	ComPtr<IDXGISwapChain1> swapChain{};				// 스왑체인 
 	ComPtr<ID3D11RenderTargetView> renderTargetView{};	// 랜더 타겟
+	
+
+	UINT internalWidth = 1920;
+	UINT internalHeight = 1080;
+	bool isResize = false;
 
 	void CreatDeviceAndContext();
 	void CreateSwapChain();
