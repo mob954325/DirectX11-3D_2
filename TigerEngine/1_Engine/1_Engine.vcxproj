@@ -136,6 +136,13 @@
       <Project>{2eb251c7-3746-4337-a16c-15715278bd31}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\Shared.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shaders\PS_Basic.hlsl" />
+    <FxCompile Include="Shaders\VS_Basic.hlsl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

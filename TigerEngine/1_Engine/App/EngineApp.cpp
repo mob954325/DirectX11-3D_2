@@ -16,12 +16,12 @@ bool EngineApp::OnInitialize()
 
 void EngineApp::OnUpdate()
 {
-	// SceneÀÇ ¿ÀºêÁ§Æ® ¾÷µ¥ÀÌÆ® È£Ãâ
+	// Sceneì˜ ì˜¤ë¸Œì íŠ¸ ì—…ë°ì´íŠ¸ í˜¸ì¶œ
 }
 
 void EngineApp::OnRender()
 {
-	// RenderPassµé È£Ãâ
+	// RenderPassë“¤ í˜¸ì¶œ
 
 	BeginRender();
 	// RenderSomething ...

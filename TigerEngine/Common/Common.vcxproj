@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Entity\Camera.h" />
     <ClInclude Include="Renderer\DirectX11Renderer.h" />
     <ClInclude Include="Entity\IRenderComponent.h" />
     <ClInclude Include="framework.h" />
@@ -27,12 +28,14 @@
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Entity\IComponent.h" />
     <ClInclude Include="Renderer\IRenderer.h" />
+    <ClInclude Include="Renderer\IRenderPass.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="System\InputSystem.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="System\TimeSystem.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Entity\Camera.cpp" />
     <ClCompile Include="Renderer\DirectX11Renderer.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="Entity\GameObject.cpp" />

@@ -5,7 +5,7 @@
 #include <map>
 
 /// <summary>
-/// ·»´õ ÆÄÀÌÇÁ¶óÀÎÀÌ Èå¸§À» °ü¸®ÇÏ´Â ¾Û
+/// ë Œë” íŒŒì´í”„ë¼ì¸ì´ íë¦„ì„ ê´€ë¦¬í•˜ëŠ” ì•±
 /// </summary>
 class EngineApp : public GameApp
 {
@@ -17,10 +17,9 @@ public:
 	void OnUpdate() override;
 	void OnRender() override;
 
-	Scene scene; // TODO : ¾À ±³Ã¼ÇÒ ¼ö ÀÖ°Ô ¼öÁ¤ÇÏ±â
+	Scene scene; // TODO : ì”¬ êµì²´í•  ìˆ˜ ìˆê²Œ ìˆ˜ì •í•˜ê¸°
 
 private:
 	void BeginRender();
 	void EndRender();
 };
-
