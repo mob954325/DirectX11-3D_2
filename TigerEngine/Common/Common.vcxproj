@@ -19,20 +19,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Renderer\DirectX11Renderer.h" />
+    <ClInclude Include="Entity\IRenderComponent.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameApp.h" />
-    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Entity\GameObject.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Entity\IComponent.h" />
+    <ClInclude Include="Renderer\IRenderer.h" />
+    <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="System\InputSystem.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="System\TimeSystem.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Renderer\DirectX11Renderer.cpp" />
     <ClCompile Include="GameApp.cpp" />
-    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Entity\GameObject.cpp" />
     <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="System\InputSystem.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="System\TimeSystem.cpp" />
@@ -123,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,7 +143,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
