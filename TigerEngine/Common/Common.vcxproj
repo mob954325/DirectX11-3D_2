@@ -29,6 +29,7 @@
     <ClInclude Include="Entity\IComponent.h" />
     <ClInclude Include="Renderer\IRenderer.h" />
     <ClInclude Include="Renderer\IRenderPass.h" />
+    <ClInclude Include="System\SceneSystem.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="System\InputSystem.h" />
     <ClInclude Include="pch.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="Entity\GameObject.cpp" />
     <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="System\SceneSystem.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="System\InputSystem.cpp" />
     <ClCompile Include="pch.cpp" />
