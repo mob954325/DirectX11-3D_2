@@ -1,5 +1,4 @@
 #pragma once
-#include "directxtk/SimpleMath.h"
 #include "IComponent.h"
 #include <string>
 #include <vector>
@@ -7,15 +6,10 @@
 using namespace DirectX::SimpleMath;
 
 /// <summary>
-/// Transform°ú ÄÄÆ÷³ÍÆ®¸¦ ´ã°í ÀÖ´Â ÄÁÅ×ÀÌ³Ê
+/// GameObjectëŠ” ì»´í¬ë„ŒíŠ¸ë¥¼ ë‹´ê³  ìˆëŠ” ìˆœìˆ˜í•œ ì»¨í…Œì´ë„ˆ
 /// </summary>
 class GameObject
 {
-public:
-	Vector3 position{ 0,0,0 };
-	Vector3 rotation{ 0,0,0 };
-	Vector3 Scale{ 1,1,1 };
-
 protected:
 	std::string name;
 	std::vector<IComponent> components;

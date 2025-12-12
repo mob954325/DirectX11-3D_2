@@ -1,7 +1,7 @@
 #pragma once
 #include "IRenderer.h"
 
-// dxgi ¾îµªÅÍ Á¶È¸¿ë
+// dxgi ì–´ëí„° ì¡°íšŒìš©
 #include <dxgi1_6.h>
 #include <psapi.h>
 #pragma comment(lib, "dxgi.lib")
@@ -13,7 +13,7 @@
 #include <wrl/client.h>
 
 /// <summary>
-/// DirectX11 ±â´ÉÀ» »ç¿ëÇÏ´Â Å¬·¡½º
+/// DirectX11 ê¸°ëŠ¥ì„ ì‚¬ìš©í•˜ëŠ” í´ë˜ìŠ¤
 /// </summary>
 class DirectX11Renderer : public IRenderer
 {
@@ -22,15 +22,16 @@ public:
 	void OnResize(int width, int height) override;
 	void BeginRender() override;
 	void EndRender() override;
+	// void Render(const Scene& scene, Camera& camera); 
 
 private:
-	ComPtr<ID3D11Device>			device{};			// µğ¹ÙÀÌ½º
-	ComPtr<ID3D11DeviceContext>		deviceContext{};	// µğ¹ÙÀÌ½º ÄÁÅØ½ºÆ®
-	ComPtr<IDXGISwapChain1>			swapChain{};		// ½º¿ÒÃ¼ÀÎ 
-	ComPtr<ID3D11RenderTargetView>	renderTargetView{};	// ·£´õ Å¸°Ù	
+	ComPtr<ID3D11Device>			device{};			// ë””ë°”ì´ìŠ¤
+	ComPtr<ID3D11DeviceContext>		deviceContext{};	// ë””ë°”ì´ìŠ¤ ì»¨í…ìŠ¤íŠ¸
+	ComPtr<IDXGISwapChain1>			swapChain{};		// ìŠ¤ì™‘ì²´ì¸ 
+	ComPtr<ID3D11RenderTargetView>	renderTargetView{};	// ëœë” íƒ€ê²Ÿ	
 
 	D3D11_VIEWPORT					renderViewport{};
 	ComPtr<ID3D11DepthStencilState> depthStencilState{};
-	ComPtr<ID3D11DepthStencilView>	depthStencilView{};	// ‰X½º ½ºÅÙ½Ç ºä
+	ComPtr<ID3D11DepthStencilView>	depthStencilView{};	// ëŠìŠ¤ ìŠ¤í…ì‹¤ ë·°
 };
 

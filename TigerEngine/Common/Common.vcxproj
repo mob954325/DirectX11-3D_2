@@ -33,6 +33,7 @@
     <ClInclude Include="System\InputSystem.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="System\TimeSystem.h" />
+    <ClInclude Include="Entity\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Entity\Camera.cpp" />
@@ -44,6 +45,7 @@
     <ClCompile Include="System\InputSystem.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="System\TimeSystem.cpp" />
+    <ClCompile Include="Entity\Transform.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

@@ -23,4 +23,3 @@ private:
 	float nearDist = 0.01f;
 	float farDist = 2000.0f;
 };
-
