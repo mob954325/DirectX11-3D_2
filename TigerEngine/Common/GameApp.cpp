@@ -22,38 +22,46 @@ LRESULT CALLBACK DefaultWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
 void CreateDump(EXCEPTION_POINTERS* pExceptionPointers)
 {
-	wchar_t moduleFileName[MAX_PATH] = { 0, };
-	std::wstring fileName(moduleFileName);
-	if (GetModuleFileName(NULL, moduleFileName, MAX_PATH) == 0) {
-		fileName = L"unknown_project.dmp"; // 예외 상황 처리
-	}
-	else
-	{
-		fileName = std::wstring(moduleFileName);
-		size_t pos = fileName.find_last_of(L"\\/");
-		if (pos != std::wstring::npos) {
-			fileName = fileName.substr(pos + 1); // 파일 이름 추출
-		}
+    // 와이드 문자(wchar_t)와 와이드 문자열(std::wstring)을 사용하고 있으므로,
+    // 명시적으로 유니코드 버전의 Win32 API 함수를 호출해야 합니다.
 
-		pos = fileName.find_last_of(L'.');
-		if (pos != std::wstring::npos) {
-			fileName = fileName.substr(0, pos); // 확장자 제거
-		}
-		fileName += L".dmp";
-	}
+    wchar_t moduleFileName[MAX_PATH] = { 0, };
+    std::wstring fileName; // 초기화 방법 변경 (아래 참고)
 
-	HANDLE hFile = CreateFile(fileName.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (hFile == INVALID_HANDLE_VALUE) return;
+    // 1. GetModuleFileName 대신 GetModuleFileNameW 사용
+    if (GetModuleFileNameW(NULL, moduleFileName, MAX_PATH) == 0) { 
+        fileName = L"unknown_project.dmp"; // L 접두사 사용 유지
+    }
+    else
+    {
+        // wchar_t* 에서 std::wstring 생성
+        fileName = std::wstring(moduleFileName); 
+        size_t pos = fileName.find_last_of(L"\\/");
+        // ... (나머지 문자열 처리 로직은 동일)
+        if (pos != std::wstring::npos) {
+            fileName = fileName.substr(pos + 1); 
+        }
 
-	CloseHandle(hFile);
+        pos = fileName.find_last_of(L'.');
+        if (pos != std::wstring::npos) {
+            fileName = fileName.substr(0, pos); 
+        }
+        fileName += L".dmp";
+    }
+
+    // 2. CreateFile 대신 CreateFileW 사용
+    HANDLE hFile = CreateFileW(fileName.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) return;
+
+    CloseHandle(hFile);
 }
 
 LONG WINAPI CustomExceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
 	int msgResult = MessageBox(
 		NULL,
-		L"Should Create Dump ?",
-		L"Exception",
+		"Should Create Dump ?",
+		"Exception",
 		MB_YESNO | MB_ICONQUESTION
 	);
 

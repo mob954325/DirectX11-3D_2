@@ -1,7 +1,7 @@
 #pragma once
-#include "../../Common/pch.h"
-#include "../../Common/GameApp.h"
-#include "../../Common/Scene/Scene.h"
+#include "pch.h"
+#include "GameApp.h"
+#include "Scene/Scene.h"
 #include <map>
 
 /// <summary>

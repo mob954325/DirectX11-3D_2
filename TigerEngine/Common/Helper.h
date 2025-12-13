@@ -10,7 +10,8 @@
 #include <stdexcept>
 #include <system_error>
 #include <vector>
-#include <directxtk/SimpleMath.h>
+#include <string>
+#include <SimpleMath.h>
 using namespace DirectX::SimpleMath;
 
 #define LOG_ERROR(...) \
@@ -100,7 +101,7 @@ void SAFE_DELETE(T* p)
 }
 
 
-LPCWSTR GetComErrorString(HRESULT hr);
+std::wstring GetComErrorString(HRESULT hr);
 
 
 

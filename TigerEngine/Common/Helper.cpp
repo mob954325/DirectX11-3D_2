@@ -2,16 +2,30 @@
 #include "Helper.h"
 #include <comdef.h>
 #include <d3dcompiler.h>
-#include <Directxtk/DDSTextureLoader.h>
-#include <Directxtk/WICTextureLoader.h>
+#include <DDSTextureLoader.h>
+#include <WICTextureLoader.h>
+#include <Windows.h>
+#include <string>
 
 
 
-LPCWSTR GetComErrorString(HRESULT hr)
+std::wstring GetComErrorString(HRESULT hr)
 {
 	_com_error err(hr);
-	LPCWSTR errMsg = err.ErrorMessage();
-	return errMsg;
+    
+#if defined(UNICODE) || defined(_UNICODE)
+	return std::wstring(err.ErrorMessage());
+#else
+	const char* msg = err.ErrorMessage();
+	if (!msg)
+		return std::wstring();
+	int size_needed = MultiByteToWideChar(CP_ACP, 0, msg, -1, nullptr, 0);
+	std::wstring wmsg(size_needed, L'\0');
+	MultiByteToWideChar(CP_ACP, 0, msg, -1, &wmsg[0], size_needed);
+	if (!wmsg.empty() && wmsg.back() == L'\0')
+		wmsg.pop_back();
+	return wmsg;
+#endif
 }
 
 HRESULT CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
@@ -58,7 +72,7 @@ HRESULT CreateTextureFromFile(ID3D11Device* d3dDevice, const wchar_t* szFileName
 		hr = DirectX::CreateWICTextureFromFile(d3dDevice, szFileName, nullptr, textureView);
 		if (FAILED(hr))
 		{
-			MessageBoxW(NULL, GetComErrorString(hr), szFileName, MB_OK);
+			MessageBoxW(NULL, GetComErrorString(hr).c_str(), szFileName, MB_OK);
 			return hr;
 		}
 	}

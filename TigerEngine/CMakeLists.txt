@@ -1,0 +1,121 @@
+﻿cmake_minimum_required(VERSION 3.20) # CMake Version 사용
+
+set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
+set(CMAKE_TOOLCHAIN_FILE "D:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "")
+
+set(PROJECT_NAME GameEngine) 	# PROJECT_NAME
+set(CMAKE_CXX_STANDARD 17)  		# CMAKE_ 붙은 변수는 전역변수다
+project(${PROJECT_NAME}) 			# 해당 프로젝트를 세팅할 것이다.
+
+# =========================================================
+# 1. Common 라이브러리 정의
+# =========================================================
+# Common 파일 리스트 - 정적 라이브러리 만들기 위함
+set(COMMON_SOURCE
+    # root
+    Common/GameApp.cpp
+    Common/Helper.cpp
+    Common/pch.cpp
+
+    # Entity
+    Common/Entity/Camera.cpp
+    Common/Entity/GameObject.cpp
+    Common/Entity/Transform.cpp
+
+    # Renderer
+    Common/Renderer/DirectX11Renderer.cpp
+
+    # Scene
+    Common/Scene/Scene.cpp
+
+    # System
+    Common/System/InputSystem.cpp
+    Common/System/SceneSystem.cpp
+    Common/System/TimeSystem.cpp
+)
+
+# 라이브러리 추가
+add_library(common_lib STATIC
+    ${COMMON_SOURCE}
+)
+
+# common 라이브러리 헤더 경로 설정
+# PUBLLIC으로 설정하면 이 라이브러리를 연결하는 타겟도 이 경로를 알게됨
+target_include_directories(common_lib PUBLIC 
+    common
+
+    External/imgui
+	External/imgui/backends/
+    External/directxtex
+	External/directxtk
+)
+# =========================================================
+# 1. ImGui 라이브러리 정의
+# =========================================================
+
+# 1. ImGui를 정적 라이브러리 (Static Library)로 만듭니다.
+add_library(imgui_lib STATIC
+	External/imgui/imgui.cpp
+	External/imgui/imgui_draw.cpp
+	External/imgui/imgui_widgets.cpp
+	External/imgui/imgui_tables.cpp
+	External/imgui/imgui_demo.cpp
+	# === 벡엔드 ===
+	External/imgui/backends/imgui_impl_win32.cpp
+	External/imgui/backends/imgui_impl_dx11.cpp
+)
+
+# 2. Imgui의 헤더 경로를 라이브러리에 연결합니다.
+target_include_directories(imgui_lib PUBLIC
+	External/imgui
+	External/imgui/backends/
+)
+
+# 정적 라이브러리 빌드 시 보안 경고 무시 정의
+if(MSVC)
+    target_compile_definitions(imgui_lib PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
+
+# =========================================================
+# 2. 메인 실행 파일 정의
+# =========================================================
+
+# 실행파일에 추가한다. 중간에 WIN32을 붙이면 윈도우창으로 실행됨
+add_executable(${PROJECT_NAME} WIN32 
+    1_Engine/App/EngineApp.cpp
+    1_Engine/RenderPass/BasicRenderPass.cpp
+    1_Engine/winMain.cpp
+)
+
+if(MSVC)
+	# 인코딩 경고(C4819) 해결 : UTF-8 컴파일 강제
+	target_compile_options(${PROJECT_NAME} PRIVATE /utf-8)
+	# 윈도우 환경에서 유니코드 처리를 기본으로 설정 (WinMain/TCHAR 등 사용시)
+	target_compile_definitions(${PROJECT_NAME} PRIVATE UNICODE _UNICODE)
+endif()
+
+# =========================================================
+# 2. 외부 라이브러리 (소스 직접 컴파일) 정의
+# =========================================================
+# DirectXTK 폴더를 호출하여 그 안에 정의된 라이브러리 타겟(DirectXTK_Lib)을 가져옵니다.
+add_subdirectory(External/directxtex)
+add_subdirectory(External/directxtk)
+
+# =========================================================
+# 3. 라이브러리 연결 및 종속성 설정
+# =========================================================
+target_link_libraries(${PROJECT_NAME} PRIVATE 
+    # 1. 자체 정의 라이브러리
+    common_lib
+    imgui_lib
+
+    # 2. External에 있는 라이브러리
+    DirectXTK_Lib
+    DirectXTex_Lib
+
+    # 3. 시스템 라이브러리
+    d3d11
+    dxgi
+    d3dcompiler 
+    user32
+)

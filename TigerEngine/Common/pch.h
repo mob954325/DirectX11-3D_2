@@ -18,7 +18,6 @@
 #include <memory>
 #include <DirectXMath.h>
 #include <wrl/client.h>
-#include <directxtk/SimpleMath.h>
 #include <d3d11.h>
 #include <string>
 #include <filesystem>
@@ -26,10 +25,12 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
+
 #include <imgui.h>
+#include <SimpleMath.h>
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
-#include <imgui_stdlib.h>
+
 
 namespace Math = DirectX::SimpleMath;
 using namespace DirectX;
