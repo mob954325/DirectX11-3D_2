@@ -1,8 +1,8 @@
 #include "SceneSystem.h"
 
-void SceneSystem::UpdateScene()
+void SceneSystem::UpdateScene(float deltaTime)
 {
-	currentScene->OnUpdate();
+	currentScene->OnUpdate(deltaTime);
 }
 
 void SceneSystem::RenderScene()

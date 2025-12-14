@@ -9,7 +9,7 @@ void Scene::OnRender()
 	}
 }
 
-void Scene::OnUpdate()
+void Scene::OnUpdate(float deltaTime)
 {
 
 }

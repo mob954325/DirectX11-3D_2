@@ -17,20 +17,25 @@ bool EngineApp::OnInitialize()
 	imguiRenderer = std::make_unique<ImguiRenderer>();
 	imguiRenderer->Initialize(hwnd, dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
 
+	sceneSystem = std::make_unique<SceneSystem>();
+
 	return true;
 }
 
 void EngineApp::OnUpdate()
 {
 	// Scene의 오브젝트 업데이트 호출
+	sceneSystem->UpdateScene(gameTimer.DeltaTime());
 }
 
 void EngineApp::OnRender()
 {
 	// RenderPass들 호출
-
+	
 	BeginRender();
+	
 	// RenderSomething ...
+	sceneSystem->RenderScene();
 
 	imguiRenderer->Render();
 	EndRender();

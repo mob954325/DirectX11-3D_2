@@ -7,7 +7,7 @@ class Scene
 {
 public:
 	void OnRender();
-	void OnUpdate();
+	void OnUpdate(float deltaTime);
 
 protected:
 	std::map<std::string, std::shared_ptr<GameObject>> gameObjects; // 占싱몌옙, 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙트
