@@ -5,27 +5,27 @@
 
 void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 {
-	// 1. D3D11 Device, DeviceContext »ý¼º
+	// 1. D3D11 Device, DeviceContext ï¿½ï¿½ï¿½ï¿½
 
 	// https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ne-d3d11-d3d11_create_device_flag
 	UINT creationFlag = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 #ifdef _DEBUG
 	/// https://learn.microsoft.com/ko-kr/windows/win32/direct3d11/overviews-direct3d-11-devices-layers
-	/// µð¹ö±× °èÃþÀ» Áö¿øÇÏ´Â µð¹ÙÀÌ½º¸¦ ¸¸µéµµ·Ï ÇÃ·¡±× Ãß°¡
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½éµµï¿½ï¿½ ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½ß°ï¿½
 	/// 
-	/// µð¹ö±× °èÃþÀº ±¤¹üÀ§ÇÑ Ãß°¡ ¸Å°³ º¯¼ö ¹× ÀÏ°ü¼º À¯È¿¼º °Ë»ç(¿¹: ¼ÎÀÌ´õ ¸µÅ© ¹× ¸®¼Ò½º ¹ÙÀÎµù À¯È¿¼º °Ë»ç, ¸Å°³ º¯¼ö ÀÏ°ü¼º À¯È¿¼º °Ë»ç ¹× ¿À·ù ¼³¸í º¸°í)¸¦ Á¦°øÇÕ´Ï´Ù.
-	/// ÇØ´ç ¼³Á¤À» »ç¿ëÇÒ °æ¿ì ¾ÖÇÃ¸®ÄÉÀÌ¼ÇÀÌ »ó´çÈ÷ ´À·ÁÁø´Ù.
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½Å°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ï°ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½Ë»ï¿½(ï¿½ï¿½: ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½Å© ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ ï¿½ï¿½ï¿½Îµï¿½ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½Ë»ï¿½, ï¿½Å°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ï¿½ï¿½ ï¿½ï¿½È¿ï¿½ï¿½ ï¿½Ë»ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
+	/// ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 	creationFlag |= D3D11_CREATE_DEVICE_DEBUG;
 #endif //  _DEBUG
 
-	// ±×·¡ÇÈ Ä«µå ÇÏµå¿þ¾îÀÇ ½ºÆåÀ¸·Î È£È¯µÇ´Â °¡Àå ³ôÀº DirectX ±â´É·¹º§·Î »ý¼ºÇÏ¿© µå¶óÀÌ¹ö°¡ ÀÛµ¿ÇÑ´Ù.
-	// ÀÎÅÍÆäÀÌ½º´Â Direct3D11ÀÌÁö¸¸ GPU µå¶óÀÌ¹ö´Â D3D12 µå¶óÀÌ¹ö°¡ ÀÛµ¿µÉ ¼ö ÀÖ´Ù.
+	// ï¿½×·ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£È¯ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ DirectX ï¿½ï¿½É·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Ûµï¿½ï¿½Ñ´ï¿½.
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ Direct3D11ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ GPU ï¿½ï¿½ï¿½ï¿½Ì¹ï¿½ï¿½ï¿½ D3D12 ï¿½ï¿½ï¿½ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½Ûµï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
 	D3D_FEATURE_LEVEL featureLevels[] =
-	{	// 0¹ø indexºÎÅÍ ¼ø¼­´ë·Î ½Ãµµ
+	{	// 0ï¿½ï¿½ indexï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ãµï¿½
 		D3D_FEATURE_LEVEL_12_2,D3D_FEATURE_LEVEL_12_1,D3D_FEATURE_LEVEL_12_0,D3D_FEATURE_LEVEL_11_1,D3D_FEATURE_LEVEL_11_0
 	};
-	D3D_FEATURE_LEVEL actualFeatureLevel;	// ÃÖÁ¾ feature level ÀúÀå º¯¼ö
+	D3D_FEATURE_LEVEL actualFeatureLevel;	// ï¿½ï¿½ï¿½ï¿½ feature level ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
 	HR_T(D3D11CreateDevice
 	(
@@ -41,7 +41,7 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 		&deviceContext
 	));
 
-	// 2. ½º¿ÒÃ¼ÀÎ »ý¼ºÀ» À§ÇÑ DXGI Factory »ý¼º
+	// 2. ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ DXGI Factory ï¿½ï¿½ï¿½ï¿½
 	UINT dxgiFactoryFlags = 0;
 
 #ifdef _DEBUG
@@ -62,14 +62,14 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 	swapChainDesc.Width = width;
 	swapChainDesc.Height = height;
 
-	// ÇÏ³ªÀÇ ÇÈ¼¿ÀÌ Ã¤³Î RGBA °¢ 8ºñÆ® Çü½ÄÀ¸·Î Ç¥Çö
-	// Unsigned Normalized Integer 8ºñÆ® Á¤¼ö(0~255)´Ü°è¸¦ ºÎµ¿¼Ò¼öÁ¡À¸·Î Á¤±ÔÈ­ÇÑ 0.0~1.0À¸·Î ¸ÅÇÎÇÏ¿© Ç¥ÇöÇÑ´Ù.
+	// ï¿½Ï³ï¿½ï¿½ï¿½ ï¿½È¼ï¿½ï¿½ï¿½ Ã¤ï¿½ï¿½ RGBA ï¿½ï¿½ 8ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½
+	// Unsigned Normalized Integer 8ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½(0~255)ï¿½Ü°è¸¦ ï¿½Îµï¿½ï¿½Ò¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ 0.0~1.0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ Ç¥ï¿½ï¿½ï¿½Ñ´ï¿½.
 	swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // ½º¿Ò Ã¼ÀÎÀÇ ¹é ¹öÆÛ°¡ ·»´õ¸µ ÆÄÀÌÇÁ¶óÀÎÀÇ ÃÖÁ¾ Ãâ·Â ´ë»óÀ¸·Î »ç¿ë
-	swapChainDesc.SampleDesc.Count = 1;	// ¸ÖÆ¼ »ùÇÃ¸µ »ç¿ë ¾ÈÇÔ
-	swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE; // Åõ¸íµµ Á¶ÀÛ ¹«½Ã | recommand for flip mode ?
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // ï¿½ï¿½ï¿½ï¿½ Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Û°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	swapChainDesc.SampleDesc.Count = 1;	// ï¿½ï¿½Æ¼ ï¿½ï¿½ï¿½Ã¸ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ | recommand for flip mode ?
 	swapChainDesc.Stereo = FALSE;
-	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // ÀüÃ¼ È­¸é ÀüÈ¯À» Çã¿ë
+	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // ï¿½ï¿½Ã¼ È­ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½
 	swapChainDesc.Scaling = DXGI_SCALING_NONE; // 
 
 	HR_T(pFactory->CreateSwapChainForHwnd
@@ -82,12 +82,12 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 		swapChain.GetAddressOf()
 	));
 
-	// 3. ·£´õÅ¸°Ù ºä »ý¼º.
+	// 3. ï¿½ï¿½ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
 	ComPtr<ID3D11Texture2D> pBackBufferTexture;
 	HR_T(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture));
 	HR_T(device->CreateRenderTargetView(pBackBufferTexture.Get(), nullptr, renderTargetView.GetAddressOf()));
 
-	// 4. viewport ¼³Á¤
+	// 4. viewport ï¿½ï¿½ï¿½ï¿½
 	renderViewport = {};
 	renderViewport.TopLeftX = 0;
 	renderViewport.TopLeftY = 0;
@@ -97,7 +97,7 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 	renderViewport.MaxDepth = 1.0f;
 	deviceContext->RSSetViewports(1, &renderViewport);
 
-	// 5. ‰X½º ½ºÅÙ½Ç ºä ¼³Á¤
+	// 5. ï¿½Xï¿½ï¿½ ï¿½ï¿½ï¿½Ù½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	D3D11_TEXTURE2D_DESC descDepth = {};
 	descDepth.Width = width;
 	descDepth.Height = height;
@@ -111,12 +111,12 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
 
-	// ‰X½º ½ºÅÄ½Ç »óÅÂ ¼³Á¤
+	// ï¿½Xï¿½ï¿½ ï¿½ï¿½ï¿½Ä½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
-	depthStencilDesc.DepthEnable = TRUE;                // ±íÀÌ Å×½ºÆ® È°¼ºÈ­
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL; // ±íÀÌ ¹öÆÛ ¾÷µ¥ÀÌÆ® Çã¿ë
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS; // ÀÛÀº Z °ªÀÌ ¾Õ¿¡ ¹èÄ¡µÇµµ·Ï ¼³Á¤
-	depthStencilDesc.StencilEnable = FALSE;            // ½ºÅÙ½Ç Å×½ºÆ® ºñÈ°¼ºÈ­
+	depthStencilDesc.DepthEnable = TRUE;                // ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ® È°ï¿½ï¿½È­
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS; // ï¿½ï¿½ï¿½ï¿½ Z ï¿½ï¿½ï¿½ï¿½ ï¿½Õ¿ï¿½ ï¿½ï¿½Ä¡ï¿½Çµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	depthStencilDesc.StencilEnable = FALSE;            // ï¿½ï¿½ï¿½Ù½ï¿½ ï¿½×½ï¿½Æ® ï¿½ï¿½È°ï¿½ï¿½È­
 
 	device->CreateDepthStencilState(&depthStencilDesc, &depthStencilState);
 
@@ -127,17 +127,17 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 	// create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 	descDSV.Format = descDepth.Format;
-	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D; // »ç¿ëµÇ´Â ¸®¼Ò½º ¿¢¼¼½º ¹æ½Ä ¼³Á¤ : https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ne-d3d11-d3d11_dsv_dimension 
+	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D; // ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ne-d3d11-d3d11_dsv_dimension 
 	descDSV.Texture2D.MipSlice = 0;
 	HR_T(device->CreateDepthStencilView(pTextureDepthStencil.Get(), &descDSV, depthStencilView.GetAddressOf()));
 }
 
 void DirectX11Renderer::OnResize(int width, int height)
 {
-	// SwapChain ¸®»çÀÌÁî
+	// SwapChain ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_B8G8R8A8_UNORM, 0);
 
-	// RTV ¸¸µé±â
+	// RTV ï¿½ï¿½ï¿½ï¿½ï¿½
 	//renderTargetView.Reset();
 	ComPtr<ID3D11Texture2D> pBackBufferTexture;
 	HR_T(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture));
@@ -147,16 +147,26 @@ void DirectX11Renderer::OnResize(int width, int height)
 void DirectX11Renderer::BeginRender()
 {
 #if USE_FLIPMODE == 1
-	// Flip ¸ðµå¿¡¼­´Â ¸ÅÇÁ·¹ÀÓ ¼³Á¤ÇØ¾ßÇÑ´Ù.
-	deviceContext->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get()); // depthStencilView »ç¿ë
+	// Flip ï¿½ï¿½å¿¡ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¾ï¿½ï¿½Ñ´ï¿½.
+	deviceContext->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get()); // depthStencilView ï¿½ï¿½ï¿½
 #endif	
-	// È­¸é Ä¥ÇÏ±â.
+	// È­ï¿½ï¿½ Ä¥ï¿½Ï±ï¿½.
 	Color color(0.1f, 0.2f, 0.3f, 1.0f);
 	deviceContext->ClearRenderTargetView(renderTargetView.Get(), color);
-	deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0); // µª½º¹öÆÛ 1.0f·Î ÃÊ±âÈ­.
+	deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1.0fï¿½ï¿½ ï¿½Ê±ï¿½È­.
 }
 
 void DirectX11Renderer::EndRender()
 {
 	swapChain->Present(0, 0);
+}
+
+ComPtr<ID3D11Device> DirectX11Renderer::GetDevice() const
+{
+    return device;
+}
+
+ComPtr<ID3D11DeviceContext> DirectX11Renderer::GetDeviceContext() const
+{
+    return deviceContext;
 }

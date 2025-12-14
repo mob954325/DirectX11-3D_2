@@ -7,7 +7,7 @@
 class SceneSystem
 {
 public:
-	void UpdateScene();
+	void UpdateScene(float deltaTime);
 	void RenderScene();
 
 	std::shared_ptr<Scene> GetSceneByIndex(int index);

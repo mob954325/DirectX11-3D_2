@@ -1,5 +1,5 @@
 #pragma once
-#include "directxtk/SimpleMath.h"
+#include "../External/directxtk/SimpleMath.h"
 #include "IComponent.h"
 
 using namespace DirectX::SimpleMath;

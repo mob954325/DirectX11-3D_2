@@ -1,7 +1,8 @@
 #pragma once
-#include "../../Common/pch.h"
-#include "../../Common/GameApp.h"
-#include "../../Common/Scene/Scene.h"
+#include "pch.h"
+#include "GameApp.h"
+#include "System/SceneSystem.h"
+#include "Renderer/ImguiRenderer.h"
 #include <map>
 
 /// <summary>
@@ -17,7 +18,10 @@ public:
 	void OnUpdate() override;
 	void OnRender() override;
 
-	Scene scene; // TODO : 씬 교체할 수 있게 수정하기
+	std::unique_ptr<ImguiRenderer> imguiRenderer{};
+	std::unique_ptr<SceneSystem> sceneSystem{};
+
+	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 
 private:
 	void BeginRender();

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <directXTK/Mouse.h>
-#include <directXTK/Keyboard.h>
+#include <Mouse.h>
+#include <Keyboard.h>
 
 using namespace DirectX;
 

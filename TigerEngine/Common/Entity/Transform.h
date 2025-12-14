@@ -1,6 +1,6 @@
 #pragma once
 #include "../pch.h"
-#include "directxtk/SimpleMath.h"
+#include "SimpleMath.h"
 #include "IComponent.h"
 
 using namespace DirectX::SimpleMath;

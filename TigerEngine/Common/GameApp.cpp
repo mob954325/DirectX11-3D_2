@@ -1,9 +1,9 @@
-#include "GameApp.h"
+ï»¿#include "GameApp.h"
 #include "pch.h"
 #include "Helper.h"
 #include "Renderer/DirectX11Renderer.h"
 
-// Debug ¸ğµâ°ü·Ã Çì´õ ÆÄÀÏ ¹× ¶óÀÌºê·¯¸®
+// Debug ëª¨ë“ˆê´€ë ¨ í—¤ë” íŒŒì¼ ë° ë¼ì´ë¸ŒëŸ¬ë¦¬
 // #include "Helper.h"
 // #include <dbghelp.h>
 // #include <minidumpapiset.h>
@@ -22,38 +22,46 @@ LRESULT CALLBACK DefaultWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
 void CreateDump(EXCEPTION_POINTERS* pExceptionPointers)
 {
-	wchar_t moduleFileName[MAX_PATH] = { 0, };
-	std::wstring fileName(moduleFileName);
-	if (GetModuleFileName(NULL, moduleFileName, MAX_PATH) == 0) {
-		fileName = L"unknown_project.dmp"; // ¿¹¿Ü »óÈ² Ã³¸®
-	}
-	else
-	{
-		fileName = std::wstring(moduleFileName);
-		size_t pos = fileName.find_last_of(L"\\/");
-		if (pos != std::wstring::npos) {
-			fileName = fileName.substr(pos + 1); // ÆÄÀÏ ÀÌ¸§ ÃßÃâ
-		}
+    // ì™€ì´ë“œ ë¬¸ì(wchar_t)ì™€ ì™€ì´ë“œ ë¬¸ìì—´(std::wstring)ì„ ì‚¬ìš©í•˜ê³  ìˆìœ¼ë¯€ë¡œ,
+    // ëª…ì‹œì ìœ¼ë¡œ ìœ ë‹ˆì½”ë“œ ë²„ì „ì˜ Win32 API í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•´ì•¼ í•©ë‹ˆë‹¤.
 
-		pos = fileName.find_last_of(L'.');
-		if (pos != std::wstring::npos) {
-			fileName = fileName.substr(0, pos); // È®ÀåÀÚ Á¦°Å
-		}
-		fileName += L".dmp";
-	}
+    wchar_t moduleFileName[MAX_PATH] = { 0, };
+    std::wstring fileName; // ì´ˆê¸°í™” ë°©ë²• ë³€ê²½ (ì•„ë˜ ì°¸ê³ )
 
-	HANDLE hFile = CreateFile(fileName.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (hFile == INVALID_HANDLE_VALUE) return;
+    // 1. GetModuleFileName ëŒ€ì‹  GetModuleFileNameW ì‚¬ìš©
+    if (GetModuleFileNameW(NULL, moduleFileName, MAX_PATH) == 0) { 
+        fileName = L"unknown_project.dmp"; // L ì ‘ë‘ì‚¬ ì‚¬ìš© ìœ ì§€
+    }
+    else
+    {
+        // wchar_t* ì—ì„œ std::wstring ìƒì„±
+        fileName = std::wstring(moduleFileName); 
+        size_t pos = fileName.find_last_of(L"\\/");
+        // ... (ë‚˜ë¨¸ì§€ ë¬¸ìì—´ ì²˜ë¦¬ ë¡œì§ì€ ë™ì¼)
+        if (pos != std::wstring::npos) {
+            fileName = fileName.substr(pos + 1); 
+        }
 
-	CloseHandle(hFile);
+        pos = fileName.find_last_of(L'.');
+        if (pos != std::wstring::npos) {
+            fileName = fileName.substr(0, pos); 
+        }
+        fileName += L".dmp";
+    }
+
+    // 2. CreateFile ëŒ€ì‹  CreateFileW ì‚¬ìš©
+    HANDLE hFile = CreateFileW(fileName.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) return;
+
+    CloseHandle(hFile);
 }
 
 LONG WINAPI CustomExceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
 {
 	int msgResult = MessageBox(
 		NULL,
-		L"Should Create Dump ?",
-		L"Exception",
+		"Should Create Dump ?",
+		"Exception",
 		MB_YESNO | MB_ICONQUESTION
 	);
 
@@ -90,16 +98,16 @@ bool GameApp::Initialize(UINT Width, UINT Height)
 	clientWidth = Width;
 	clientHeight = Height;
 
-	// µî·Ï
+	// ë“±ë¡
 	RegisterClassExW(&wcex);
 
-	// ¿øÇÏ´Â Å©±â°¡ Á¶Á¤µÇ¾î ¸®ÅÏ
+	// ì›í•˜ëŠ” í¬ê¸°ê°€ ì¡°ì •ë˜ì–´ ë¦¬í„´
 	RECT rcClient = { 0, 0, (LONG)Width, (LONG)Height };
 	AdjustWindowRect(&rcClient, WS_OVERLAPPEDWINDOW, FALSE);
 
-	//»ı¼º
+	//ìƒì„±
 	hwnd = CreateWindowW(windowClassName, titleName, WS_OVERLAPPEDWINDOW,
-		100, 100,	// ½ÃÀÛ À§Ä¡
+		100, 100,	// ì‹œì‘ ìœ„ì¹˜
 		rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
 		nullptr, nullptr, hInstance, nullptr);
 
@@ -108,20 +116,20 @@ bool GameApp::Initialize(UINT Width, UINT Height)
 		return false;
 	}
 
-	// À©µµ¿ì º¸ÀÌ±â
+	// ìœˆë„ìš° ë³´ì´ê¸°
 	ShowWindow(hwnd, SW_SHOW);
 	UpdateWindow(hwnd);
 
-	// ½Ã½ºÅÛ ÃÊ±âÈ­
+	// ì‹œìŠ¤í…œ ì´ˆê¸°í™”
 	inputSystem.Initialize(hwnd, this);
 
 	renderer = std::make_shared<DirectX11Renderer>();
 	renderer->Initialize(hwnd, clientWidth, clientHeight);
 
-	// App ÃÊ±âÈ­
+	// App ì´ˆê¸°í™”
 	if (!OnInitialize()) return false;
 
-	// Å¸ÀÌ¸Ó ÃÊ±âÈ­
+	// íƒ€ì´ë¨¸ ì´ˆê¸°í™”
 	gameTimer.Reset();
 
 	return true;
@@ -134,7 +142,7 @@ bool GameApp::OnInitialize()
 
 bool GameApp::Run()
 {
-	// PeekMessage ¸Ş¼¼Áö°¡ ÀÖÀ¸¸é true,¾øÀ¸¸é false
+	// PeekMessage ë©”ì„¸ì§€ê°€ ìˆìœ¼ë©´ true,ì—†ìœ¼ë©´ false
 	while (TRUE)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -142,8 +150,8 @@ bool GameApp::Run()
 			if (msg.message == WM_QUIT)
 				break;
 
-			//À©µµ¿ì ¸Ş½ÃÁö Ã³¸® 
-			TranslateMessage(&msg); // Å°ÀÔ·Â°ü·Ã ¸Ş½ÃÁö º¯È¯  WM_KEYDOWN -> WM_CHAR
+			//ìœˆë„ìš° ë©”ì‹œì§€ ì²˜ë¦¬ 
+			TranslateMessage(&msg); // í‚¤ì…ë ¥ê´€ë ¨ ë©”ì‹œì§€ ë³€í™˜  WM_KEYDOWN -> WM_CHAR
 			DispatchMessage(&msg);
 		}
 		else
@@ -173,10 +181,10 @@ void GameApp::OnUpdate()
 }
 
 //
-//  ÇÔ¼ö: WndProc(HWND, UINT, WPARAM, LPARAM)
+//  í•¨ìˆ˜: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
-//  ¿ëµµ: ÁÖ Ã¢ÀÇ ¸Ş½ÃÁö¸¦ Ã³¸®ÇÕ´Ï´Ù.
-//  WM_DESTROY  - Á¾·á ¸Ş½ÃÁö¸¦ °Ô½ÃÇÏ°í ¹İÈ¯ÇÕ´Ï´Ù.
+//  ìš©ë„: ì£¼ ì°½ì˜ ë©”ì‹œì§€ë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤.
+//  WM_DESTROY  - ì¢…ë£Œ ë©”ì‹œì§€ë¥¼ ê²Œì‹œí•˜ê³  ë°˜í™˜í•©ë‹ˆë‹¤.
 //
 //
 LRESULT CALLBACK GameApp::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -212,10 +220,10 @@ LRESULT CALLBACK GameApp::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM
 	case WM_SIZE:
 	{
 		if (wParam == SIZE_MINIMIZED)
-			break; // ÃÖ¼ÒÈ­´Â ¹«½Ã
+			break; // ìµœì†Œí™”ëŠ” ë¬´ì‹œ
 	
-		UINT width = LOWORD(lParam); // »õ ³Êºñ
-		UINT height = HIWORD(lParam); // »õ ³ôÀÌ			
+		UINT width = LOWORD(lParam); // ìƒˆ ë„ˆë¹„
+		UINT height = HIWORD(lParam); // ìƒˆ ë†’ì´			
 		if (clientWidth != width || clientHeight != height)
 		{
 			clientWidth = width;

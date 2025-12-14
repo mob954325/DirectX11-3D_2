@@ -3,5 +3,6 @@
 
 class IRenderComponent : public IComponent
 {
+public:
 	virtual void OnRender() {};
 };

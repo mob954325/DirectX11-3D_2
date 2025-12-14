@@ -1,12 +1,16 @@
 #include "SceneSystem.h"
 
-void SceneSystem::UpdateScene()
+void SceneSystem::UpdateScene(float deltaTime)
 {
-	currentScene->OnUpdate();
+	if(scenesMapping.empty()) return; // 씬 없어서 터지는거 방지
+
+	currentScene->OnUpdate(deltaTime);
 }
 
 void SceneSystem::RenderScene()
 {
+	if(scenesMapping.empty()) return;
+
 	currentScene->OnRender();
 }
 

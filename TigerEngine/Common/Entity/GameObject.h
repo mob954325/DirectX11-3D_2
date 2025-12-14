@@ -1,5 +1,5 @@
 #pragma once
-#include "../pch.h"
+#include "pch.h"
 #include "Transform.h"
 #include "IComponent.h"
 #include "IRenderComponent.h"
@@ -18,6 +18,8 @@ public:
 	std::shared_ptr<T> AddComponent();
 
 	std::shared_ptr<Transform> GetTransform() const;
+	std::vector<std::shared_ptr<IComponent>>& GetIComponents();
+	std::vector<std::shared_ptr<IRenderComponent>>& GetIRenderComponents();
 
 protected:
 	std::shared_ptr<Transform> transform;
