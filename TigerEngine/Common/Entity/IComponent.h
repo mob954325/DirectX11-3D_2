@@ -1,19 +1,19 @@
-#pragma once
+ï»¿#pragma once
 
 class IComponent
 {
 	/// <summary>
-	/// IComponent°¡ Ã³À½ ½ÇÇàµÉ ¶§ ½ÇÇàµË´Ï´Ù.
+	/// IComponentê°€ ì²˜ìŒ ì‹¤í–‰ë  ë•Œ ì‹¤í–‰ë©ë‹ˆë‹¤.
 	/// </summary>
 	virtual void OnInitialize() {};
 
 	/// <summary>
-	/// OnUpdate()¸¦ ½ÇÇàÇÏ±â Àü ***ÇÑ ¹ø*** ½ÇÇàµË´Ï´Ù.
+	/// OnUpdate()ë¥¼ ì‹¤í–‰í•˜ê¸° ì „ ***í•œ ë²ˆ*** ì‹¤í–‰ë©ë‹ˆë‹¤.
 	/// </summary>
 	virtual void OnStart() {};
 
 	/// <summary>
-	/// GameEngine¿¡ ¸Å ÇÁ·¹ÀÓ¸¶´Ù OnUpdate()³» ¿¡¼­ È£ÃâµË´Ï´Ù.
+	/// GameEngineì— ë§¤ í”„ë ˆì„ë§ˆë‹¤ OnUpdate()ë‚´ ì—ì„œ í˜¸ì¶œë©ë‹ˆë‹¤.
 	/// </summary>
 	virtual void OnUpdate() {};
 };

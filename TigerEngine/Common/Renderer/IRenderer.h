@@ -1,9 +1,7 @@
-#pragma once
+ï»¿#pragma once
 #include "../../Common/pch.h"
 
-/// <summary>
-/// ±×·¡ÇÈ ·£´õ·¯ Å¬·¡½º°¡ »ó¼Ó¹Ş´Â ÀÎÅÍÆäÀÌ½º
-/// </summary>
+// ê·¸ë˜í”½ ëœë”ëŸ¬ í´ë˜ìŠ¤ê°€ ìƒì†ë°›ëŠ” ì¸í„°í˜ì´ìŠ¤
 class IRenderer
 {
 public:

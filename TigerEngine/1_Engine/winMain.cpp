@@ -1,4 +1,4 @@
-#include "App/EngineApp.h"
+癤�#include "App/EngineApp.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -8,7 +8,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	EngineApp App(hInstance);  // 생성자에서 아이콘,윈도우 이름만 바꾼다
+	EngineApp App(hInstance);  
 	if (!App.Initialize(1024, 768))
 		return -1;
 

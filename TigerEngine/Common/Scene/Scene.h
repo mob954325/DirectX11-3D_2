@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "../pch.h"
 #include "../Entity/GameObject.h"
 #include <map>
@@ -10,5 +10,5 @@ public:
 	void OnUpdate();
 
 protected:
-	std::map<std::string, std::shared_ptr<GameObject>> gameObjects; // ÀÌ¸§, °ÔÀÓ ¿ÀºêÁ§Æ®
+	std::map<std::string, std::shared_ptr<GameObject>> gameObjects; // å ì‹±ëªŒì˜™, å ì™ì˜™å ì™ì˜™ å ì™ì˜™å ì™ì˜™å ì™ì˜™íŠ¸
 };
