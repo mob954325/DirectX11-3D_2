@@ -1,5 +1,6 @@
 #include "EngineApp.h"
 #include "Renderer/DirectX11Renderer.h"
+#include "imgui_impl_win32.h" // ImGui_ImplWin32_WndProcHandler 사용하기 위함
 
 EngineApp::EngineApp(HINSTANCE hInstance)
 	: GameApp(hInstance)
@@ -30,7 +31,7 @@ void EngineApp::OnRender()
 
 	BeginRender();
 	// RenderSomething ...
-	
+
 	imguiRenderer->Render();
 	EndRender();
 }
@@ -45,4 +46,15 @@ void EngineApp::EndRender()
 {
 	renderer->EndRender();
 	imguiRenderer->EndRender();
+}
+
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+LRESULT EngineApp::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+        return true;
+
+	return __super::WndProc(hWnd, message, wParam, lParam);
 }

@@ -21,6 +21,8 @@ public:
 	std::unique_ptr<ImguiRenderer> imguiRenderer{};
 	Scene scene; // TODO : 씬 교체할 수 있게 수정하기
 
+	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override;
+
 private:
 	void BeginRender();
 	void EndRender();
