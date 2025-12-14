@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "GameApp.h"
 #include "Scene/Scene.h"
+#include "Renderer/ImguiRenderer.h"
 #include <map>
 
 /// <summary>
@@ -17,6 +18,7 @@ public:
 	void OnUpdate() override;
 	void OnRender() override;
 
+	std::unique_ptr<ImguiRenderer> imguiRenderer{};
 	Scene scene; // TODO : 씬 교체할 수 있게 수정하기
 
 private:

@@ -24,6 +24,9 @@ public:
 	void EndRender() override;
 	// void Render(const Scene& scene, Camera& camera); 
 
+	ComPtr<ID3D11Device> GetDevice() const;
+	ComPtr<ID3D11DeviceContext> GetDeviceContext() const;
+	
 private:
 	ComPtr<ID3D11Device>			device{};			// 디바이스
 	ComPtr<ID3D11DeviceContext>		deviceContext{};	// 디바이스 컨텍스트

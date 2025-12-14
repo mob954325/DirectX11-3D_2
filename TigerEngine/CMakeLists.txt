@@ -24,6 +24,7 @@ set(COMMON_SOURCE
 
     # Renderer
     Common/Renderer/DirectX11Renderer.cpp
+    Common/Renderer/ImguiRenderer.cpp
 
     # Scene
     Common/Scene/Scene.cpp
