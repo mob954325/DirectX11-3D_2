@@ -83,9 +83,18 @@ endif()
 
 # 실행파일에 추가한다. 중간에 WIN32을 붙이면 윈도우창으로 실행됨
 add_executable(${PROJECT_NAME} WIN32 
-    1_Engine/App/EngineApp.cpp
-    1_Engine/RenderPass/BasicRenderPass.cpp
+    # main
     1_Engine/winMain.cpp
+
+    # App
+    1_Engine/App/EngineApp.cpp
+
+    # RenderPass
+    1_Engine/RenderPass/BasicRenderPass.cpp
+
+    # Components
+    1_Engine/Components/MeshFilter.cpp
+    1_Engine/Components/MeshRenderer.cpp
 )
 
 if(MSVC)

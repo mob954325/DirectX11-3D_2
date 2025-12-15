@@ -1,12 +1,13 @@
 ﻿#pragma once
 #include "../pch.h"
 #include "../Entity/GameObject.h"
+#include "Renderer/RenderQueue.h"
 #include <map>
 
 class Scene
 {
 public:
-	void OnRender();
+	void OnRender(std::unique_ptr<RenderQueue>& renderQueue);
 	void OnUpdate(float deltaTime);
 
 protected:

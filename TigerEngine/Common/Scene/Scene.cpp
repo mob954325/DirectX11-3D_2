@@ -1,13 +1,13 @@
 #include "Scene.h"	
 
-void Scene::OnRender()
+void Scene::OnRender(std::unique_ptr<RenderQueue>& renderQueue)
 {
 	for (auto& obj : gameObjects)
 	{
 		std::shared_ptr<GameObject> gameObject = obj.second;		
 		for(auto& rComp : gameObject->GetIRenderComponents())
 		{
-			rComp->OnRender();
+			rComp.get()->OnRender(renderQueue);
 		}
 	}
 }

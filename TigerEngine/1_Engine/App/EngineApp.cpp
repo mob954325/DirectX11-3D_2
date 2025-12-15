@@ -18,6 +18,7 @@ bool EngineApp::OnInitialize()
 	imguiRenderer->Initialize(hwnd, dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
 
 	sceneSystem = std::make_unique<SceneSystem>();
+	renderQueue = std::make_unique<RenderQueue>();
 
 	return true;
 }
@@ -30,14 +31,22 @@ void EngineApp::OnUpdate()
 
 void EngineApp::OnRender()
 {
-	// RenderPass들 호출
-	
-	BeginRender();
-	
-	// RenderSomething ...
-	sceneSystem->RenderScene();
+	renderQueue->Clear();
 
-	imguiRenderer->Render();
+	// RenderPass들 호출	
+	sceneSystem->RenderScene(renderQueue);
+
+	BeginRender();	
+	std::shared_ptr<DirectX11Renderer> dxRenderer = 
+        std::dynamic_pointer_cast<DirectX11Renderer>(renderer);
+    ComPtr<ID3D11DeviceContext> context = dxRenderer->GetDeviceContext();
+
+	for (const auto& command : renderQueue->GetCommand())
+    {
+        command->Execute(context);
+    }
+
+	imguiRenderer->Render();	
 	EndRender();
 }
 

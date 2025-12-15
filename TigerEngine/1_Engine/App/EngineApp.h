@@ -3,6 +3,7 @@
 #include "GameApp.h"
 #include "System/SceneSystem.h"
 #include "Renderer/ImguiRenderer.h"
+#include "Renderer/RenderQueue.h"
 #include <map>
 
 /// <summary>
@@ -26,4 +27,6 @@ public:
 private:
 	void BeginRender();
 	void EndRender();
+
+	std::unique_ptr<RenderQueue> renderQueue{};
 };
