@@ -15,7 +15,8 @@ void ImguiRenderer::Render()
 {
     // Imgui 렌더링 내용
     ImGui::ShowDemoWindow();
-
+    renderContents();
+    
     // ==
     ImGui::Render();
 
@@ -31,6 +32,11 @@ void ImguiRenderer::Render()
 
 void ImguiRenderer::EndRender()
 {
+}
+
+void ImguiRenderer::SetRenderContants(std::function<void()> contants)
+{
+    renderContents = contants;
 }
 
 ImguiRenderer::~ImguiRenderer()

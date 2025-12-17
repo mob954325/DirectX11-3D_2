@@ -1,4 +1,6 @@
-﻿#include "wrl/client.h"
+﻿#pragma once
+#include "pch.h"
+#include "wrl/client.h"
 #include "d3d11.h"
 
 using namespace Microsoft::WRL;
@@ -6,6 +8,7 @@ using namespace Microsoft::WRL;
 class ImguiRenderer
 {
 private:
+    std::function<void()> renderContents;
 
 public:
     ImguiRenderer() = default;
@@ -15,4 +18,6 @@ public:
     void BeginRender();
     void Render();
     void EndRender();
+
+    void SetRenderContants(std::function<void()> contants);
 };
