@@ -7,7 +7,7 @@ void Scene::OnRender(std::unique_ptr<RenderQueue>& renderQueue)
 		std::shared_ptr<GameObject> gameObject = obj.second;		
 		for(auto& rComp : gameObject->GetIRenderComponents())
 		{
-			rComp.get()->OnRender(renderQueue);
+			rComp.lock()->OnRender(renderQueue);
 		}
 	}
 }
@@ -19,7 +19,7 @@ void Scene::OnUpdate(float deltaTime)
 		std::shared_ptr<GameObject> gameObject = obj.second;		
 		for(auto& rComp : gameObject->GetIComponents())
 		{
-			rComp->OnUpdate(deltaTime);
+			rComp.lock()->OnUpdate(deltaTime);
 		}
 	}
 }

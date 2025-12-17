@@ -18,13 +18,13 @@ public:
 	std::shared_ptr<T> AddComponent();
 
 	std::shared_ptr<Transform> GetTransform() const;
-	std::vector<std::shared_ptr<IComponent>>& GetIComponents();
-	std::vector<std::shared_ptr<IRenderComponent>>& GetIRenderComponents();
+	std::vector<std::weak_ptr<IComponent>>& GetIComponents();
+	std::vector<std::weak_ptr<IRenderComponent>>& GetIRenderComponents();
 
 protected:
 	std::shared_ptr<Transform> transform;
 	std::string name;
-	std::vector<std::shared_ptr<IComponent>> components; // Update, Physics 등
-	std::vector<std::shared_ptr<IRenderComponent>> renderComponents; // Mesh, Material, Color 등등
+	std::vector<std::weak_ptr<IComponent>> components; // Update, Physics 등
+	std::vector<std::weak_ptr<IRenderComponent>> renderComponents; // Mesh, Material, Color 등등
 };
 

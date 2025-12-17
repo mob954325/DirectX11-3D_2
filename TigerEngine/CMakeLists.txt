@@ -25,6 +25,7 @@ set(COMMON_SOURCE
     # Renderer
     Common/Renderer/DirectX11Renderer.cpp
     Common/Renderer/ImguiRenderer.cpp
+    Common/Renderer/DrawMeshCommand.cpp
 
     # Scene
     Common/Scene/Scene.cpp
@@ -34,6 +35,22 @@ set(COMMON_SOURCE
     Common/System/SceneSystem.cpp
     Common/System/TimeSystem.cpp
 )
+
+#set(COMMON_HEADER # 일단 인터페이스만 
+#    # root
+#
+#    # Entity
+#    Common/IComponent.h
+#    Common/IRenderComponent.h
+#
+#    # Renderer
+#    Common/IRenderCommad.h
+#    Common/IRenderPass.h
+#
+#    # Scene
+#
+#    # System
+#)
 
 # 라이브러리 추가
 add_library(common_lib STATIC
@@ -96,6 +113,12 @@ add_executable(${PROJECT_NAME} WIN32
     1_Engine/Components/MeshFilter.cpp
     1_Engine/Components/MeshRenderer.cpp
 )
+
+# Engine부에서 사용할 폴더들
+target_include_directories(${PROJECT_NAME} PRIVATE
+    1_Engine
+)
+
 
 if(MSVC)
 	# 인코딩 경고(C4819) 해결 : UTF-8 컴파일 강제

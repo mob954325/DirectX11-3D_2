@@ -1,8 +1,16 @@
 ﻿#pragma once
+#include <pch.h>
+
+class GameObject; // forward declear
 
 class IComponent
 {
+protected:
+	std::weak_ptr<GameObject> owner{};
+
 public:
+	virtual ~IComponent() = default;
+
 	/// <summary>
 	/// IComponent가 처음 실행될 때 실행됩니다.
 	/// </summary>
@@ -17,4 +25,6 @@ public:
 	/// GameEngine에 매 프레임마다 OnUpdate()내 에서 호출됩니다.
 	/// </summary>
 	virtual void OnUpdate(float delta) {};
+
+	std::shared_ptr<GameObject> GetOwner() { return owner.lock(); }
 };

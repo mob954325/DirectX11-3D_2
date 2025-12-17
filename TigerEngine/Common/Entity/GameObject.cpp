@@ -21,12 +21,12 @@ std::shared_ptr<Transform> GameObject::GetTransform() const
 	return transform;
 }
 
-std::vector<std::shared_ptr<IComponent>> &GameObject::GetIComponents()
+std::vector<std::weak_ptr<IComponent>> &GameObject::GetIComponents()
 {
     return components;
 }
 
-std::vector<std::shared_ptr<IRenderComponent>> &GameObject::GetIRenderComponents()
+std::vector<std::weak_ptr<IRenderComponent>> &GameObject::GetIRenderComponents()
 {
     return renderComponents;
 }
