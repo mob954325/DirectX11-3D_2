@@ -5,10 +5,6 @@
 class DrawMeshCommand : public IRenderCommand
 {
 private:
-    ComPtr<ID3D11Buffer> vertexBuffer;
-    ComPtr<ID3D11Buffer> indexBuffer;
-    UINT vertexCount;
-    // shader, constbuffer, index buffer index ...
 
 public:
     void CreateCommand(std::vector<Vertex> verteices, std::vector<UINT> indexes);

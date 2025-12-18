@@ -15,7 +15,7 @@ void ImguiRenderer::Render()
 {
     // Imgui 렌더링 내용
     ImGui::ShowDemoWindow();
-    renderContents();
+    //renderContents();
     
     // ==
     ImGui::Render();

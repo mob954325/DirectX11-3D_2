@@ -9,7 +9,9 @@ class Scene
 public:
 	void OnRender(std::unique_ptr<RenderQueue>& renderQueue);
 	void OnUpdate(float deltaTime);
+	
 
+	//void AddGameObject()
 protected:
 	std::map<std::string, std::shared_ptr<GameObject>> gameObjects; // 占싱몌옙, 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙트
 };
