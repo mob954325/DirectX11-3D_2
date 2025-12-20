@@ -19,6 +19,13 @@ bool EngineApp::OnInitialize()
 
 	sceneSystem = std::make_unique<SceneSystem>();
 	renderQueue = std::make_unique<RenderQueue>();
+	editor = std::make_unique<Editor>();
+
+	sceneSystem->AddScene(); // add first scene
+	sceneSystem->SetCurrentSceneByIndex();
+	auto obj = sceneSystem->GetCurrentScene()->AddGameObject("Entity");
+	auto obj2 = sceneSystem->GetCurrentScene()->AddGameObject("Entity1");
+	auto obj3 = sceneSystem->GetCurrentScene()->AddGameObject("Entity2");
 
 	return true;
 }
@@ -45,7 +52,8 @@ void EngineApp::OnRender()
     {
         command->Execute(context);
     }
-
+	
+	editor->Render(sceneSystem);
 	imguiRenderer->Render();	
 	EndRender();
 }

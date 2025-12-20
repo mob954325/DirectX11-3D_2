@@ -13,10 +13,12 @@ void ImguiRenderer::BeginRender()
 
 void ImguiRenderer::Render()
 {
-    // Imgui 렌더링 내용
-    ImGui::ShowDemoWindow();
-    //renderContents();
-    
+    // Imgui 렌더링 내용    
+    for(auto& contents : renderContents)
+    {
+        contents();
+    }
+
     // ==
     ImGui::Render();
 
@@ -34,9 +36,9 @@ void ImguiRenderer::EndRender()
 {
 }
 
-void ImguiRenderer::SetRenderContants(std::function<void()> contants)
+void ImguiRenderer::AddRenderContents(std::function<void()> fn)
 {
-    renderContents = contants;
+    renderContents.push_back(fn);
 }
 
 ImguiRenderer::~ImguiRenderer()

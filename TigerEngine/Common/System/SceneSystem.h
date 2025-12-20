@@ -12,10 +12,11 @@ public:
 	void RenderScene(std::unique_ptr<RenderQueue>& renderQueue);
 
 	std::shared_ptr<Scene> GetSceneByIndex(int index);
-	void AddScene(std::shared_ptr<Scene> scene);
-
+	void AddScene();
+	std::shared_ptr<Scene> GetCurrentScene();
+	std::shared_ptr<Scene> SetCurrentSceneByIndex(int i = 0);
 private:
-	std::map<int, std::shared_ptr<Scene>> scenesMapping;
+	std::map<int, std::shared_ptr<Scene>> scenes;
 	std::shared_ptr<Scene> currentScene{};
 };
 

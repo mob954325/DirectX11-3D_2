@@ -104,6 +104,7 @@ add_executable(${PROJECT_NAME} WIN32
     Engine/winMain.cpp
 
     # App
+    Engine/App/Editor.cpp
     Engine/App/EngineApp.cpp
 
     # RenderPass

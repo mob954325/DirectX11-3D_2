@@ -2,24 +2,35 @@
 
 void SceneSystem::UpdateScene(float deltaTime)
 {
-	if(scenesMapping.empty()) return; // 씬 없어서 터지는거 방지
+	if(scenes.empty()) return; // 씬 없어서 터지는거 방지
 
 	currentScene->OnUpdate(deltaTime);
 }
 
 void SceneSystem::RenderScene(std::unique_ptr<RenderQueue>& renderQueue)
 {
-	if(scenesMapping.empty()) return;
+	if(scenes.empty()) return;
 
 	currentScene->OnRender(renderQueue);
 }
 
 std::shared_ptr<Scene> SceneSystem::GetSceneByIndex(int index)
 {
-	return scenesMapping.find(index)->second;
+	return scenes.find(index)->second;
 }
 
-void SceneSystem::AddScene(std::shared_ptr<Scene> scene)
+void SceneSystem::AddScene()
 {
+	scenes.insert({scenes.size(), std::make_shared<Scene>()});
+}
 
+std::shared_ptr<Scene> SceneSystem::GetCurrentScene()
+{
+    return currentScene;
+}
+
+std::shared_ptr<Scene> SceneSystem::SetCurrentSceneByIndex(int i)
+{
+	currentScene = scenes.find(i)->second;
+	return currentScene;
 }

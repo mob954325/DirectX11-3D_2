@@ -23,3 +23,23 @@ void Scene::OnUpdate(float deltaTime)
 		}
 	}
 }
+
+void Scene::ForEachGameObject(std::function<void(std::shared_ptr<GameObject>)> fn)
+{
+	for(auto& obj : gameObjects)
+	{
+		fn(obj.second);
+	}
+}
+
+std::shared_ptr<GameObject> Scene::AddGameObject(std::string name)
+{
+	auto [it, success] = gameObjects.insert({name, std::make_shared<GameObject>(name)});
+
+    return it->second;
+}
+
+std::shared_ptr<GameObject> Scene::GetGameObjectByName(std::string name)
+{
+    return gameObjects.find(name)->second;
+}

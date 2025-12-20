@@ -4,6 +4,7 @@
 #include "System/SceneSystem.h"
 #include "Renderer/ImguiRenderer.h"
 #include "Renderer/RenderQueue.h"
+#include "Editor.h"
 #include <map>
 
 /// <summary>
@@ -21,6 +22,7 @@ public:
 
 	std::unique_ptr<ImguiRenderer> imguiRenderer{};
 	std::unique_ptr<SceneSystem> sceneSystem{};
+	std::unique_ptr<Editor> editor{};
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 

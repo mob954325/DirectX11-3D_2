@@ -8,7 +8,7 @@ using namespace Microsoft::WRL;
 class ImguiRenderer
 {
 private:
-    std::function<void()> renderContents;
+    std::vector<std::function<void()>> renderContents; // Inspector, Hierarchy, SceneView ...
 
 public:
     ImguiRenderer() = default;
@@ -19,5 +19,5 @@ public:
     void Render();
     void EndRender();
 
-    void SetRenderContants(std::function<void()> contants);
+    void AddRenderContents(std::function<void()> contants);
 };

@@ -1,10 +1,5 @@
 #include "GameObject.h"
 
-GameObject::GameObject()
-{
-	AddComponent<Transform>();
-}
-
 template<typename T>
 std::shared_ptr<T> GameObject::AddComponent()
 {
@@ -14,6 +9,11 @@ std::shared_ptr<T> GameObject::AddComponent()
 	auto comp = std::make_shared<T>();
 	components.push_back(comp);
 	return comp;
+}
+
+std::string GameObject::GetName() const
+{
+    return name;
 }
 
 std::shared_ptr<Transform> GameObject::GetTransform() const
@@ -29,4 +29,9 @@ std::vector<std::weak_ptr<IComponent>> &GameObject::GetIComponents()
 std::vector<std::weak_ptr<IRenderComponent>> &GameObject::GetIRenderComponents()
 {
     return renderComponents;
+}
+
+void GameObject::Init()
+{
+	transform = AddComponent<Transform>();
 }
