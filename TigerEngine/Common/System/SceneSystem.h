@@ -8,6 +8,7 @@
 class SceneSystem
 {
 public:
+	void BeforUpdate();
 	void UpdateScene(float deltaTime);
 	void RenderScene(std::unique_ptr<RenderQueue>& renderQueue);
 

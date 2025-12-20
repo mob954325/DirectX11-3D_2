@@ -31,6 +31,16 @@ std::vector<std::weak_ptr<IRenderComponent>> &GameObject::GetIRenderComponents()
     return renderComponents;
 }
 
+bool GameObject::IsDestory()
+{
+    return isDestory;
+}
+
+void GameObject::Destory()
+{
+	isDestory = true;
+}
+
 void GameObject::Init()
 {
 	transform = AddComponent<Transform>();

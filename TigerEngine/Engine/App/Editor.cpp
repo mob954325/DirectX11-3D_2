@@ -20,6 +20,10 @@ auto singleHierarchy(std::shared_ptr<GameObject> obj)
     ImGui::DragFloat3("Position", &pos.x);
     ImGui::DragFloat3("Rotation", &rot.x);
     ImGui::DragFloat3("Scale", &scl.x);
+    if(ImGui::Button("Destory"))
+    {
+        obj->Destory();
+    }
 
     ImGui::NewLine();
 
@@ -30,6 +34,11 @@ void Editor::RenderHierarchy(std::unique_ptr<SceneSystem> &sceneSystem)
 {
     ImGui::Begin("Hierarchy");
     {
+        if(ImGui::Button("Create GameObject"))
+        {
+            sceneSystem->GetCurrentScene()->AddGameObject("NewGameObject");
+        }
+
         sceneSystem->GetCurrentScene()->ForEachGameObject(singleHierarchy);
     }
     ImGui::End();

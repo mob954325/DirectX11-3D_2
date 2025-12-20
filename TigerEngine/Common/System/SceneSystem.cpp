@@ -1,5 +1,12 @@
 #include "SceneSystem.h"
 
+void SceneSystem::BeforUpdate()
+{
+	if(scenes.empty()) return;
+
+	currentScene->CheckDestroy();
+}
+
 void SceneSystem::UpdateScene(float deltaTime)
 {
 	if(scenes.empty()) return; // 씬 없어서 터지는거 방지

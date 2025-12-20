@@ -23,15 +23,14 @@ bool EngineApp::OnInitialize()
 
 	sceneSystem->AddScene(); // add first scene
 	sceneSystem->SetCurrentSceneByIndex();
-	auto obj = sceneSystem->GetCurrentScene()->AddGameObject("Entity");
-	auto obj2 = sceneSystem->GetCurrentScene()->AddGameObject("Entity1");
-	auto obj3 = sceneSystem->GetCurrentScene()->AddGameObject("Entity2");
 
 	return true;
 }
 
 void EngineApp::OnUpdate()
 {
+	sceneSystem->BeforUpdate();
+	
 	// Scene의 오브젝트 업데이트 호출
 	sceneSystem->UpdateScene(gameTimer.DeltaTime());
 }
@@ -43,6 +42,7 @@ void EngineApp::OnRender()
 	// RenderPass들 호출	
 	sceneSystem->RenderScene(renderQueue);
 
+	// Render Command 호출
 	BeginRender();	
 	std::shared_ptr<DirectX11Renderer> dxRenderer = 
         std::dynamic_pointer_cast<DirectX11Renderer>(renderer);
@@ -53,8 +53,11 @@ void EngineApp::OnRender()
         command->Execute(context);
     }
 	
+	// Editor 관련 내용 호출
 	editor->Render(sceneSystem);
 	imguiRenderer->Render();	
+
+	// 업데이트 마무리 
 	EndRender();
 }
 
