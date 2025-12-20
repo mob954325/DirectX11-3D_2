@@ -1,12 +1,20 @@
-### 종속성 설정
+### 사용한 개발 환경
 
-해당 프로젝트는 CMake로 엔진에 필요한 종속성 연결을 하고 있으며 해당 리포지토리에 들어있습니다.
-External 폴더에서 확인 할 수 있습니다.
+- OS : Window10 / 11 (x64, Win32)
+- Compiler : MSVC v143
+- Windows SDK : 10.0.26100.0
+- Build System : CMake 
+- CMake Version : 4.2+
+- Package Manager : vcpkg
 
-Imgui - docking
-Directxtk
-DirectTex
-~~Assimp~~
+### 그래픽스 / 라이브러리 
+
+- Graphics API : DirectX 11
+- Libraries :
+  - DirectX Tool Kit (DirectXTK)
+  - DirectXTex
+  - Imgui
+  - Assimp
 
 ### 파일 구조
 
