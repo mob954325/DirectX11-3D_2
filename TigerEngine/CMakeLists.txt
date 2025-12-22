@@ -1,8 +1,5 @@
 ﻿cmake_minimum_required(VERSION 3.20) # CMake Version 사용
 
-set(VCPKG_TARGET_TRIPLET "x64-windows" CACHE STRING "")
-set(CMAKE_TOOLCHAIN_FILE "D:/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "")
-
 set(PROJECT_NAME GameEngine) 	# PROJECT_NAME
 set(CMAKE_CXX_STANDARD 17)  		# CMAKE_ 붙은 변수는 전역변수다
 project(${PROJECT_NAME}) 			# 해당 프로젝트를 세팅할 것이다.
@@ -138,6 +135,8 @@ endif()
 add_subdirectory(External/directxtex)
 add_subdirectory(External/directxtk)
 
+find_package(assimp CONFIG REQUIRED)
+
 # =========================================================
 # 3. 라이브러리 연결 및 종속성 설정
 # =========================================================
@@ -155,4 +154,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     dxgi
     d3dcompiler 
     user32
+
+    # vcpkg
+    assimp::assimp
 )

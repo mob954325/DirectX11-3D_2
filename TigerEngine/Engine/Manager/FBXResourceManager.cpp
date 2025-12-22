@@ -1,10 +1,8 @@
 #include "FBXResourceManager.h"
 
-#include <DirectXTex.h>
 #include <assimp\Importer.hpp>
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
-#include <filesystem>
 
 void FBXResourceManager::ProcessNode(std::shared_ptr<FBXResourceAsset>& pAsset, aiNode* pNode, const aiScene* pScene)
 {
@@ -12,7 +10,7 @@ void FBXResourceManager::ProcessNode(std::shared_ptr<FBXResourceAsset>& pAsset, 
 	BoneInfo boneInfo = pAsset->skeletalInfo.GetBoneInfoByName(boneName);
 	int boneIndex = pAsset->skeletalInfo.GetBoneIndexByName(boneName);
 
-	// node ÃßÀû
+	// node ì¶”ì 
 	for (UINT i = 0; i < pNode->mNumMeshes; i++)
 	{
 		aiMesh* mesh = pScene->mMeshes[pNode->mMeshes[i]];
@@ -21,7 +19,7 @@ void FBXResourceManager::ProcessNode(std::shared_ptr<FBXResourceAsset>& pAsset, 
 
 		pAsset->meshes.back().SetMaterial(pScene->mMaterials[mesh->mMaterialIndex]);
 
-		// weight ÀúÀå
+		// weight ì €ì¥
 		ProcessBoneWeight(pAsset, mesh);
 	}
 
@@ -56,11 +54,11 @@ Mesh FBXResourceManager::ProcessMesh(std::shared_ptr<FBXResourceAsset>& pAsset, 
 		vertices.push_back(vertex);
 	}
 
-	// face ÀÎµ¦½º ÀúÀå
+	// face ì¸ë±ìŠ¤ ì €ì¥
 	for (UINT i = 0; i < pMesh->mNumFaces; i++)
 	{
 		aiFace face = pMesh->mFaces[i];
-		if (face.mNumIndices != 3) continue; // »ï°¢Çü¸¸
+		if (face.mNumIndices != 3) continue; // ì‚¼ê°í˜•ë§Œ
 
 		for (UINT j = 0; j < face.mNumIndices; j++)
 		{
@@ -69,57 +67,37 @@ Mesh FBXResourceManager::ProcessMesh(std::shared_ptr<FBXResourceAsset>& pAsset, 
 		}
 	}
 
-	// ¸ÓÅÍ¸®¾ó ºÒ·¯¿À±â
+	// ë¨¸í„°ë¦¬ì–¼ ë¶ˆëŸ¬ì˜¤ê¸°
 	if (pMesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = pScene->mMaterials[pMesh->mMaterialIndex];
 
-		// diffuseMap ºÒ·¯¿À±â
+		// diffuseMap ë¶ˆëŸ¬ì˜¤ê¸°
 		std::vector<Texture> diffuseMaps = this->loadMaterialTextures(pAsset, material, aiTextureType_DIFFUSE, TEXTURE_DIFFUSE, pScene);
 		if (!diffuseMaps.empty())
 		{
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 		}
 
-		// emissiveMap ºÒ·¯¿À±â
+		// emissiveMap ë¶ˆëŸ¬ì˜¤ê¸°
 		std::vector<Texture> emissiveMaps = this->loadMaterialTextures(pAsset, material, aiTextureType_EMISSIVE, TEXTURE_EMISSIVE, pScene);
 		if (!emissiveMaps.empty())
 		{
 			textures.insert(textures.end(), emissiveMaps.begin(), emissiveMaps.end());
 		}
 
-		// normalMap ºÒ·¯¿À±â
+		// normalMap ë¶ˆëŸ¬ì˜¤ê¸°
 		std::vector<Texture> normalMaps = this->loadMaterialTextures(pAsset, material, aiTextureType_NORMALS, TEXTURE_NORMAL, pScene);
 		if (!normalMaps.empty())
 		{
 			textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 		}
 
-		// specularMap ºÒ·¯¿À±â
+		// specularMap ë¶ˆëŸ¬ì˜¤ê¸°
 		std::vector<Texture> sepcualrMaps = this->loadMaterialTextures(pAsset, material, aiTextureType_SPECULAR, TEXTURE_SPECULAR, pScene);
 		if (!sepcualrMaps.empty())
 		{
 			textures.insert(textures.end(), sepcualrMaps.begin(), sepcualrMaps.end());
-		}
-
-		// metalnessMap ºÒ·¯¿À±â
-		std::vector<Texture> metalnessMap = this->loadMaterialTextures(pAsset, material, aiTextureType_METALNESS, TEXTURE_METALNESS, pScene);
-		if (!metalnessMap.empty())
-		{
-			textures.insert(textures.end(), metalnessMap.begin(), metalnessMap.end());
-		}
-
-		// roughnessMap ºÒ·¯¿À±â
-		std::vector<Texture> roughnessMap = this->loadMaterialTextures(pAsset, material, aiTextureType_DIFFUSE_ROUGHNESS, TEXTURE_ROUGHNESS, pScene);
-		if (!roughnessMap.empty())
-		{
-			textures.insert(textures.end(), roughnessMap.begin(), roughnessMap.end());
-		}
-
-		std::vector<Texture> shininessMap = this->loadMaterialTextures(pAsset, material, aiTextureType_SHININESS, TEXTURE_SHININESS, pScene);
-		if (!shininessMap.empty())
-		{
-			textures.insert(textures.end(), shininessMap.begin(), shininessMap.end());
 		}
 	}
 
@@ -158,7 +136,7 @@ std::vector<Texture> FBXResourceManager::loadMaterialTextures(std::shared_ptr<FB
 		auto textureloadeds = pAsset->textures;
 		for (UINT j = 0; j < textureloadeds.size(); j++)
 		{
-			if (std::strcmp(textureloadeds[j].path.c_str(), str.C_Str()) == 0) // path È®ÀÎ
+			if (std::strcmp(textureloadeds[j].path.c_str(), str.C_Str()) == 0) // path í™•ì¸
 			{
 				textures.push_back(textureloadeds[j]);
 				skip = true; // A texture with the same filepath has already been loaded, continue to next one. (optimization)
@@ -181,23 +159,7 @@ std::vector<Texture> FBXResourceManager::loadMaterialTextures(std::shared_ptr<FB
 				std::string filename = std::string(str.C_Str());
 				filename = pAsset->directory + '\\' + filename;
 				std::wstring filenamews = std::wstring(filename.begin(), filename.end());
-
-				std::filesystem::path p(filename);
-
-				if (p.extension() == ".tga")
-				{
-					DirectX::ScratchImage image;
-					ComPtr<ID3D11Resource> tgaTexture{};
-
-					HR_T(DirectX::LoadFromTGAFile(filenamews.c_str(), DirectX::TGA_FLAGS_NONE, nullptr, image)); // Load the TGA data
-					HR_T(DirectX::CreateTexture(m_pDevice.Get(), image.GetImages(), image.GetImageCount(), image.GetMetadata(), tgaTexture.GetAddressOf())); // convert image to texture
-
-					HR_T(m_pDevice.Get()->CreateShaderResourceView(tgaTexture.Get(), nullptr, texture.pTexture.GetAddressOf()));
-				}
-				else
-				{
-					HR_T(CreateWICTextureFromFile(m_pDevice.Get(), m_pDeviceContext.Get(), filenamews.c_str(), nullptr, texture.pTexture.GetAddressOf())); 
-				}
+				HR_T(CreateWICTextureFromFile(m_pDevice.Get(), m_pDeviceContext.Get(), filenamews.c_str(), nullptr, texture.pTexture.GetAddressOf()));
 			}
 
 			texture.type = typeName;
@@ -248,10 +210,10 @@ void FBXResourceManager::loadEmbeddedTexture(const aiTexture* embeddedTexture, C
 
 std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(ComPtr<ID3D11Device>& pDevice, ComPtr<ID3D11DeviceContext>& pDeviceContext, std::string path)
 {
-	// map¿¡ ¸ÕÀú ÀÖ´ÂÁö È®ÀÎ
+	// mapì— ë¨¼ì € ìˆëŠ”ì§€ í™•ì¸
 	auto it = assets.find(path);
 
-	if (it != assets.end()) // Á¸ÀçÇÔ
+	if (it != assets.end()) // ì¡´ì¬í•¨
 	{
 		if (!it->second.expired())
 		{
@@ -260,29 +222,29 @@ std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(ComPtr<ID3D1
 		}
 		else
 		{
-			assets.erase(it); // Áö¿ì°í »õ·Î ¸¸µé±â
+			assets.erase(it); // ì§€ìš°ê³  ìƒˆë¡œ ë§Œë“¤ê¸°
 		}
 	}
 
 	Assimp::Importer importer;
 
-	unsigned int importFlag = aiProcess_Triangulate |	// »ï°¢Çü º¯È¯
-		aiProcess_GenNormals |				// ³ë¸» »ı¼º
-		aiProcess_GenUVCoords |				// UV »ı¼º
-		aiProcess_CalcTangentSpace |		// ÅºÁ¨Æ® »ı¼º
-		aiProcess_LimitBoneWeights |		// º»ÀÇ ¿µÇâÀ» ¹Ş´Â Á¤Á¡ÀÇ ÃÖ´ë °³¼ö 4°³·Î Á¦ÇÑ
-		aiProcess_ConvertToLeftHanded;		// ¿Ş¼Õ ÁÂÇ¥°è·Î º¯È¯
+	unsigned int importFlag = aiProcess_Triangulate |	// ì‚¼ê°í˜• ë³€í™˜
+		aiProcess_GenNormals |				// ë…¸ë§ ìƒì„±
+		aiProcess_GenUVCoords |				// UV ìƒì„±
+		aiProcess_CalcTangentSpace |		// íƒ„ì  íŠ¸ ìƒì„±
+		aiProcess_LimitBoneWeights |		// ë³¸ì˜ ì˜í–¥ì„ ë°›ëŠ” ì •ì ì˜ ìµœëŒ€ ê°œìˆ˜ 4ê°œë¡œ ì œí•œ
+		aiProcess_ConvertToLeftHanded;		// ì™¼ì† ì¢Œí‘œê³„ë¡œ ë³€í™˜
 
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
 
 	const aiScene* pScene = importer.ReadFile(path, importFlag);
 
-	assert(pScene && ".fbx not found");
+	if (pScene == nullptr) return std::shared_ptr<FBXResourceAsset>();
 
 	this->m_pDevice = pDevice;
 	this->m_pDeviceContext = pDeviceContext;
 
-	// ¾øÀ¸¸é loadÈÄ map¿¡ Ãß°¡ 
+	// ì—†ìœ¼ë©´ loadí›„ mapì— ì¶”ê°€ 
 	auto sharedAsset = make_shared<FBXResourceAsset>();
 
 	if (pScene == nullptr)
@@ -290,11 +252,11 @@ std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(ComPtr<ID3D1
 
 	sharedAsset ->directory = path.substr(0, path.find_last_of("/\\"));
 
-	// skeletonInfo ÀúÀå
+	// skeletonInfo ì €ì¥
 	sharedAsset ->skeletalInfo = SkeletonInfo();
 	sharedAsset ->skeletalInfo.CreateFromAiScene(pScene);
 
-	// animation ÀúÀå
+	// animation ì €ì¥
 	int animationsNum = pScene->mNumAnimations;
 	for (int i = 0; i < animationsNum; i++)
 	{
@@ -303,17 +265,17 @@ std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(ComPtr<ID3D1
 		sharedAsset->animations.push_back(anim);
 	}
 
-	// mesh ÀúÀå, texture ÀúÀå 
-	ProcessNode(sharedAsset , pScene->mRootNode, pScene); // ³»ºÎ¿¡¼­ meshÀÇ ÅØ½ºÃ³ ÀúÀåÇÔ
+	// mesh ì €ì¥, texture ì €ì¥ 
+	ProcessNode(sharedAsset , pScene->mRootNode, pScene); // ë‚´ë¶€ì—ì„œ meshì˜ í…ìŠ¤ì²˜ ì €ì¥í•¨
 
-	// meshÀÇ Á¤Á¡ ¹öÆÛ, ÀÎµ¦½º ¹öÆÛ »ı¼º
+	// meshì˜ ì •ì  ë²„í¼, ì¸ë±ìŠ¤ ë²„í¼ ìƒì„±
 	for (auto& mesh : sharedAsset->meshes)
 	{
 		mesh.CreateVertexBuffer(pDevice);
 		mesh.CreateIndexBuffer(pDevice);
 	}
 
-	// bone offest ¹öÆÛ Ã¤¿ì±â
+	// bone offest ë²„í¼ ì±„ìš°ê¸°
 	for (auto& bone : sharedAsset->skeletalInfo.m_bones)
 	{
 		Matrix offsetMat = Matrix::Identity;
@@ -328,7 +290,7 @@ std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(ComPtr<ID3D1
 		sharedAsset->m_BoneOffsets.boneOffset[boneIndex] = offsetMat;
 	}
 
-	// map¿¡ ÀúÀåÇÏ±â
+	// mapì— ì €ì¥í•˜ê¸°
 	weak_ptr<FBXResourceAsset> weakAsset = sharedAsset;
 	assets.insert({ path, weakAsset });
 

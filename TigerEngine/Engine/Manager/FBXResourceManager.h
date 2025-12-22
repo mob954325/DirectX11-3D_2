@@ -3,8 +3,8 @@
 #include <string>
 #include <memory>
 
-#include "Mesh.h"
-#include "TextureLoader.h"
+#include "MeshFilter.h"
+#include "WICTextureLoader.h"
 #include "SkeletonInfo.h"
 #include "Animation.h"
 
@@ -21,7 +21,7 @@ struct FBXResourceAsset
 	std::vector<Texture> textures;
 
 	std::string directory = "";
-	BoneOffsetBuffer m_BoneOffsets{}; // skeletalInfo º» À§Ä¡ Á¤º¸
+	BoneOffsetBuffer m_BoneOffsets{}; // skeletalInfo ë³¸ ìœ„ì¹˜ ì •ë³´
 };
 
 class FBXResourceManager
@@ -32,15 +32,15 @@ class FBXResourceManager
 	FBXResourceManager(const FBXResourceManager&) = delete;
 	FBXResourceManager& operator=(const FBXResourceManager&) = delete;
 
-	// ÇØ´ç ¸Å´ÏÀú¿¡¼­ fbx¸¦ ÀĞ´Â´Ù.
-	// ÀÌ¹Ì ÀĞÀº fbx´Â map¿¡ ÀúÀåµÈ´Ù.
+	// í•´ë‹¹ ë§¤ë‹ˆì €ì—ì„œ fbxë¥¼ ì½ëŠ”ë‹¤.
+	// ì´ë¯¸ ì½ì€ fbxëŠ” mapì— ì €ì¥ëœë‹¤.
 	std::map<std::string, std::weak_ptr<FBXResourceAsset>> assets;
 
-	// texture ºÒ·¯¿À±â À§ÇÑ device, deviceContext
+	// texture ë¶ˆëŸ¬ì˜¤ê¸° ìœ„í•œ device, deviceContext
 	ComPtr<ID3D11Device> m_pDevice = nullptr;
 	ComPtr<ID3D11DeviceContext> m_pDeviceContext = nullptr;
 
-	// ¿¡¼Â ³»¿ë ·Îµå ÇÔ¼öµé
+	// ì—ì…‹ ë‚´ìš© ë¡œë“œ í•¨ìˆ˜ë“¤
 	void ProcessNode(std::shared_ptr<FBXResourceAsset>& pAsset, aiNode* pNode, const aiScene* pScene);
 	Mesh ProcessMesh(std::shared_ptr<FBXResourceAsset>& pAsset, aiMesh* pMesh, const aiScene* pScene);
 	void ProcessBoneWeight(std::shared_ptr<FBXResourceAsset>& pAsset, aiMesh* pMesh);

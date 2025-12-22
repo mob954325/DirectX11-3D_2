@@ -18,6 +18,7 @@ protected:
     std::vector<Vertex> vertices;   // each vertex data on mesh
     std::vector<UINT> indices;      // each vertex index on mesh
 
+    ComPtr<ID3D11InputLayout> inputLayout;
     ComPtr<ID3D11Buffer> vertexBuffer;
     ComPtr<ID3D11Buffer> indexBuffer;
     UINT vertexCount;
