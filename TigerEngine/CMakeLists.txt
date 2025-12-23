@@ -33,21 +33,22 @@ set(COMMON_SOURCE
     Common/System/TimeSystem.cpp
 )
 
-#set(COMMON_HEADER # 일단 인터페이스만 
-#    # root
-#
-#    # Entity
-#    Common/IComponent.h
-#    Common/IRenderComponent.h
-#
-#    # Renderer
-#    Common/IRenderCommad.h
-#    Common/IRenderPass.h
-#
-#    # Scene
-#
-#    # System
-#)
+set(COMMON_HEADER # 일단 인터페이스만 
+    # root
+
+    # Entity
+    Common/IComponent.h
+    Common/IRenderComponent.h
+
+    # Renderer
+    Common/IRenderCommad.h
+    Common/IRenderPass.h
+
+    # Scene
+
+    # System
+    Common/Singleton.h
+)
 
 # 라이브러리 추가
 add_library(common_lib STATIC
@@ -108,11 +109,12 @@ add_executable(${PROJECT_NAME} WIN32
     Engine/RenderPass/BasicRenderPass.cpp
 
     # Components
-    Engine/Components/MeshFilter.cpp
+    Engine/Components/MeshDatas.cpp
     Engine/Components/MeshRenderer.cpp
 
     # Manager
     # Engine/Manager/FBXResourceManager.cpp
+    Engine/Manager/ComponentFactory.h
 )
 
 # Engine부에서 사용할 폴더들

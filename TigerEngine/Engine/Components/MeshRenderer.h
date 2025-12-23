@@ -1,11 +1,11 @@
 #pragma once
 #include <Entity/IRenderComponent.h>
-#include <Components/MeshFilter.h>
+#include <Components/MeshDatas.h>
 
 class MeshRenderer : public IRenderComponent
 {
 private:
-	std::shared_ptr<MeshFilter> targetMeshFilter; // mesh data for rendering
+	std::shared_ptr<MeshDatas> targetMeshFilter; // mesh data for rendering
 public:
 	void OnInitialize() override;
 	void OnStart() override;

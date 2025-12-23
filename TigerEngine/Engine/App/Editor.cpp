@@ -1,4 +1,5 @@
 #include "Editor.h"
+#include <Manager/ComponentFactory.h>
 
 void Editor::Render(std::unique_ptr<SceneSystem> &sceneSystem)
 {
@@ -25,8 +26,42 @@ auto singleHierarchy(std::shared_ptr<GameObject> obj)
         obj->Destory();
     }
 
-    ImGui::NewLine();
+    if(ImGui::Button("Add Component"))
+    {
+        ImGui::OpenPopup("ComponentMenu"); // 1. popup 열라고 명령 
+        // open component menu
+        // - select component -> ???
+        // - call obj->AddComponent<T>()
+    }
 
+    // 2. 해당 ID를 가진 팝업이 열려있는지 확인하고 그림
+    if (ImGui::BeginPopup("ComponentMenu")) 
+    {                
+        auto& componentsMap = ComponentFactory::Instance().GetRegisteredComponents();
+
+        for(auto& [name, creatorFunc] : componentsMap)
+        {
+            // 컴포넌트 이름을 버튼 (MenuItem)으로 노출
+            if(ImGui::MenuItem(name.c_str()))
+            {
+                // 1. 생성 람다 함수를 통해 새 컴포넌트 생성
+                auto newComp = creatorFunc();
+                // 2. 현재 작업 중인 오브젝트에 추가
+                // GameObject에 AddComponent(std::shared_ptr<Component>) 형태의 함수가 있어야 합니다.
+                // obj->AddComponent(newComp); 
+                // TODO : 버튼 클릭으로 컴포넌트 붙일 수 있게 만들기 
+                ImGui::CloseCurrentPopup();
+            }
+        }
+
+
+        ImGui::Separator();
+        if (ImGui::MenuItem("Close")) { ImGui::CloseCurrentPopup(); }
+    
+        ImGui::EndPopup();
+    }
+
+    ImGui::NewLine();
     ImGui::PopID();
 }
 

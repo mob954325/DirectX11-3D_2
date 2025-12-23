@@ -3,10 +3,10 @@
 #include <string>
 #include <memory>
 
-#include "MeshFilter.h"
 #include "WICTextureLoader.h"
 #include "SkeletonInfo.h"
 #include "Animation.h"
+#include "Datas/Mesh.h"
 
 struct BoneOffsetBuffer
 {

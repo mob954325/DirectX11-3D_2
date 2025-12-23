@@ -1,5 +1,8 @@
 #include "MeshRenderer.h"
 #include "Renderer/DrawMeshCommand.h"
+#include "Manager/ComponentFactory.h"
+
+REGISTER_COMPONENT(MeshRenderer);
 
 void MeshRenderer::OnInitialize()
 {

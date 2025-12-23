@@ -21,8 +21,8 @@ bool EngineApp::OnInitialize()
 	renderQueue = std::make_unique<RenderQueue>();
 	editor = std::make_unique<Editor>();
 
-	sceneSystem->AddScene(); // add first scene
-	sceneSystem->SetCurrentSceneByIndex();
+	sceneSystem->AddScene();				// create first scene
+	sceneSystem->SetCurrentSceneByIndex(); 	// render first scene
 
 	return true;
 }
