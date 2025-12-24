@@ -1,12 +1,11 @@
 #pragma once
 #include <pch.h>
 #include <System/Singleton.h>
-
-class IComponent;
+#include <Entity/GameObject.h>
 
 // Component 등록 매크로 함수
 #define REGISTER_COMPONENT(Type) \
-    static bool _##type##_registered = []() { \
+    static bool Type##_registered = []() { \
         ComponentFactory::Instance().Register<Type>(#Type); \
         return true; \
     }()
@@ -22,15 +21,15 @@ public:
     template<typename T>
     void Register(std::string compName) 
     {
-        auto createComp = [](){ return std::make_shared<T>(); };
+        auto createComp = [](std::shared_ptr<GameObject>& obj){ return obj->AddComponent<T>(); };
         registeredComponents.insert({compName, createComp});
     }
 
-    const std::unordered_map<std::string, std::function<std::shared_ptr<IComponent>()>>& GetRegisteredComponents()
+    const std::unordered_map<std::string, std::function<std::shared_ptr<IComponent>(std::shared_ptr<GameObject>&)>>& GetRegisteredComponents()
     {
         return registeredComponents;
     }
 
 private:
-    std::unordered_map<std::string, std::function<std::shared_ptr<IComponent>()>> registeredComponents; // 컴포넌트 이름, 컴포넌트 생성 람다 함수
+    std::unordered_map<std::string, std::function<std::shared_ptr<IComponent>(std::shared_ptr<GameObject>&)>> registeredComponents; // 컴포넌트 이름, 컴포넌트 생성 람다 함수
 };

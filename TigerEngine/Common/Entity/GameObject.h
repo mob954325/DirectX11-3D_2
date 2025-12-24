@@ -16,12 +16,20 @@ public:
 	GameObject(std::string name) : name(name) { Init(); }
 
 	template<typename T>
-	std::shared_ptr<T> AddComponent();
+	std::shared_ptr<T> AddComponent()
+	{
+		static_assert(std::is_base_of_v<IComponent, T>,
+		"T must inherit from IComponent"); // T는 IComponent를 상속받았는가?
+
+		auto comp = std::make_shared<T>();
+		components.push_back(comp);
+		return comp;
+	}
 	
 	std::string GetName() const;
 	std::shared_ptr<Transform> GetTransform() const;
-	std::vector<std::weak_ptr<IComponent>>& GetIComponents();
-	std::vector<std::weak_ptr<IRenderComponent>>& GetIRenderComponents();
+	std::vector<std::shared_ptr<IComponent>>& GetIComponents();
+	std::vector<std::shared_ptr<IRenderComponent>>& GetIRenderComponents();
 
 	bool IsDestory();
 	void Destory();
@@ -29,8 +37,8 @@ public:
 protected:
 	std::string name = "NoNamed";
 	std::shared_ptr<Transform> transform;
-	std::vector<std::weak_ptr<IComponent>> components; // Update, Physics 등
-	std::vector<std::weak_ptr<IRenderComponent>> renderComponents; // Mesh, Material, Color 등등
+	std::vector<std::shared_ptr<IComponent>> components; // Update, Physics 등
+	std::vector<std::shared_ptr<IRenderComponent>> renderComponents; // Mesh, Material, Color 등등
 	bool isDestory = false;
 
 private:

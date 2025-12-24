@@ -45,7 +45,8 @@ auto singleHierarchy(std::shared_ptr<GameObject> obj)
             if(ImGui::MenuItem(name.c_str()))
             {
                 // 1. 생성 람다 함수를 통해 새 컴포넌트 생성
-                auto newComp = creatorFunc();
+                creatorFunc(obj);
+
                 // 2. 현재 작업 중인 오브젝트에 추가
                 // GameObject에 AddComponent(std::shared_ptr<Component>) 형태의 함수가 있어야 합니다.
                 // obj->AddComponent(newComp); 

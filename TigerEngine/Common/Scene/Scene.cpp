@@ -9,7 +9,7 @@ void Scene::OnRender(std::unique_ptr<RenderQueue>& renderQueue)
 
 		for(auto& rComp : gameObject->GetIRenderComponents())
 		{
-			rComp.lock()->OnRender(renderQueue);
+			rComp->OnRender(renderQueue);
 		}
 	}
 }
@@ -23,7 +23,7 @@ void Scene::OnUpdate(float deltaTime)
 
 		for(auto& rComp : gameObject->GetIComponents())
 		{
-			rComp.lock()->OnUpdate(deltaTime);
+			rComp->OnUpdate(deltaTime);
 		}
 	}
 }
