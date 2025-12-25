@@ -14,6 +14,12 @@ set(COMMON_SOURCE
     Common/Helper.cpp
     Common/pch.cpp
 
+    # data
+    Common/Datas/Animation.cpp
+    Common/Datas/Bone.cpp
+    Common/Datas/Mesh.cpp
+    Common/Datas/SkeletonInfo.cpp
+
     # Entity
     Common/Entity/Camera.cpp
     Common/Entity/GameObject.cpp
@@ -35,6 +41,10 @@ set(COMMON_SOURCE
 
 set(COMMON_HEADER # 일단 인터페이스만 
     # root
+
+    # data
+    Common/Animation.h
+    Common/AnimationKey.h
 
     # Entity
     Common/IComponent.h
@@ -113,7 +123,7 @@ add_executable(${PROJECT_NAME} WIN32
     Engine/Components/MeshRenderer.cpp
 
     # Manager
-    # Engine/Manager/FBXResourceManager.cpp
+    Engine/Manager/FBXResourceManager.cpp
     Engine/Manager/ComponentFactory.h
 )
 
@@ -121,7 +131,6 @@ add_executable(${PROJECT_NAME} WIN32
 target_include_directories(${PROJECT_NAME} PRIVATE
     Engine
 )
-
 
 if(MSVC)
 	# 인코딩 경고(C4819) 해결 : UTF-8 컴파일 강제
@@ -137,11 +146,16 @@ endif()
 add_subdirectory(External/directxtex)
 add_subdirectory(External/directxtk)
 
-find_package(assimp CONFIG REQUIRED)
+find_package(assimp CONFIG REQUIRED) # assimp/헤더파일명 으로 가져오기
 
 # =========================================================
 # 3. 라이브러리 연결 및 종속성 설정
 # =========================================================
+target_link_libraries(common_lib PUBLIC 
+    assimp::assimp
+)
+
+
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     # 1. 자체 정의 라이브러리
     common_lib

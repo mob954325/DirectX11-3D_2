@@ -1,6 +1,7 @@
 #include "MeshDatas.h"
 #include "Helper.h"
 #include <Manager/ComponentFactory.h>
+#include <Manager/FBXResourceManager.h>
 
 REGISTER_COMPONENT(MeshDatas);
 

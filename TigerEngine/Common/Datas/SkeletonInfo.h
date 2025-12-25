@@ -3,25 +3,25 @@
 #include <vector>
 #include <map>
 
-#include <assimp\scene.h>
-#include <directxtk/SimpleMath.h>
+#include <assimp/scene.h>
+#include <SimpleMath.h>
 
 using namespace DirectX::SimpleMath;
 using namespace std;
 
 /// <summary>
-/// º»¿¡ ´ëÇÑ °ü°è µ¥ÀÌÅÍ
+/// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 /// </summary>
 class BoneInfo
 {
 public:
-	string name{};				// º» ÀÌ¸§
-	string parentBoneName{};	// ÇØ´ç º»ÀÇ ºÎ¸ð ÀÌ¸§ ¾øÀ¸¸é ""
-	Matrix relativeTransform{};	// ÇØ´ç º» ¸ÅÆ®¸¯½º °ª
+	string name{};				// ï¿½ï¿½ ï¿½Ì¸ï¿½
+	string parentBoneName{};	// ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½Ì¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ""
+	Matrix relativeTransform{};	// ï¿½Ø´ï¿½ ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
 };
 
 /// <summary>
-/// boneInfo ¸ÅÇÎ µ¥ÀÌÅÍ¸¦ °¡Áö°í ÀÖ´Â Å¬¸®½º
+/// boneInfo ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½
 /// </summary>
 class SkeletonInfo
 {

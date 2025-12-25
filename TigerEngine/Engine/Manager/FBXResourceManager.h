@@ -4,8 +4,8 @@
 #include <memory>
 
 #include "WICTextureLoader.h"
-#include "SkeletonInfo.h"
-#include "Animation.h"
+#include "Datas/SkeletonInfo.h"
+#include "Datas/Animation.h"
 #include "Datas/Mesh.h"
 
 struct BoneOffsetBuffer

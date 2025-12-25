@@ -5,7 +5,7 @@
 class MeshRenderer : public IRenderComponent
 {
 private:
-	std::shared_ptr<MeshDatas> targetMeshFilter; // mesh data for rendering
+	std::shared_ptr<MeshDatas> targetMeshData; // mesh data for rendering
 public:
 	void OnInitialize() override;
 	void OnStart() override;

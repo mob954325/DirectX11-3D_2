@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <directxtk/SimpleMath.h>
+#include <SimpleMath.h>
 #include "BoneAnimation.h"
 
 using namespace std;
@@ -13,12 +13,12 @@ public:
 
 	BoneAnimation m_boneAnimation;	// 
 
-// private: -> ÆíÀÇ¸¦ À§ÇØ public ¼³Á¤
+// private: -> ï¿½ï¿½ï¿½Ç¸ï¿½ ï¿½ï¿½ï¿½ï¿½ public ï¿½ï¿½ï¿½ï¿½
 	Matrix m_worldTransform;
 	Matrix m_localTransform;
 
-	string name = "";		// ÇØ´ç boneÀÇ ÀÌ¸§
+	string name = "";		// ï¿½Ø´ï¿½ boneï¿½ï¿½ ï¿½Ì¸ï¿½
 
-	int m_parentIndex = -1; // °èÃþ ±¸Á¶¿¡¼­ÀÇ ºÎ¸ð ÀÎµ¦½º
+	int m_parentIndex = -1; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î¸ï¿½ ï¿½Îµï¿½ï¿½ï¿½
 	int m_index = -1;		// 
 };

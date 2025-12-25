@@ -1,13 +1,13 @@
 #pragma once
-#include <directxtk/SimpleMath.h>
+#include <SimpleMath.h>
 
 using namespace DirectX::SimpleMath;
 
 class AnimationKey
 {
 public:
-	float m_time;			// Å° ÇÁ·¹ÀÓ ½Ã°£
-	Vector3 m_position;		// ¾Æ¸¶ ÇØ´ç º»ÀÇ »ó´ëÀû À§Ä¡ÀÏ °ÍÀ¸·Î ÃßÁ¤
+	float m_time;			// Å° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+	Vector3 m_position;		// ï¿½Æ¸ï¿½ ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	Quaternion m_rotation;	// 
 	Vector3 m_scale;		// 
 };
