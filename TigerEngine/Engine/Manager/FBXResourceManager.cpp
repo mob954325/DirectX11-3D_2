@@ -101,7 +101,7 @@ Mesh FBXResourceManager::ProcessMesh(std::shared_ptr<FBXResourceAsset>& pAsset, 
 		}
 	}
 
-	return Mesh(m_pDevice, vertices, indices, textures);
+	return Mesh(device, vertices, indices, textures);
 }
 
 void FBXResourceManager::ProcessBoneWeight(std::shared_ptr<FBXResourceAsset>& pAsset, aiMesh* pMesh)
@@ -159,7 +159,7 @@ std::vector<Texture> FBXResourceManager::loadMaterialTextures(std::shared_ptr<FB
 				std::string filename = std::string(str.C_Str());
 				filename = pAsset->directory + '\\' + filename;
 				std::wstring filenamews = std::wstring(filename.begin(), filename.end());
-				HR_T(CreateWICTextureFromFile(m_pDevice.Get(), m_pDeviceContext.Get(), filenamews.c_str(), nullptr, texture.pTexture.GetAddressOf()));
+				HR_T(CreateWICTextureFromFile(device.Get(), deviceContext.Get(), filenamews.c_str(), nullptr, texture.pTexture.GetAddressOf()));
 			}
 
 			texture.type = typeName;
@@ -195,20 +195,26 @@ void FBXResourceManager::loadEmbeddedTexture(const aiTexture* embeddedTexture, C
 		subresourceData.SysMemSlicePitch = embeddedTexture->mWidth * embeddedTexture->mHeight * 4;
 
 		ID3D11Texture2D* texture2D = nullptr;
-		HR_T(m_pDevice->CreateTexture2D(&desc, &subresourceData, &texture2D));
+		HR_T(device->CreateTexture2D(&desc, &subresourceData, &texture2D));
 
-		HR_T(m_pDevice->CreateShaderResourceView(texture2D, nullptr, outTexture.GetAddressOf()));
+		HR_T(device->CreateShaderResourceView(texture2D, nullptr, outTexture.GetAddressOf()));
 	}
 	else
 	{
 		// mHeight is 0, so try to load a compressed texture of mWidth bytes
 		const size_t size = embeddedTexture->mWidth;
 
-		HR_T(CreateWICTextureFromMemory(m_pDevice.Get(), m_pDeviceContext.Get(), reinterpret_cast<const unsigned char*>(embeddedTexture->pcData), size, nullptr, outTexture.GetAddressOf()));
+		HR_T(CreateWICTextureFromMemory(device.Get(), deviceContext.Get(), reinterpret_cast<const unsigned char*>(embeddedTexture->pcData), size, nullptr, outTexture.GetAddressOf()));
 	}
 }
 
-std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(ComPtr<ID3D11Device>& pDevice, ComPtr<ID3D11DeviceContext>& pDeviceContext, std::string path)
+void FBXResourceManager::GetDevice(ComPtr<ID3D11Device> &pDevice, ComPtr<ID3D11DeviceContext> &pDeviceContext)
+{
+	this->device = pDevice;
+	this->deviceContext = pDeviceContext;
+}
+
+std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(std::string path)
 {
 	// map에 먼저 있는지 확인
 	auto it = assets.find(path);
@@ -241,9 +247,6 @@ std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(ComPtr<ID3D1
 
 	if (pScene == nullptr) return std::shared_ptr<FBXResourceAsset>();
 
-	this->m_pDevice = pDevice;
-	this->m_pDeviceContext = pDeviceContext;
-
 	// 없으면 load후 map에 추가 
 	auto sharedAsset = make_shared<FBXResourceAsset>();
 
@@ -271,8 +274,8 @@ std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(ComPtr<ID3D1
 	// mesh의 정점 버퍼, 인덱스 버퍼 생성
 	for (auto& mesh : sharedAsset->meshes)
 	{
-		mesh.CreateVertexBuffer(pDevice);
-		mesh.CreateIndexBuffer(pDevice);
+		mesh.CreateVertexBuffer(device);
+		mesh.CreateIndexBuffer(device);
 	}
 
 	// bone offest 버퍼 채우기

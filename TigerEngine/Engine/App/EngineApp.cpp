@@ -1,6 +1,7 @@
 #include "EngineApp.h"
 #include "Renderer/DirectX11Renderer.h"
 #include "imgui_impl_win32.h" // ImGui_ImplWin32_WndProcHandler 사용하기 위함
+#include "Manager/FBXResourceManager.h"
 
 EngineApp::EngineApp(HINSTANCE hInstance)
 	: GameApp(hInstance)
@@ -23,6 +24,8 @@ bool EngineApp::OnInitialize()
 
 	sceneSystem->AddScene();				// create first scene
 	sceneSystem->SetCurrentSceneByIndex(); 	// render first scene
+
+	FBXResourceManager::Instance().GetDevice(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
 
 	return true;
 }

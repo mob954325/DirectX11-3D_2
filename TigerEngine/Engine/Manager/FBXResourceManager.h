@@ -7,6 +7,7 @@
 #include "Datas/SkeletonInfo.h"
 #include "Datas/Animation.h"
 #include "Datas/Mesh.h"
+#include "System/Singleton.h"
 
 struct BoneOffsetBuffer
 {
@@ -24,21 +25,15 @@ struct FBXResourceAsset
 	BoneOffsetBuffer m_BoneOffsets{}; // skeletalInfo 본 위치 정보
 };
 
-class FBXResourceManager
+class FBXResourceManager : public Singleton<FBXResourceManager>
 {
-	FBXResourceManager() = default;
-	~FBXResourceManager() = default;
-
-	FBXResourceManager(const FBXResourceManager&) = delete;
-	FBXResourceManager& operator=(const FBXResourceManager&) = delete;
-
 	// 해당 매니저에서 fbx를 읽는다.
 	// 이미 읽은 fbx는 map에 저장된다.
 	std::map<std::string, std::weak_ptr<FBXResourceAsset>> assets;
 
 	// texture 불러오기 위한 device, deviceContext
-	ComPtr<ID3D11Device> m_pDevice = nullptr;
-	ComPtr<ID3D11DeviceContext> m_pDeviceContext = nullptr;
+	ComPtr<ID3D11Device> device = nullptr;
+	ComPtr<ID3D11DeviceContext> deviceContext = nullptr;
 
 	// 에셋 내용 로드 함수들
 	void ProcessNode(std::shared_ptr<FBXResourceAsset>& pAsset, aiNode* pNode, const aiScene* pScene);
@@ -48,11 +43,9 @@ class FBXResourceManager
 	void loadEmbeddedTexture(const aiTexture* embeddedTexture, ComPtr<ID3D11ShaderResourceView>& outTexture);
 
 public:
-	static FBXResourceManager& Instance()
-	{
-		static FBXResourceManager manager;
-		return manager;
-	}
+    FBXResourceManager(token) {};
+    ~FBXResourceManager() = default;
 
-	std::shared_ptr<FBXResourceAsset> LoadFBXByPath(ComPtr<ID3D11Device>& pDevice, ComPtr<ID3D11DeviceContext>& pDeviceContext, std::string path);
+	void GetDevice(ComPtr<ID3D11Device>& pDevice, ComPtr<ID3D11DeviceContext>& pDeviceContext);
+	std::shared_ptr<FBXResourceAsset> LoadFBXByPath(std::string path);
 };
