@@ -10,6 +10,7 @@
 #include <SimpleMath.h> // simpel Math 사용
 #include "../Common/Helper.h"
 #include "assimp/material.h"
+#include "Vertex.h"
 
 using namespace std;
 using namespace DirectX::SimpleMath;
@@ -23,35 +24,6 @@ const string TEXTURE_SPECULAR = "texture_specular";
 const string TEXTURE_METALNESS = "texture_metalness";
 const string TEXTURE_ROUGHNESS = "texture_roughness";
 const string TEXTURE_SHININESS = "texture_shininess";
-
-struct BoneWeightVertex
-{
-    Vector3 position;
-    Vector2 texture;
-    Vector3 tangent;
-    Vector3 bitangent;
-    Vector3 normal;
-	int BlendIndeces[4] = {};	// �����ϴ� �� �ε�����
-	float BlendWeights[4] = {};	// ����ġ�� �� ���� 1�̿����Ѵ�.
-
-	void AddBoneData(int boneIndex, float weight)
-	{
-		assert(BlendWeights[0] == 0.0f ||
-			BlendWeights[1] == 0.0f ||
-			BlendWeights[2] == 0.0f ||
-			BlendWeights[3] == 0.0f);
-
-		for (int i = 0; i < 4; i++)
-		{
-			if (BlendWeights[i] == 0.0f)
-			{
-				BlendIndeces[i] = boneIndex;
-				BlendWeights[i] = weight;
-				return;
-			}
-		}
-	}
-};
 
 struct Texture
 {
