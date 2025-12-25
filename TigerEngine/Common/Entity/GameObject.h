@@ -23,6 +23,8 @@ public:
 
 		auto comp = std::make_shared<T>();
 		components.push_back(comp);
+		comp->OnInitialize(); // 컴포넌트 초기화 실행
+
 		return comp;
 	}
 	
