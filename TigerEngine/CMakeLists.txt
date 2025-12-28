@@ -119,7 +119,7 @@ add_executable(${PROJECT_NAME} WIN32
     Engine/RenderPass/BasicRenderPass.cpp
 
     # Components
-    Engine/Components/MeshDatas.cpp
+    Engine/Components/FBXData.cpp
     Engine/Components/MeshRenderer.cpp
 
     # Manager

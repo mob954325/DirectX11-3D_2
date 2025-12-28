@@ -4,11 +4,13 @@
 #include <Datas/Mesh.h>
 #include <Manager/FBXResourceManager.h>
 
-class MeshDatas : public IComponent
+class FBXData : public IComponent
 {
 public:
     void OnInitialize() override;
     const std::vector<Mesh>& GetMesh() const;
+    
+    std::string path = ""; // fbx path data
 
 protected:
     std::vector<Mesh> meshes; // 현재 컴포넌트가 들고 있는 mesh 정보
