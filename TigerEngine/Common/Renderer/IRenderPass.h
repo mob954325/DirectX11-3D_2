@@ -15,8 +15,8 @@ public:
 	virtual ~IRenderPass() = default;
 
 	virtual void Execute(
-		std::shared_ptr<ID3D11DeviceContext> context,
-		const Scene& scene
+		ComPtr<ID3D11DeviceContext>& context,
+		std::shared_ptr<Scene> scene
 		// const Camera& camera // ?
 	) = 0;
 };

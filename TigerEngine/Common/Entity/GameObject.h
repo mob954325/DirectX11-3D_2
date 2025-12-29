@@ -3,7 +3,7 @@
 #include "Transform.h"
 #include "IComponent.h"
 #include "IRenderComponent.h"
-#include <string>
+#include <string> 
 #include <vector>
 
 /// <summary>
@@ -19,7 +19,8 @@ public:
 	std::shared_ptr<T> AddComponent()
 	{
 		static_assert(std::is_base_of_v<IComponent, T>,
-		"T must inherit from IComponent"); // T는 IComponent를 상속받았는가?
+		"T must inherit from IComponent"); // T는 IComponent를 상속받았는가? 
+		// TODO : 이거 IRenderComponent하고 IComponent하고 구분해야함
 
 		auto comp = std::make_shared<T>();
 		components.push_back(comp);

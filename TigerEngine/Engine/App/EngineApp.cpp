@@ -14,9 +14,13 @@ EngineApp::~EngineApp()
 
 bool EngineApp::OnInitialize()
 {
+	/* ------------------------------ init renderer ----------------------------- */
 	std::shared_ptr<DirectX11Renderer> dxRenderer = std::dynamic_pointer_cast<DirectX11Renderer>(renderer);
 	imguiRenderer = std::make_unique<ImguiRenderer>();
 	imguiRenderer->Initialize(hwnd, dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
+
+	/* ------------------------------- init system ------------------------------ */
+	FBXResourceManager::Instance().GetDevice(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
 
 	sceneSystem = std::make_unique<SceneSystem>();
 	renderQueue = std::make_unique<RenderQueue>();
@@ -25,7 +29,9 @@ bool EngineApp::OnInitialize()
 	sceneSystem->AddScene();				// create first scene
 	sceneSystem->SetCurrentSceneByIndex(); 	// render first scene
 
-	FBXResourceManager::Instance().GetDevice(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
+	/* ----------------------------- init renderpass ---------------------------- */
+	basicRenderPass = std::make_unique<BasicRenderPass>();
+	basicRenderPass->Init(dxRenderer->GetDevice());
 
 	return true;
 }
@@ -40,21 +46,16 @@ void EngineApp::OnUpdate()
 
 void EngineApp::OnRender()
 {
-	renderQueue->Clear();
-
-	// RenderPass들 호출	
-	sceneSystem->RenderScene(renderQueue);
-
-	// Render Command 호출
-	BeginRender();	
-	std::shared_ptr<DirectX11Renderer> dxRenderer = 
-        std::dynamic_pointer_cast<DirectX11Renderer>(renderer);
+	std::shared_ptr<DirectX11Renderer> dxRenderer = std::dynamic_pointer_cast<DirectX11Renderer>(renderer);
     ComPtr<ID3D11DeviceContext> context = dxRenderer->GetDeviceContext();
 
-	for (const auto& command : renderQueue->GetCommand())
-    {
-        command->Execute(context);
-    }
+	renderQueue->Clear();	
+	
+	BeginRender();	
+	basicRenderPass->Execute(context, sceneSystem->GetCurrentScene());		// 렌더 패스 실행
+	sceneSystem->RenderScene(renderQueue);									// 씬 내용 실행
+	
+	for (const auto& command : renderQueue->GetCommand()) command->Execute(context); // Render내용 실행
 	
 	// Editor 관련 내용 호출
 	editor->Render(sceneSystem);

@@ -6,6 +6,7 @@
 #include "Renderer/RenderQueue.h"
 #include "Editor.h"
 #include <map>
+#include "RenderPass/BasicRenderPass.h"
 
 /// <summary>
 /// 렌더 파이프라인이 흐름을 관리하는 앱
@@ -23,6 +24,8 @@ public:
 	std::unique_ptr<ImguiRenderer> imguiRenderer{};
 	std::unique_ptr<SceneSystem> sceneSystem{};
 	std::unique_ptr<Editor> editor{};
+	
+	std::unique_ptr<BasicRenderPass> basicRenderPass{};
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 

@@ -1,10 +1,10 @@
 #pragma once
+#include "pch.h"
 #include <string>
 #include <SimpleMath.h>
 #include "BoneAnimation.h"
 
 using namespace std;
-using namespace DirectX::SimpleMath;
 
 class Bone
 {
@@ -13,7 +13,7 @@ public:
 
 	BoneAnimation m_boneAnimation;	// 
 
-// private: -> ���Ǹ� ���� public ����
+	// private: -> ���Ǹ� ���� public ����
 	Matrix m_worldTransform;
 	Matrix m_localTransform;
 
