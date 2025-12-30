@@ -46,23 +46,13 @@ void EngineApp::OnUpdate()
 
 void EngineApp::OnRender()
 {
-	std::shared_ptr<DirectX11Renderer> dxRenderer = std::dynamic_pointer_cast<DirectX11Renderer>(renderer);
-    ComPtr<ID3D11DeviceContext> context = dxRenderer->GetDeviceContext();
+	BeginRender(); 					// 업데이트 준비
+	dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), basicRenderPass.get()); 		// 렌더러가 씬을 렌더링
 
-	renderQueue->Clear();	
-	
-	BeginRender();	
-	basicRenderPass->Execute(context, sceneSystem->GetCurrentScene());		// 렌더 패스 실행
-	sceneSystem->RenderScene(renderQueue);									// 씬 내용 실행
-	
-	for (const auto& command : renderQueue->GetCommand()) command->Execute(context); // Render내용 실행
-	
-	// Editor 관련 내용 호출
-	editor->Render(sceneSystem);
-	imguiRenderer->Render();	
+	editor->Render(sceneSystem); 	// 엔진 오버레이 렌더링
+	imguiRenderer->Render();		// imgui 렌더링
 
-	// 업데이트 마무리 
-	EndRender();
+	EndRender(); 					// 업데이트 마무리
 }
 
 void EngineApp::BeginRender()

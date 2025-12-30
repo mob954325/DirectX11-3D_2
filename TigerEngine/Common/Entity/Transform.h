@@ -3,7 +3,6 @@
 #include "SimpleMath.h"
 #include "IComponent.h"
 
-using namespace DirectX::SimpleMath;
 class Transform : public IComponent
 {
 public:

@@ -1,19 +1,20 @@
-﻿#include "pch.h"
+﻿#pragma once
+#include "pch.h"
 #include <Renderer/IRenderCommand.h>
-#include <Datas/Vertex.h>
+#include <Datas/Mesh.h>
 
 class DrawMeshCommand : public IRenderCommand
 {
 private:
-
+    std::vector<Mesh> refMesh{};
 public:
-    void CreateCommand(std::vector<BoneWeightVertex> verteices, std::vector<UINT> indexes);
+    void CreateCommand(std::vector<Mesh>& meshes);
 
     void Execute(ComPtr<ID3D11DeviceContext> context) override
     {
-        // TODO 여기에 간단한 렌더 세팅하고 메쉬 출력 확인하기
-        // call Render functions,,
-        // context->IASetVertexBuffers(...)
-        // context->Draw(vertexCount, 0);
+        for(auto& mesh : refMesh)
+        {
+            mesh.Draw(context); // call draw from mesh
+        }
     }
 };

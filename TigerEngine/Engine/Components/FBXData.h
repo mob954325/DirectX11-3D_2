@@ -7,6 +7,8 @@
 class FBXData : public IComponent
 {
 public:
+    FBXData();
+
     void OnInitialize() override;
     const std::vector<Mesh>& GetMesh() const;
     

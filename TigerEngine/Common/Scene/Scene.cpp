@@ -1,4 +1,5 @@
 #include "Scene.h"	
+#include <Entity/GameObject.h>
 
 void Scene::OnRender(std::unique_ptr<RenderQueue>& renderQueue)
 {
@@ -6,11 +7,6 @@ void Scene::OnRender(std::unique_ptr<RenderQueue>& renderQueue)
 	{
 		std::shared_ptr<GameObject> gameObject = obj.second;		
 		if(gameObject->IsDestory()) continue;
-
-		for(auto& rComp : gameObject->GetIRenderComponents())
-		{
-			rComp->OnRender(renderQueue);
-		}
 	}
 }
 
@@ -53,13 +49,23 @@ void Scene::ForEachGameObject(std::function<void(std::shared_ptr<GameObject>)> f
 
 std::shared_ptr<GameObject> Scene::AddGameObject(std::string name)
 {
-	auto obj = std::make_shared<GameObject>(name);
-	gameObjects.insert({name, obj});
+	auto obj = std::make_shared<GameObject>(this, name);
 
+	gameObjects.insert({name, obj});
     return obj;
 }
 
 std::shared_ptr<GameObject> Scene::GetGameObjectByName(std::string name)
 {
     return gameObjects.find(name)->second;
+}
+
+void Scene::AddRenderable(std::shared_ptr<RenderComponent> comp)
+{
+	renderableComponents.push_back(comp);
+}
+
+std::vector<std::shared_ptr<RenderComponent>>& Scene::GetRenderables()
+{
+	return renderableComponents;
 }

@@ -6,9 +6,10 @@ class GameObject; // forward declear
 class IComponent
 {
 protected:
-	std::weak_ptr<GameObject> owner{};
+	GameObject* owner{}; // 해당 컴포넌트를 소유하고 있는 게임 오브젝트
 
 public:
+	IComponent() = default;
 	virtual ~IComponent() = default;
 
 	/// <summary>
@@ -26,5 +27,5 @@ public:
 	/// </summary>
 	virtual void OnUpdate(float delta) {};
 
-	std::shared_ptr<GameObject> GetOwner() { return owner.lock(); }
+	GameObject* GetOwner() { return owner; }
 };

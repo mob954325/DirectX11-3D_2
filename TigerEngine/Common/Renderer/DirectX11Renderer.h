@@ -1,16 +1,15 @@
 #pragma once
-#include "IRenderer.h"
-
 // dxgi 어뎁터 조회용
 #include <dxgi1_6.h>
 #include <psapi.h>
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "psapi.lib")
 
-#include <d3d11.h>
-#pragma comment(lib, "d3d11.lib")
-
-#include <wrl/client.h>
+#include <pch.h>
+#include <Renderer/IRenderer.h>
+#include <Scene/Scene.h>
+#include <Renderer/IRenderPass.h>
+#include <Renderer/RenderQueue.h>
 
 /// <summary>
 /// DirectX11 기능을 사용하는 클래스
@@ -22,7 +21,7 @@ public:
 	void OnResize(int width, int height) override;
 	void BeginRender() override;
 	void EndRender() override;
-	// void Render(const Scene& scene, Camera& camera); 
+	void ProcessScene(std::shared_ptr<Scene> scene, std::unique_ptr<IRenderer> renderPass);
 
 	ComPtr<ID3D11Device> GetDevice() const;
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() const;
@@ -36,5 +35,7 @@ private:
 	D3D11_VIEWPORT					renderViewport{};
 	ComPtr<ID3D11DepthStencilState> depthStencilState{};
 	ComPtr<ID3D11DepthStencilView>	depthStencilView{};	// 뎊스 스텐실 뷰
+
+	RenderQueue renderQueue{};
 };
 

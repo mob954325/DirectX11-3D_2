@@ -15,11 +15,6 @@ std::vector<std::shared_ptr<IComponent>> &GameObject::GetIComponents()
     return components;
 }
 
-std::vector<std::shared_ptr<IRenderComponent>> &GameObject::GetIRenderComponents()
-{
-    return renderComponents;
-}
-
 bool GameObject::IsDestory()
 {
     return isDestory;
@@ -30,7 +25,13 @@ void GameObject::Destory()
 	isDestory = true;
 }
 
-void GameObject::Init()
+Scene *GameObject::GetScene()
+{
+    return currentScene;
+}
+
+void GameObject::Init(Scene* scene)
 {
 	transform = AddComponent<Transform>();
+    currentScene = scene;
 }

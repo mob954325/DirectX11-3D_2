@@ -1,8 +1,10 @@
 ﻿#pragma once
 #include "../pch.h"
-#include "../Entity/GameObject.h"
 #include "Renderer/RenderQueue.h"
+#include <Entity/RenderComponent.h>
 #include <map>
+
+class GameObject;
 
 class Scene
 {
@@ -15,6 +17,10 @@ public:
 	std::shared_ptr<GameObject> AddGameObject(std::string name); // add empty gameObject to Scene
 	std::shared_ptr<GameObject> GetGameObjectByName(std::string name);
 
+	void AddRenderable(std::shared_ptr<RenderComponent> comp);
+	std::vector<std::shared_ptr<RenderComponent>>& GetRenderables();
+
 protected:
 	std::multimap<std::string, std::shared_ptr<GameObject>> gameObjects; // mapping gameobjects;
+	std::vector<std::shared_ptr<RenderComponent>> renderableComponents;
 };

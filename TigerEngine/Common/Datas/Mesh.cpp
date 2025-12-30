@@ -2,8 +2,6 @@
 
 void Mesh::Draw(ComPtr<ID3D11DeviceContext>& pDeviceContext)
 {
-    
-    // ps ÃÊ±âÈ­ 
     ID3D11ShaderResourceView* nullSRV[4] = { nullptr };
     pDeviceContext->PSSetShaderResources(0, 4, nullSRV);
 

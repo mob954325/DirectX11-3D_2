@@ -48,7 +48,6 @@ set(COMMON_HEADER # 일단 인터페이스만
 
     # Entity
     Common/IComponent.h
-    Common/IRenderComponent.h
 
     # Renderer
     Common/IRenderCommad.h
