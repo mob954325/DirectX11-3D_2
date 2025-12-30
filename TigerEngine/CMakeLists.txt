@@ -173,3 +173,27 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     # vcpkg
     assimp::assimp
 )
+
+# =========================================================
+# 4. 리소스 및 셰이더 파일 복사 설정
+# =========================================================
+
+# 1. 복사할 리소스 폴더 설정 
+set(RESOURCE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Assets")
+set(SHADER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Shaders")
+
+# 2. 실행 파일 폴더로 복사하는 커멘드 추가
+# POST_BUILD : 빌드 성공적으로 끝난 후 실행
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${RESOURCE_SOURCE_DIR}"        
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Assets"
+    COMMENT "Copying resources to build directory..."
+)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${SHADER_SOURCE_DIR}"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Shaders"
+    COMMENT "Copying shaders to build directory..."
+)

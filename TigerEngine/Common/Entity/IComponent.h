@@ -27,5 +27,6 @@ public:
 	/// </summary>
 	virtual void OnUpdate(float delta) {};
 
+	void SetOwner(GameObject* obj) { owner = obj; }
 	GameObject* GetOwner() { return owner; }
 };

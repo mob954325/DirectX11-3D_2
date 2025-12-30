@@ -21,7 +21,8 @@ public:
 		static_assert(std::is_base_of_v<IComponent, T>,
 			"T must inherit from IComponent"); // T는 IComponent를 상속받았는가? 
 
-		auto comp = std::make_shared<T>(this);//
+		auto comp = std::make_shared<T>();
+		comp->SetOwner(this);
 		components.push_back(comp);
 		comp->OnInitialize(); // 컴포넌트 초기화 실행
 

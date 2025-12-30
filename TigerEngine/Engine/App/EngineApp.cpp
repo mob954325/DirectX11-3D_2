@@ -15,7 +15,8 @@ EngineApp::~EngineApp()
 bool EngineApp::OnInitialize()
 {
 	/* ------------------------------ init renderer ----------------------------- */
-	std::shared_ptr<DirectX11Renderer> dxRenderer = std::dynamic_pointer_cast<DirectX11Renderer>(renderer);
+	// TODO Directx11renderer에만 processScene이 있음 구조 수정할 것
+	std::shared_ptr<DirectX11Renderer> dxRenderer = std::dynamic_pointer_cast<DirectX11Renderer>(renderer); 
 	imguiRenderer = std::make_unique<ImguiRenderer>();
 	imguiRenderer->Initialize(hwnd, dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
 
@@ -47,7 +48,7 @@ void EngineApp::OnUpdate()
 void EngineApp::OnRender()
 {
 	BeginRender(); 					// 업데이트 준비
-	dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), basicRenderPass.get()); 		// 렌더러가 씬을 렌더링
+	// renderer->ProcessScene(sceneSystem->GetCurrentScene(), basicRenderPass.get()); 		// 렌더러가 씬을 렌더링
 
 	editor->Render(sceneSystem); 	// 엔진 오버레이 렌더링
 	imguiRenderer->Render();		// imgui 렌더링

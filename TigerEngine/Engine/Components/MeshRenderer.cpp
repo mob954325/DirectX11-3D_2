@@ -7,7 +7,7 @@ REGISTER_COMPONENT(MeshRenderer);
 
 void MeshRenderer::OnInitialize()
 {
-    owner->GetScene()->AddRenderable()
+    
 }
 
 void MeshRenderer::OnStart()

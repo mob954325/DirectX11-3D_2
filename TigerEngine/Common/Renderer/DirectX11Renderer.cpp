@@ -161,18 +161,21 @@ void DirectX11Renderer::EndRender()
 	swapChain->Present(0, 0);
 }
 
-void DirectX11Renderer::ProcessScene(std::shared_ptr<Scene> scene, std::unique_ptr<IRenderer> renderPass)
+void DirectX11Renderer::ProcessScene(std::shared_ptr<Scene> scene, std::unique_ptr<IRenderer>& renderPass)
 {
 	renderQueue.Clear();
-
+	renderPass->BeginRender();
 	// getrenderable from scene
 	auto renerComps = scene->GetRenderables();
 
+	// TODO renderqueue 구성완료하기
 	// add queue
-	// renderQueue.AddCommand();
+	//renderQueue.AddCommand();
 
 	// execute pass, queue
-	// renderQueue.Execute();
+	//renderQueue.Execute();
+
+	renderPass->EndRender();
 }
 
 ComPtr<ID3D11Device> DirectX11Renderer::GetDevice() const
