@@ -5,14 +5,14 @@
 class RenderQueue
 {
 private:
-    std::vector<std::unique_ptr<IRenderCommand>> commands;
+    std::vector<std::shared_ptr<IRenderCommand>> commands;
 public:
-    void AddCommand(std::unique_ptr<IRenderCommand> command)
+    void AddCommand(std::shared_ptr<IRenderCommand> command)
     {
-        commands.push_back(std::move(command));
+        commands.push_back(command);
     }
 
-    const std::vector<std::unique_ptr<IRenderCommand>>& GetCommand() const
+    const std::vector<std::shared_ptr<IRenderCommand>>& GetCommand() const
     {
         return commands;
     }
@@ -20,6 +20,15 @@ public:
     void Clear()
     {
         commands.clear();
+    }
+
+    void Execute(ComPtr<ID3D11DeviceContext> context)
+    {
+        // execute command
+        std::for_each(commands.begin(), commands.end(), [&context](auto comm)
+        { 
+            comm->Execute(context);
+        });
     }
 
     // sort command for render order

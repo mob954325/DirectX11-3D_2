@@ -16,24 +16,11 @@ public:
 	GameObject(Scene* scene, std::string name) : name(name) { Init(scene); }
 
 	template<typename T>
-	std::shared_ptr<T> AddComponent()
-	{
-		static_assert(std::is_base_of_v<IComponent, T>,
-			"T must inherit from IComponent"); // T는 IComponent를 상속받았는가? 
-
-		auto comp = std::make_shared<T>();
-		comp->SetOwner(this);
-		components.push_back(comp);
-		comp->OnInitialize(); // 컴포넌트 초기화 실행
-
-		if (auto renderComp = std::dynamic_pointer_cast<RenderComponent>(comp))
-		{
-			currentScene->AddRenderable(renderComp); // 렌더링하는 컴포넌트 등록
-		}
-
-		return comp;
-	}
+	std::shared_ptr<T> AddComponent();	
 	
+	template<typename T>
+	std::shared_ptr<T> GetComponent();
+
 	std::string GetName() const;
 	std::shared_ptr<Transform> GetTransform() const;
 	std::vector<std::shared_ptr<IComponent>>& GetIComponents();
@@ -55,3 +42,33 @@ private:
 	void Init(Scene* scene);
 };
 
+template <typename T>
+inline std::shared_ptr<T> GameObject::AddComponent()
+{
+	static_assert(std::is_base_of_v<IComponent, T>,
+		"T must inherit from IComponent"); // T는 IComponent를 상속받았는가? 
+
+	auto comp = std::make_shared<T>();
+	comp->SetOwner(this);
+	components.push_back(comp);
+	comp->OnInitialize(); // 컴포넌트 초기화 실행
+
+	if (auto renderComp = std::dynamic_pointer_cast<RenderComponent>(comp))
+	{
+		currentScene->AddRenderable(renderComp); // 렌더링하는 컴포넌트 등록
+	}
+
+	return comp;
+}
+
+template <typename T>
+inline std::shared_ptr<T> GameObject::GetComponent()
+{
+	std::shared_ptr<T> res = {};
+	std::for_each(components.begin(), components.end(), [&res](auto comp)
+	{
+		if(typeid(*comp) == typeid(T)) res = std::dynamic_pointer_cast<T>(comp);
+	});
+
+    return res;
+}

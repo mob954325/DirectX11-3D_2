@@ -12,6 +12,8 @@ public:
 
     void Execute(ComPtr<ID3D11DeviceContext> context) override
     {
+        if(refMesh.empty()) return;
+
         for(auto& mesh : refMesh)
         {
             mesh.Draw(context); // call draw from mesh

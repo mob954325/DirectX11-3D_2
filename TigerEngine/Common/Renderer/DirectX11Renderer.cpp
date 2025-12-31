@@ -1,5 +1,6 @@
 #include "DirectX11Renderer.h"
 #include "../Helper.h"
+#include <algorithm>
 
 #define USE_FLIPMODE 1
 
@@ -161,21 +162,24 @@ void DirectX11Renderer::EndRender()
 	swapChain->Present(0, 0);
 }
 
-void DirectX11Renderer::ProcessScene(std::shared_ptr<Scene> scene, std::unique_ptr<IRenderer>& renderPass)
+void DirectX11Renderer::ProcessScene(std::shared_ptr<Scene> scene, std::shared_ptr<IRenderPass> renderPass)
 {
 	renderQueue.Clear();
-	renderPass->BeginRender();
+
+	renderPass->Execute(deviceContext, scene);	
 	// getrenderable from scene
-	auto renerComps = scene->GetRenderables();
+	auto renderComps = scene->GetRenderables();
 
 	// TODO renderqueue 구성완료하기
 	// add queue
-	//renderQueue.AddCommand();
+	std::for_each(renderComps.begin(), renderComps.end(), [this](auto comp)
+	{ 
+		// 이거 Data없을 때의 예외처리 필요함
+		renderQueue.AddCommand(comp->GetCommand()); 
+	});	
 
 	// execute pass, queue
-	//renderQueue.Execute();
-
-	renderPass->EndRender();
+	renderQueue.Execute(deviceContext);
 }
 
 ComPtr<ID3D11Device> DirectX11Renderer::GetDevice() const

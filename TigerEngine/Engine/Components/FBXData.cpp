@@ -15,3 +15,8 @@ const std::vector<Mesh>& FBXData::GetMesh() const
 {
     return meshes;
 }
+
+const std::shared_ptr<FBXResourceAsset> FBXData::GetFBXInfo() const
+{
+    return fbxAsset;
+}

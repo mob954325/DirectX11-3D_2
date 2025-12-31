@@ -9,6 +9,7 @@ class FBXData : public IComponent
 public:
     void OnInitialize() override;
     const std::vector<Mesh>& GetMesh() const;
+    const std::shared_ptr<FBXResourceAsset> GetFBXInfo() const;
     
     std::string path = ""; // fbx path data
 

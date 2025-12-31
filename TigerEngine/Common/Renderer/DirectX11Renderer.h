@@ -21,7 +21,7 @@ public:
 	void OnResize(int width, int height) override;
 	void BeginRender() override;
 	void EndRender() override;
-	void ProcessScene(std::shared_ptr<Scene> scene, std::unique_ptr<IRenderer>& renderPass);
+	void ProcessScene(std::shared_ptr<Scene> scene, std::shared_ptr<IRenderPass> renderPass);
 
 	ComPtr<ID3D11Device> GetDevice() const;
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() const;

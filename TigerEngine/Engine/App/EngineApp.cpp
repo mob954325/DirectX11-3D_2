@@ -1,5 +1,4 @@
 #include "EngineApp.h"
-#include "Renderer/DirectX11Renderer.h"
 #include "imgui_impl_win32.h" // ImGui_ImplWin32_WndProcHandler 사용하기 위함
 #include "Manager/FBXResourceManager.h"
 
@@ -16,7 +15,7 @@ bool EngineApp::OnInitialize()
 {
 	/* ------------------------------ init renderer ----------------------------- */
 	// TODO Directx11renderer에만 processScene이 있음 구조 수정할 것
-	std::shared_ptr<DirectX11Renderer> dxRenderer = std::dynamic_pointer_cast<DirectX11Renderer>(renderer); 
+	dxRenderer = std::static_pointer_cast<DirectX11Renderer>(renderer); 
 	imguiRenderer = std::make_unique<ImguiRenderer>();
 	imguiRenderer->Initialize(hwnd, dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
 
@@ -31,7 +30,7 @@ bool EngineApp::OnInitialize()
 	sceneSystem->SetCurrentSceneByIndex(); 	// render first scene
 
 	/* ----------------------------- init renderpass ---------------------------- */
-	basicRenderPass = std::make_unique<BasicRenderPass>();
+	basicRenderPass = std::make_shared<BasicRenderPass>();
 	basicRenderPass->Init(dxRenderer->GetDevice());
 
 	return true;
@@ -48,7 +47,9 @@ void EngineApp::OnUpdate()
 void EngineApp::OnRender()
 {
 	BeginRender(); 					// 업데이트 준비
-	// renderer->ProcessScene(sceneSystem->GetCurrentScene(), basicRenderPass.get()); 		// 렌더러가 씬을 렌더링
+
+	auto rp = std::dynamic_pointer_cast<IRenderPass>(basicRenderPass); // 임시
+	dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), rp);  // 렌더러가 씬을 렌더링
 
 	editor->Render(sceneSystem); 	// 엔진 오버레이 렌더링
 	imguiRenderer->Render();		// imgui 렌더링
