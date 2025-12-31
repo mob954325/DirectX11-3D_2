@@ -9,11 +9,10 @@ class Camera : public IComponent
 public:
 	Vector3 GetForward(Matrix world);
 
-	void SetView(Matrix world);
 	Matrix GetView();
 
 	void SetProjection(float povAngle, int width, int height, float targetNear, float targetFar);
-	Matrix GetProjection();
+	Matrix GetProjection() const;
 
 private:
 	Matrix view = Matrix::Identity;

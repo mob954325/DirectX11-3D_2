@@ -1,6 +1,8 @@
 #include "EngineApp.h"
 #include "imgui_impl_win32.h" // ImGui_ImplWin32_WndProcHandler 사용하기 위함
 #include "Manager/FBXResourceManager.h"
+#include <Entity/GameObject.h>
+#include <Entity/Camera.h>
 
 EngineApp::EngineApp(HINSTANCE hInstance)
 	: GameApp(hInstance)
@@ -32,6 +34,11 @@ bool EngineApp::OnInitialize()
 	/* ----------------------------- init renderpass ---------------------------- */
 	basicRenderPass = std::make_shared<BasicRenderPass>();
 	basicRenderPass->Init(dxRenderer->GetDevice());
+
+	/* ------------------------------ init freeCam ------------------------------ */
+	freeCamera = std::make_shared<GameObject>();
+	freeCamera->AddComponent<Camera>();
+	sceneSystem->GetCurrentScene()->AddGameObject(freeCamera); // scene에 카메라 등록
 
 	return true;
 }

@@ -10,6 +10,7 @@
 #include <Scene/Scene.h>
 #include <Renderer/IRenderPass.h>
 #include <Renderer/RenderQueue.h>
+#include <Entity/Camera.h>
 
 /// <summary>
 /// DirectX11 기능을 사용하는 클래스
@@ -21,7 +22,9 @@ public:
 	void OnResize(int width, int height) override;
 	void BeginRender() override;
 	void EndRender() override;
-	void ProcessScene(std::shared_ptr<Scene> scene, std::shared_ptr<IRenderPass> renderPass);
+	void ProcessScene(std::shared_ptr<Scene> scene, 
+					  std::shared_ptr<IRenderPass> renderPass,
+					  std::shared_ptr<Camera> Camera);
 
 	ComPtr<ID3D11Device> GetDevice() const;
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() const;

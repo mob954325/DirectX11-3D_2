@@ -1,21 +1,19 @@
 #include "Camera.h"
+#include <Entity/GameObject.h>
 
 Vector3 Camera::GetForward(Matrix world)
 {
 	return -world.Forward();
 }
 
-void Camera::SetView(Matrix world)
+Matrix Camera::GetView()
 {
+	Matrix world = owner->GetTransform()->GetWorldTransform();
 	Vector3 eye = world.Translation();
 	Vector3 target = eye + GetForward(world);
 	Vector3 up = world.Up();
 
 	this->view = DirectX::XMMatrixLookAtLH(eye, target, up);
-}
-
-Matrix Camera::GetView()
-{
 	return view;
 }
 
@@ -28,7 +26,7 @@ void Camera::SetProjection(float povAngle, int width, int height, float targetNe
 	this->farDist = targetFar;
 }
 
-Matrix Camera::GetProjection()
+Matrix Camera::GetProjection() const
 {
 	return projection;
 }

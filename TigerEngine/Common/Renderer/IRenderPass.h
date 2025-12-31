@@ -1,7 +1,7 @@
 #pragma once
 #include "../pch.h"
 #include "../Scene/Scene.h"
-// #include "../???/Camera"
+#include "Entity/Camera.h"
 
 #include <d3d11.h>
 #pragma comment(lib, "d3d11.lib")
@@ -16,7 +16,7 @@ public:
 
 	virtual void Execute(
 		ComPtr<ID3D11DeviceContext>& context,
-		std::shared_ptr<Scene> scene
-		// const Camera& camera // ?
+		std::shared_ptr<Scene> scene,
+		std::shared_ptr<Camera> cam
 	) = 0;
 };

@@ -71,7 +71,7 @@ void Editor::RenderHierarchy(std::unique_ptr<SceneSystem> &sceneSystem)
     {
         if(ImGui::Button("Create GameObject"))
         {
-            sceneSystem->GetCurrentScene()->AddGameObject("NewGameObject");
+            sceneSystem->GetCurrentScene()->AddGameObjectByName("NewGameObject");
         }
 
         sceneSystem->GetCurrentScene()->ForEachGameObject(singleHierarchy);

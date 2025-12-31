@@ -14,7 +14,9 @@ public:
 	void CheckDestroy();
 
 	void ForEachGameObject(std::function<void(std::shared_ptr<GameObject>)> fn);
-	std::shared_ptr<GameObject> AddGameObject(std::string name); // add empty gameObject to Scene
+
+	void AddGameObject(std::shared_ptr<GameObject> obj);
+	std::shared_ptr<GameObject> AddGameObjectByName(std::string name); // add empty gameObject to Scene
 	std::shared_ptr<GameObject> GetGameObjectByName(std::string name);
 
 	void AddRenderable(std::shared_ptr<RenderComponent> comp);

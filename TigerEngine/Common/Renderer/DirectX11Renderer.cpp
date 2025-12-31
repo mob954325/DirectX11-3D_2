@@ -162,7 +162,8 @@ void DirectX11Renderer::EndRender()
 	swapChain->Present(0, 0);
 }
 
-void DirectX11Renderer::ProcessScene(std::shared_ptr<Scene> scene, std::shared_ptr<IRenderPass> renderPass)
+void DirectX11Renderer::ProcessScene
+	(std::shared_ptr<Scene> scene, std::shared_ptr<IRenderPass> renderPass, std::shared_ptr<Camera> Camera)
 {
 	renderQueue.Clear();
 

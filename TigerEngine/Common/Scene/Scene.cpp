@@ -47,7 +47,12 @@ void Scene::ForEachGameObject(std::function<void(std::shared_ptr<GameObject>)> f
 	}
 }
 
-std::shared_ptr<GameObject> Scene::AddGameObject(std::string name)
+void Scene::AddGameObject(std::shared_ptr<GameObject> obj)
+{
+	gameObjects.insert({obj->GetName(), obj});
+}
+
+std::shared_ptr<GameObject> Scene::AddGameObjectByName(std::string name)
 {
 	auto obj = std::make_shared<GameObject>(this, name);
 

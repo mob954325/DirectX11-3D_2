@@ -73,9 +73,9 @@ void BasicRenderPass::Init(ComPtr<ID3D11Device>& device)
 
 }
 
-void BasicRenderPass::Execute(ComPtr<ID3D11DeviceContext>& context, std::shared_ptr<Scene> scene)
+void BasicRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, std::shared_ptr<Camera> cam)
 {
-	// TODO 하드 코딩 제거하고 카메라 불러오기
+		// TODO 하드 코딩 제거하고 카메라 불러오기
 	// 카메라, 클라이언트 화면 크기, ...
 	// 상수 버퍼 설정
 	ConstantBuffer cb;

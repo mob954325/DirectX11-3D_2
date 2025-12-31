@@ -1,5 +1,5 @@
 // 251229
-// 일단 forward로 만들어보고 나중에 GbufferRenderPass로 변경하기
+// TODO 일단 forward로 만들어보고 나중에 GbufferRenderPass로 변경하기
 // 나중에 이 클래스를 abstract 클래스로 만들고 패스 만들어보기
 
 #pragma once
@@ -27,9 +27,8 @@ private:
 public:
 	virtual void Init(ComPtr<ID3D11Device>& device);
 	void Execute( ComPtr<ID3D11DeviceContext>& context, 
-				  std::shared_ptr<Scene> scene
-				 // const Camera& camera // ?
-	) override;
+					std::shared_ptr<Scene> scene,
+					std::shared_ptr<Camera> cam) override;
 
 protected:
 	virtual void CreateEffect(ComPtr<ID3D11Device>& device);

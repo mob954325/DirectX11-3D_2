@@ -30,6 +30,8 @@ public:
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 
+	std::shared_ptr<GameObject> freeCamera{}; // 에디터 모드에서 보는 카메라
+
 private:
 	void BeginRender();
 	void EndRender();
