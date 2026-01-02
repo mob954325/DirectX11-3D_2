@@ -37,8 +37,13 @@ bool EngineApp::OnInitialize()
 
 	/* ------------------------------ init freeCam ------------------------------ */
 	freeCamera = std::make_shared<GameObject>();
-	freeCamera->AddComponent<Camera>();
+	freeCamera->SetName("Main Camera");
+	freeCamera->SetScene(sceneSystem->GetCurrentScene().get());
+	freeCamera->GetTransform()->position = {0,0, -30};
 	sceneSystem->GetCurrentScene()->AddGameObject(freeCamera); // scene에 카메라 등록
+
+	auto camComp = freeCamera->AddComponent<Camera>();
+	camComp->SetProjection(DirectX::XM_1DIV2PI, clientWidth, clientHeight, 0.1, 1000);
 
 	return true;
 }
@@ -56,7 +61,7 @@ void EngineApp::OnRender()
 	BeginRender(); 					// 업데이트 준비
 
 	auto rp = std::dynamic_pointer_cast<IRenderPass>(basicRenderPass); // 임시
-	dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), rp);  // 렌더러가 씬을 렌더링
+	dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), rp, freeCamera->GetComponent<Camera>());  // 렌더러가 씬을 렌더링
 
 	editor->Render(sceneSystem); 	// 엔진 오버레이 렌더링
 	imguiRenderer->Render();		// imgui 렌더링

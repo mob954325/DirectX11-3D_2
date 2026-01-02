@@ -38,7 +38,7 @@ cbuffer ConstantBuffer : register(b0)   // PerFrame
     float pad1;
 }
 
-cbuffer Material : register(b1) // PerMaterial
+cbuffer Material : register(b1) // PerMaterial -> Mesh 클래스에서 사용중
 {
     float4 matAmbient;
     float4 matDiffuse;
@@ -55,7 +55,7 @@ cbuffer Material : register(b1) // PerMaterial
     int hasAmbientOcclusion;
 };
 
-cbuffer ModelTransform : register(b2)
+cbuffer ModelTransform : register(b2)   // TODO model, bone들 상수 버퍼 설정해야함. 그리고 ModelLoader클래스도 없어서 지금 출력아 안되고 있을 거임
 {
     matrix World;        
     

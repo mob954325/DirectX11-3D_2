@@ -23,6 +23,6 @@ public:
 	std::vector<std::shared_ptr<RenderComponent>>& GetRenderables();
 
 protected:
-	std::multimap<std::string, std::shared_ptr<GameObject>> gameObjects; // mapping gameobjects;
+	std::map<std::string, std::shared_ptr<GameObject>> gameObjects; // mapping gameobjects;
 	std::vector<std::shared_ptr<RenderComponent>> renderableComponents;
 };

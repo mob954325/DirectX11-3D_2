@@ -24,7 +24,7 @@ public:
 	void EndRender() override;
 	void ProcessScene(std::shared_ptr<Scene> scene, 
 					  std::shared_ptr<IRenderPass> renderPass,
-					  std::shared_ptr<Camera> Camera);
+					  std::shared_ptr<Camera> cam);
 
 	ComPtr<ID3D11Device> GetDevice() const;
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() const;

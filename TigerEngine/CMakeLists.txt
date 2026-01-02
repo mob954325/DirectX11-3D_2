@@ -39,26 +39,6 @@ set(COMMON_SOURCE
     Common/System/TimeSystem.cpp
 )
 
-set(COMMON_HEADER # 일단 인터페이스만 
-    # root
-
-    # data
-    Common/Animation.h
-    Common/AnimationKey.h
-
-    # Entity
-    Common/IComponent.h
-
-    # Renderer
-    Common/IRenderCommad.h
-    Common/IRenderPass.h
-
-    # Scene
-
-    # System
-    Common/Singleton.h
-)
-
 # 라이브러리 추가
 add_library(common_lib STATIC
     ${COMMON_SOURCE}
@@ -119,6 +99,7 @@ add_executable(${PROJECT_NAME} WIN32
 
     # Components
     Engine/Components/FBXData.cpp
+    Engine/Components/FBXRenderer.cpp
     Engine/Components/MeshRenderer.cpp
 
     # Manager

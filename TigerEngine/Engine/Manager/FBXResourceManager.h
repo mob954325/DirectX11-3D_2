@@ -8,23 +8,9 @@
 #include "Datas/Animation.h"
 #include "Datas/Mesh.h"
 #include "System/Singleton.h"
+#include "Datas/FBXResourceData.h"
 
-struct BoneOffsetBuffer
-{
-	Matrix boneOffset[256];
-};
-
-struct FBXResourceAsset
-{
-	SkeletonInfo skeletalInfo;
-	std::vector<Animation> animations;
-	std::vector<Mesh> meshes;
-	std::vector<Texture> textures;
-
-	std::string directory = "";
-	BoneOffsetBuffer m_BoneOffsets{}; // skeletalInfo 본 위치 정보
-};
-
+// TODO 이거 나중에 싱글톤 제거하기 ( 26 01 02 )
 class FBXResourceManager : public Singleton<FBXResourceManager>
 {
 	// 해당 매니저에서 fbx를 읽는다.

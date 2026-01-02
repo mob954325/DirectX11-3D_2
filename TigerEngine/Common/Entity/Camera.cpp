@@ -19,7 +19,7 @@ Matrix Camera::GetView()
 
 void Camera::SetProjection(float povAngle, int width, int height, float targetNear, float targetFar)
 {
-	DirectX::XMMatrixPerspectiveFovLH(povAngle, width / height, targetNear, targetFar);
+	projection = DirectX::XMMatrixPerspectiveFovLH(povAngle, width / height, targetNear, targetFar);
 
 	this->povAngle = povAngle;
 	this->nearDist = targetNear;

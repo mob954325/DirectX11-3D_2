@@ -44,11 +44,25 @@ void BasicRenderPass::Init(ComPtr<ID3D11Device>& device)
 	bufferDesc.ByteWidth = sizeof(ConstantBuffer);
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
-	HR_T(device->CreateBuffer(&bufferDesc, nullptr, cbuffer.GetAddressOf()));
+	HR_T(device->CreateBuffer(&bufferDesc, nullptr, cbCamera.GetAddressOf()));
 	
 	ComPtr<ID3DBlob> vertexShaderBuffer{};
 	HR_T(CompileShaderFromFile(L".\\Shaders\\VS_SkinnedMesh.hlsl", "main", "vs_5_0", vertexShaderBuffer.GetAddressOf()));
 	HR_T(device->CreateInputLayout(layout, ARRAYSIZE(layout), vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), inputLayout.GetAddressOf()));
+
+
+	/* --------------------------------- 샘플러 만들기 -------------------------------- */
+	// 샘플링 상태 설정
+	D3D11_SAMPLER_DESC sampDesc = {};
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;	// 텍스처 샘플링할 때 사용할 필터링 방법
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;		// 범위 밖에 있는 텍스처 좌표 확인 방법
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;	// 샘플링된 데이터를 기존 데이터와 확인하는 방법
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
+	HR_T(device->CreateSamplerState(&sampDesc, sampleLinear.GetAddressOf()));
+
 	
 	/* --------------------------------- 버텍스 셰이더 만들기 -------------------------------- */
 
@@ -75,17 +89,11 @@ void BasicRenderPass::Init(ComPtr<ID3D11Device>& device)
 
 void BasicRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, std::shared_ptr<Camera> cam)
 {
-		// TODO 하드 코딩 제거하고 카메라 불러오기
 	// 카메라, 클라이언트 화면 크기, ...
 	// 상수 버퍼 설정
-	ConstantBuffer cb;
-	Vector3 eye {0,0,-10};
-	Vector3 dir {0,0,1};
-	Matrix view = XMMatrixLookToLH(eye, dir, Vector3::Up);
-	cb.cameraView = XMMatrixTranspose(view);
-
-	Matrix projection = XMMatrixPerspectiveFovLH(1.3f, 1280 / (FLOAT)720, 0.1, 1000);
-	cb.cameraProjection = XMMatrixTranspose(projection);
+	ConstantBuffer cb{};
+	cb.cameraView = XMMatrixTranspose(cam->GetView());
+	cb.cameraProjection = XMMatrixTranspose(cam->GetProjection());
 	// cb.lightDirection = m_LightDirection;
 	// cb.lightDirection.Normalize();
 	// cb.shadowView = XMMatrixTranspose(m_shadowView);
@@ -97,15 +105,16 @@ void BasicRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_
 	// cb.shininess = m_Shininess;
 	// cb.CameraPos = m_Camera.m_Position;
 
+	context->UpdateSubresource(cbCamera.Get(), 0, nullptr, &cb, 0, 0);
+
 	// 텍스처 및 샘플링 설정 
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	context->IASetInputLayout(inputLayout.Get());    
-	
 	context->PSSetShader(pixelShader.Get(), 0, 0);
 	
-	context->VSSetConstantBuffers(0, 1, cbuffer.GetAddressOf());
+	context->VSSetConstantBuffers(0, 1, cbCamera.GetAddressOf());
 	context->VSSetShader(vertexShader.Get(), 0, 0);
-	context->PSSetConstantBuffers(0, 1, cbuffer.GetAddressOf());
+	context->PSSetConstantBuffers(0, 1, cbCamera.GetAddressOf());
 	context->PSSetShader(pixelShader.Get(), 0, 0);
 	
 	context->PSSetSamplers(0, 1, sampleLinear.GetAddressOf());

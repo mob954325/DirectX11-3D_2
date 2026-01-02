@@ -12,8 +12,8 @@
 class GameObject
 {
 public:
-	GameObject() = delete;
-	GameObject(Scene* scene, std::string name) : name(name) { Init(scene); }
+	GameObject() {};
+	GameObject(Scene* scene, std::string name) : name(name) { SetScene(scene); }
 
 	template<typename T>
 	std::shared_ptr<T> AddComponent();	
@@ -21,14 +21,19 @@ public:
 	template<typename T>
 	std::shared_ptr<T> GetComponent();
 
-	std::string GetName() const;
+	
 	std::shared_ptr<Transform> GetTransform() const;
 	std::vector<std::shared_ptr<IComponent>>& GetIComponents();
 	
 	bool IsDestory();
 	void Destory();
 	
+	std::string GetName() const;
+	void SetName(std::string str);
+	
 	Scene* GetScene();
+	/// @brief 게임 오브젝트가 포함될 씬 설정 함수
+	void SetScene(Scene* scene);
 
 protected:
 	Scene* currentScene{}; // 현재 게임 오브젝트가 존재하는 씬 참조 변수
@@ -38,8 +43,7 @@ protected:
 	bool isDestory = false;
 
 private:
-	/// @brief 게임 오브젝트 생성 시 호출되는 함수
-	void Init(Scene* scene);
+	// ...
 };
 
 template <typename T>

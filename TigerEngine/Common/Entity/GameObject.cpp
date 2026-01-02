@@ -5,6 +5,11 @@ std::string GameObject::GetName() const
     return name;
 }
 
+void GameObject::SetName(std::string str)
+{
+    name = str;
+}
+
 std::shared_ptr<Transform> GameObject::GetTransform() const
 {
 	return transform;
@@ -30,7 +35,7 @@ Scene *GameObject::GetScene()
     return currentScene;
 }
 
-void GameObject::Init(Scene* scene)
+void GameObject::SetScene(Scene* scene)
 {
 	transform = AddComponent<Transform>();
     currentScene = scene;
