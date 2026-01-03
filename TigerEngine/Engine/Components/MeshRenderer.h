@@ -1,7 +1,7 @@
 #pragma once
 #include <Manager/FBXResourceManager.h>
 #include <Entity/RenderComponent.h>
-#include "Renderer/DrawMeshCommand.h"
+#include "Commands/DrawMeshCommand.h"
 
 /// @brief FBX 리소스 데이터를 받아 렌더링 하는 컴포넌트
 class MeshRenderer : public RenderComponent

@@ -1,29 +1,26 @@
 #pragma once
-#include <wrl/client.h> // comptr
-#include <string>
+#include <pch.h>
 #include <fstream>
 #include <sstream>
-#include <iostream>
-#include <vector>
 #include <stdexcept>
-#include <d3d11_1.h>
 #include <SimpleMath.h> // simpel Math 사용
 #include "../Common/Helper.h"
 #include "assimp/material.h"
 #include "Vertex.h"
+#include <Datas/MaterialData.h>
 
 using namespace std;
 using namespace DirectX::SimpleMath;
 using namespace DirectX;
 using Microsoft::WRL::ComPtr;
 
-const string TEXTURE_DIFFUSE = "texture_diffuse";
-const string TEXTURE_EMISSIVE = "texture_emissive";
-const string TEXTURE_NORMAL = "texture_normal";
-const string TEXTURE_SPECULAR = "texture_specular";
-const string TEXTURE_METALNESS = "texture_metalness";
-const string TEXTURE_ROUGHNESS = "texture_roughness";
-const string TEXTURE_SHININESS = "texture_shininess";
+const string TEXTURE_DIFFUSE 	= "texture_diffuse";
+const string TEXTURE_EMISSIVE 	= "texture_emissive";
+const string TEXTURE_NORMAL 	= "texture_normal";
+const string TEXTURE_SPECULAR 	= "texture_specular";
+const string TEXTURE_METALNESS 	= "texture_metalness";
+const string TEXTURE_ROUGHNESS 	= "texture_roughness";
+const string TEXTURE_SHININESS	= "texture_shininess";
 
 struct Texture
 {
@@ -33,34 +30,17 @@ struct Texture
 	ComPtr<ID3D11ShaderResourceView> pTexture = nullptr;
 };
 
-struct Material
-{
-	Vector4 ambient = { 1.0f, 1.0f, 1.0f, 1.0f };
-    Vector4 diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };
-    Vector4 specular = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    BOOL hasDiffuse = false;
-    BOOL hasEmissive = false;
-    BOOL hasNormal = false;
-    BOOL hasSpecular = false;
-
-	BOOL hasMatalness = false;
-	BOOL hasRoughness = false;
-	BOOL hasShininess = false;
-	INT pad;
-};
-
 class Mesh
 {
 public:
-	vector<BoneWeightVertex> vertices;
+	vector<BoneWeightVertexData> vertices;
 	vector<UINT> indices;
 	vector<Texture> textures;
 
 	ComPtr<ID3D11Device> m_pDevice;
 	int refBoneIndex = -1;
 
-	Mesh(ComPtr<ID3D11Device>& dev, const std::vector<BoneWeightVertex>& vertices, const std::vector<UINT>& indices, const std::vector<Texture>& textures) :
+	Mesh(ComPtr<ID3D11Device>& dev, const std::vector<BoneWeightVertexData>& vertices, const std::vector<UINT>& indices, const std::vector<Texture>& textures) :
 		vertices(vertices),
 		indices(indices),
 		textures(textures),
@@ -73,12 +53,14 @@ public:
 
     void Draw(ComPtr<ID3D11DeviceContext>& pDeviceContext);
 	void SetMaterial(aiMaterial* pAiMaterial);
-	Material& GetMaterial();
+	MaterialData& GetMaterial();
 	void CreateVertexBuffer(ComPtr<ID3D11Device>& dev);
 	void CreateIndexBuffer(ComPtr<ID3D11Device>& dev);
+	
+	//void CreateMaterialBuffer(ComPtr<ID3D11Device>& dev);
 
 private:
-	Material material{};
+	MaterialData material{};
 
 	ComPtr<ID3D11Buffer> m_pVertexBuffer{};
 	ComPtr<ID3D11Buffer> m_pIndexBuffer{};

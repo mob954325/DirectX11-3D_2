@@ -1,6 +1,7 @@
 #include "EngineApp.h"
 #include "imgui_impl_win32.h" // ImGui_ImplWin32_WndProcHandler 사용하기 위함
 #include "Manager/FBXResourceManager.h"
+#include "Manager/ShaderManager.h"
 #include <Entity/GameObject.h>
 #include <Entity/Camera.h>
 
@@ -23,9 +24,9 @@ bool EngineApp::OnInitialize()
 
 	/* ------------------------------- init system ------------------------------ */
 	FBXResourceManager::Instance().GetDevice(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
+	ShaderManager::Instance().CreateCB(dxRenderer->GetDevice());
 
 	sceneSystem = std::make_unique<SceneSystem>();
-	renderQueue = std::make_unique<RenderQueue>();
 	editor = std::make_unique<Editor>();
 
 	sceneSystem->AddScene();				// create first scene
@@ -39,7 +40,7 @@ bool EngineApp::OnInitialize()
 	freeCamera = std::make_shared<GameObject>();
 	freeCamera->SetName("Main Camera");
 	freeCamera->SetScene(sceneSystem->GetCurrentScene().get());
-	freeCamera->GetTransform()->position = {0,0, -30};
+	freeCamera->GetTransform()->position = { 0, 0, -30};
 	sceneSystem->GetCurrentScene()->AddGameObject(freeCamera); // scene에 카메라 등록
 
 	auto camComp = freeCamera->AddComponent<Camera>();

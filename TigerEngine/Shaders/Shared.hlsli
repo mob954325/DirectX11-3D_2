@@ -38,7 +38,7 @@ cbuffer ConstantBuffer : register(b0)   // PerFrame
     float pad1;
 }
 
-cbuffer Material : register(b1) // PerMaterial -> Mesh 클래스에서 사용중
+cbuffer Material : register(b1) // PerMaterial -> Mesh 클래스가 사용함
 {
     float4 matAmbient;
     float4 matDiffuse;

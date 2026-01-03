@@ -10,7 +10,6 @@
 #include "System/Singleton.h"
 #include "Datas/FBXResourceData.h"
 
-// TODO 이거 나중에 싱글톤 제거하기 ( 26 01 02 )
 class FBXResourceManager : public Singleton<FBXResourceManager>
 {
 	// 해당 매니저에서 fbx를 읽는다.

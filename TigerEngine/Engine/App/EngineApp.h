@@ -37,5 +37,4 @@ private:
 	void EndRender();
 
 	std::shared_ptr<DirectX11Renderer> dxRenderer{};
-	std::unique_ptr<RenderQueue> renderQueue{};
 };

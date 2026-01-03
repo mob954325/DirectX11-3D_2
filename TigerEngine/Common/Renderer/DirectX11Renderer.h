@@ -1,4 +1,5 @@
 #pragma once
+
 // dxgi 어뎁터 조회용
 #include <dxgi1_6.h>
 #include <psapi.h>
@@ -22,6 +23,8 @@ public:
 	void OnResize(int width, int height) override;
 	void BeginRender() override;
 	void EndRender() override;
+
+	// 매 랜더링 시 호출되는 함수
 	void ProcessScene(std::shared_ptr<Scene> scene, 
 					  std::shared_ptr<IRenderPass> renderPass,
 					  std::shared_ptr<Camera> cam);
@@ -38,6 +41,8 @@ private:
 	D3D11_VIEWPORT					renderViewport{};
 	ComPtr<ID3D11DepthStencilState> depthStencilState{};
 	ComPtr<ID3D11DepthStencilView>	depthStencilView{};	// 뎊스 스텐실 뷰
+
+	
 
 	RenderQueue renderQueue{};
 };

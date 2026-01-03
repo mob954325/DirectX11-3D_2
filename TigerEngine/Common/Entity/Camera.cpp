@@ -10,7 +10,7 @@ Matrix Camera::GetView()
 {
 	Matrix world = owner->GetTransform()->GetWorldTransform();
 	Vector3 eye = world.Translation();
-	Vector3 target = eye + GetForward(world);
+	Vector3 target = world.Translation() + GetForward(world);
 	Vector3 up = world.Up();
 
 	this->view = DirectX::XMMatrixLookAtLH(eye, target, up);
@@ -19,7 +19,7 @@ Matrix Camera::GetView()
 
 void Camera::SetProjection(float povAngle, int width, int height, float targetNear, float targetFar)
 {
-	projection = DirectX::XMMatrixPerspectiveFovLH(povAngle, width / height, targetNear, targetFar);
+	projection = DirectX::XMMatrixPerspectiveFovLH(povAngle, width / (float)height, targetNear, targetFar);
 
 	this->povAngle = povAngle;
 	this->nearDist = targetNear;

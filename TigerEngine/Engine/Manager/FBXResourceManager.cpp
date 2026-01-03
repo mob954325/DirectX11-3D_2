@@ -32,14 +32,14 @@ void FBXResourceManager::ProcessNode(std::shared_ptr<FBXResourceAsset>& pAsset, 
 Mesh FBXResourceManager::ProcessMesh(std::shared_ptr<FBXResourceAsset>& pAsset, aiMesh* pMesh, const aiScene* pScene)
 {
 	// Data to fill
-	std::vector<BoneWeightVertex> vertices;
+	std::vector<BoneWeightVertexData> vertices;
 	std::vector<UINT> indices;
 	std::vector<Texture> textures;
 
 	// Walk through each of the mesh's vertices
 	for (UINT i = 0; i < pMesh->mNumVertices; i++)
 	{
-		BoneWeightVertex vertex{};
+		BoneWeightVertexData vertex{};
 
 		vertex.position = { pMesh->mVertices[i].x, pMesh->mVertices[i].y,  pMesh->mVertices[i].z };
 		vertex.normal = { pMesh->mNormals[i].x, pMesh->mNormals[i].y, pMesh->mNormals[i].z };

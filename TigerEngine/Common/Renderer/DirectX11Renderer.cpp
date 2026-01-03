@@ -2,31 +2,51 @@
 #include "../Helper.h"
 #include <algorithm>
 
+// datas
+#include <Datas/Mesh.h>
+#include <Datas/Vertex.h>
+#include <Datas/MaterialData.h>
+#include <Datas/TransformData.h>
+
+struct ConstantBuffer
+{
+	Matrix cameraView;
+	Matrix cameraProjection;
+
+	Vector4 lightDirection;
+	Matrix shadowView;
+	Matrix shadowProjection;
+
+	Color lightColor;
+
+	Vector4 ambient;	// 환경광
+	Vector4 diffuse;	// 난반사
+	Vector4 specular;	// 정반사
+	FLOAT shininess;	// 광택지수
+	Vector3 CameraPos;	// 카메라 위치
+
+	FLOAT metalness;	//  
+	FLOAT roughness;	//
+	FLOAT ambientOcclusion;
+	FLOAT pad3;
+};
+
+
 #define USE_FLIPMODE 1
 
 void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 {
-	// 1. D3D11 Device, DeviceContext ����
-
-	// https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ne-d3d11-d3d11_create_device_flag
 	UINT creationFlag = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
 #ifdef _DEBUG
-	/// https://learn.microsoft.com/ko-kr/windows/win32/direct3d11/overviews-direct3d-11-devices-layers
-	/// ����� ������ �����ϴ� ����̽��� ���鵵�� �÷��� �߰�
-	/// 
-	/// ����� ������ �������� �߰� �Ű� ���� �� �ϰ��� ��ȿ�� �˻�(��: ���̴� ��ũ �� ���ҽ� ���ε� ��ȿ�� �˻�, �Ű� ���� �ϰ��� ��ȿ�� �˻� �� ���� ���� ����)�� �����մϴ�.
-	/// �ش� ������ ����� ��� ���ø����̼��� ����� ��������.
 	creationFlag |= D3D11_CREATE_DEVICE_DEBUG;
 #endif //  _DEBUG
 
-	// �׷��� ī�� �ϵ������ �������� ȣȯ�Ǵ� ���� ���� DirectX ��ɷ����� �����Ͽ� ����̹��� �۵��Ѵ�.
-	// �������̽��� Direct3D11������ GPU ����̹��� D3D12 ����̹��� �۵��� �� �ִ�.
 	D3D_FEATURE_LEVEL featureLevels[] =
-	{	// 0�� index���� ������� �õ�
+	{	
 		D3D_FEATURE_LEVEL_12_2,D3D_FEATURE_LEVEL_12_1,D3D_FEATURE_LEVEL_12_0,D3D_FEATURE_LEVEL_11_1,D3D_FEATURE_LEVEL_11_0
 	};
-	D3D_FEATURE_LEVEL actualFeatureLevel;	// ���� feature level ���� ����
+	D3D_FEATURE_LEVEL actualFeatureLevel;
 
 	HR_T(D3D11CreateDevice
 	(
@@ -42,7 +62,6 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 		&deviceContext
 	));
 
-	// 2. ����ü�� ������ ���� DXGI Factory ����
 	UINT dxgiFactoryFlags = 0;
 
 #ifdef _DEBUG
@@ -63,14 +82,12 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 	swapChainDesc.Width = width;
 	swapChainDesc.Height = height;
 
-	// �ϳ��� �ȼ��� ä�� RGBA �� 8��Ʈ �������� ǥ��
-	// Unsigned Normalized Integer 8��Ʈ ����(0~255)�ܰ踦 �ε��Ҽ������� ����ȭ�� 0.0~1.0���� �����Ͽ� ǥ���Ѵ�.
 	swapChainDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; // ���� ü���� �� ���۰� ������ ������������ ���� ��� ������� ���
-	swapChainDesc.SampleDesc.Count = 1;	// ��Ƽ ���ø� ��� ����
-	swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE; // ������ ���� ���� | recommand for flip mode ?
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT; 
+	swapChainDesc.SampleDesc.Count = 1;
+	swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
 	swapChainDesc.Stereo = FALSE;
-	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // ��ü ȭ�� ��ȯ�� ���
+	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	swapChainDesc.Scaling = DXGI_SCALING_NONE; // 
 
 	HR_T(pFactory->CreateSwapChainForHwnd
@@ -83,12 +100,10 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 		swapChain.GetAddressOf()
 	));
 
-	// 3. ����Ÿ�� �� ����.
 	ComPtr<ID3D11Texture2D> pBackBufferTexture;
 	HR_T(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture));
 	HR_T(device->CreateRenderTargetView(pBackBufferTexture.Get(), nullptr, renderTargetView.GetAddressOf()));
 
-	// 4. viewport ����
 	renderViewport = {};
 	renderViewport.TopLeftX = 0;
 	renderViewport.TopLeftY = 0;
@@ -98,7 +113,6 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 	renderViewport.MaxDepth = 1.0f;
 	deviceContext->RSSetViewports(1, &renderViewport);
 
-	// 5. �X�� ���ٽ� �� ����
 	D3D11_TEXTURE2D_DESC descDepth = {};
 	descDepth.Width = width;
 	descDepth.Height = height;
@@ -112,12 +126,11 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
 
-	// �X�� ���Ľ� ���� ����
 	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
-	depthStencilDesc.DepthEnable = TRUE;                // ���� �׽�Ʈ Ȱ��ȭ
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL; // ���� ���� ������Ʈ ���
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS; // ���� Z ���� �տ� ��ġ�ǵ��� ����
-	depthStencilDesc.StencilEnable = FALSE;            // ���ٽ� �׽�Ʈ ��Ȱ��ȭ
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	depthStencilDesc.StencilEnable = FALSE;
 
 	device->CreateDepthStencilState(&depthStencilDesc, &depthStencilState);
 
@@ -128,17 +141,16 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 	// create the depth stencil view
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
 	descDSV.Format = descDepth.Format;
-	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D; // ���Ǵ� ���ҽ� ������ ��� ���� : https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ne-d3d11-d3d11_dsv_dimension 
-	descDSV.Texture2D.MipSlice = 0;
+	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	HR_T(device->CreateDepthStencilView(pTextureDepthStencil.Get(), &descDSV, depthStencilView.GetAddressOf()));
 }
 
 void DirectX11Renderer::OnResize(int width, int height)
 {
-	// SwapChain ��������
+	// SwapChain
 	swapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_B8G8R8A8_UNORM, 0);
 
-	// RTV �����
+	// RTV 
 	//renderTargetView.Reset();
 	ComPtr<ID3D11Texture2D> pBackBufferTexture;
 	HR_T(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture));
@@ -148,13 +160,11 @@ void DirectX11Renderer::OnResize(int width, int height)
 void DirectX11Renderer::BeginRender()
 {
 #if USE_FLIPMODE == 1
-	// Flip ��忡���� �������� �����ؾ��Ѵ�.
-	deviceContext->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get()); // depthStencilView ���
+	deviceContext->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());
 #endif	
-	// ȭ�� ĥ�ϱ�.
 	Color color(0.1f, 0.2f, 0.3f, 1.0f);
 	deviceContext->ClearRenderTargetView(renderTargetView.Get(), color);
-	deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0); // �������� 1.0f�� �ʱ�ȭ.
+	deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 void DirectX11Renderer::EndRender()

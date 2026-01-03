@@ -28,7 +28,6 @@ set(COMMON_SOURCE
     # Renderer
     Common/Renderer/DirectX11Renderer.cpp
     Common/Renderer/ImguiRenderer.cpp
-    Common/Renderer/DrawMeshCommand.cpp
 
     # Scene
     Common/Scene/Scene.cpp
@@ -105,6 +104,11 @@ add_executable(${PROJECT_NAME} WIN32
     # Manager
     Engine/Manager/FBXResourceManager.cpp
     Engine/Manager/ComponentFactory.h
+    Engine/Manager/ShaderManager.cpp
+
+    # Commands
+    Engine/Commands/DrawMeshCommand.cpp
+    Engine/Commands/DrawFBXCommand.cpp
 )
 
 # Engine부에서 사용할 폴더들

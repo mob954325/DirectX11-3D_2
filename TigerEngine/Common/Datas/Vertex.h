@@ -12,7 +12,7 @@ struct Vertex
 };
 */
 
-struct BoneWeightVertex
+struct BoneWeightVertexData
 {
     Vector3 position;
     Vector2 texture;

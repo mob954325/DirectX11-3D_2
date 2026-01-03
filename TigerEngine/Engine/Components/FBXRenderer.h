@@ -4,6 +4,7 @@
 #include <Components/FBXData.h>
 #include <Datas/FBXResourceData.h>
 #include <Datas/Bone.h>
+#include <Commands/DrawFBXCommand.h>
 
 class FBXRenderer : public RenderComponent
 {
@@ -12,13 +13,13 @@ public:
 	void OnStart() override;
 	void OnUpdate(float delta) override;
 
-    void SetData(std::shared_ptr<FBXData> data);
-
+	
 private:
     void CreateBoneInfo();
+	void CreateCommand();	// 매 프레임마다 어떻게 그려질지 정한다.
 
     std::shared_ptr<FBXData> fbxData{}; // 참조할 FBX 데이터
-	std::shared_ptr<DrawMeshCommand> command;
+	std::shared_ptr<DrawFBXCommand> command;
 
 	// 모델 인스턴스 데이터
 	std::string directory{};				// 로드한 파일이 위차한 폴더명

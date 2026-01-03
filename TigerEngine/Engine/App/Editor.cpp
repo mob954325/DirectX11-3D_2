@@ -18,9 +18,9 @@ auto singleHierarchy(std::shared_ptr<GameObject> obj)
     auto& rot = trans->rotation;
     auto& scl = trans->scale;
 
-    ImGui::DragFloat3("Position", &pos.x);
-    ImGui::DragFloat3("Rotation", &rot.x);
-    ImGui::DragFloat3("Scale", &scl.x);
+    ImGui::DragFloat3("Position", &pos.x, 0.1f);
+    ImGui::DragFloat3("Rotation", &rot.x, 0.1f);
+    ImGui::DragFloat3("Scale", &scl.x, 0.1f);
     if(ImGui::Button("Destory"))
     {
         obj->Destory();

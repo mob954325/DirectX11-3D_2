@@ -8,7 +8,7 @@ void Mesh::Draw(ComPtr<ID3D11DeviceContext>& pDeviceContext)
     ID3D11ShaderResourceView* nullSRV2[2] = { nullptr };
     pDeviceContext->PSSetShaderResources(6, 2, nullSRV);
     
-    UINT stride = sizeof(BoneWeightVertex);
+    UINT stride = sizeof(BoneWeightVertexData);
     UINT offset = 0;
     
     pDeviceContext->IASetVertexBuffers(0, 1, m_pVertexBuffer.GetAddressOf(), &stride, &offset);
@@ -104,7 +104,7 @@ void Mesh::ProcessTextureByType(ComPtr<ID3D11DeviceContext>& pDeviceContext, int
     }
 }
 
-Material& Mesh::GetMaterial()
+MaterialData& Mesh::GetMaterial()
 {
     return material;
 }
@@ -114,7 +114,7 @@ void Mesh::CreateVertexBuffer(ComPtr<ID3D11Device>& dev)
     // vertex buffer
     D3D11_BUFFER_DESC vbd = {};
     vbd.Usage = D3D11_USAGE_IMMUTABLE;
-    vbd.ByteWidth = static_cast<UINT>(sizeof(BoneWeightVertex) * vertices.size());
+    vbd.ByteWidth = static_cast<UINT>(sizeof(BoneWeightVertexData) * vertices.size());
     vbd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     vbd.CPUAccessFlags = 0;
     vbd.MiscFlags = 0;
@@ -139,3 +139,14 @@ void Mesh::CreateIndexBuffer(ComPtr<ID3D11Device>& dev)
     initData.pSysMem = &indices[0];
     HR_T(dev->CreateBuffer(&ibd, &initData, m_pIndexBuffer.GetAddressOf()));
 }
+
+//void Mesh::CreateMaterialBuffer(ComPtr<ID3D11Device> &dev)
+//{
+//    // material buffer
+//    D3D11_BUFFER_DESC mbd = {};
+//    mbd.Usage = D3D11_USAGE_DEFAULT;
+//    mbd.ByteWidth = sizeof(MaterialData);
+//    mbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+//    mbd.CPUAccessFlags = 0;
+//    HR_T(dev->CreateBuffer(&mbd, nullptr, materialBuffer.GetAddressOf()));
+//}

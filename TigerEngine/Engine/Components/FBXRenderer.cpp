@@ -1,14 +1,15 @@
 #include "FBXRenderer.h"
-#include "Renderer/DrawMeshCommand.h"
 #include "Manager/ComponentFactory.h"
 #include "Scene/Scene.h"
 #include <Components/FBXData.h>
+#include <Manager/ShaderManager.h>
 
 REGISTER_COMPONENT(FBXRenderer);
 
 void FBXRenderer::OnInitialize()
 {
     fbxData = owner->GetComponent<FBXData>();
+    CreateBoneInfo();
 }
 
 void FBXRenderer::OnStart()
@@ -54,23 +55,8 @@ void FBXRenderer::OnUpdate(float delta)
 
 		bonePoses.modelMatricies[bone.m_index] = bone.m_worldTransform;
 	}	
-}
 
-void FBXRenderer::SetData(std::shared_ptr<FBXData> data)
-{
-    fbxData = data;
-    CreateBoneInfo();
-
-	// TODO 상수 버퍼는 어디서 만들지, 업데이트는 
-	// m_deviceContext->UpdateSubresource(m_bonePoseBuffer.Get(), 0, nullptr, &m_BonePoses, 0, 0);
-	// m_deviceContext->UpdateSubresource(m_boneOffsetBuffer.Get(), 0, nullptr, &modelAsset->m_BoneOffsets, 0, 0);
-	// 
-	// m_deviceContext->VSSetConstantBuffers(3, 1, m_bonePoseBuffer.GetAddressOf());
-	// m_deviceContext->VSSetConstantBuffers(4, 1, m_boneOffsetBuffer.GetAddressOf());
-	
-	// 커멘드 구성 어떻게 할지
-	auto command = std::make_shared<DrawMeshCommand>();
-	SetCommand(); //
+	CreateCommand();
 }
 
 void FBXRenderer::CreateBoneInfo()
@@ -109,4 +95,11 @@ void FBXRenderer::CreateBoneInfo()
 
 		bones.push_back(bone);
 	}
+}
+
+void FBXRenderer::CreateCommand()
+{	
+	auto command = std::make_shared<DrawFBXCommand>();
+	command->CreateCommand(fbxData->GetFBXInfo(), bonePoses, owner->GetTransform());
+	SetCommand(command); //
 }

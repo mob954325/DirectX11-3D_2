@@ -1,5 +1,5 @@
 #include "MeshRenderer.h"
-#include "Renderer/DrawMeshCommand.h"
+#include "Commands/DrawMeshCommand.h"
 #include "Manager/ComponentFactory.h"
 #include "Scene/Scene.h"
 #include <Components/FBXData.h>

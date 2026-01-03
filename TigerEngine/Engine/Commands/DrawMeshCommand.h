@@ -10,7 +10,7 @@ private:
 public:
     void CreateCommand(std::vector<Mesh>& meshes);
 
-    void Execute(ComPtr<ID3D11DeviceContext> context) override
+    void Execute(ComPtr<ID3D11DeviceContext>& context) override
     {
         if(refMesh.empty()) return;
 
