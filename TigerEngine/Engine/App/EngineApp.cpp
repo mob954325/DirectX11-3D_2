@@ -54,7 +54,7 @@ void EngineApp::OnUpdate()
 	sceneSystem->BeforUpdate();
 	
 	// Scene의 오브젝트 업데이트 호출
-	sceneSystem->UpdateScene(gameTimer.DeltaTime());
+	sceneSystem->UpdateScene(GameTimer::Instance().DeltaTime());
 }
 
 void EngineApp::OnRender()
@@ -91,4 +91,10 @@ LRESULT EngineApp::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
         return true;
 
 	return __super::WndProc(hWnd, message, wParam, lParam);
+}
+
+void EngineApp::OnInputProcess(const Keyboard::State &KeyState, const Keyboard::KeyboardStateTracker &KeyTracker, const Mouse::State &MouseState, const Mouse::ButtonStateTracker &MouseTracker)
+{
+	__super::OnInputProcess(KeyState, KeyTracker, MouseState, MouseTracker);
+	InputSystem::Instance().UpdateRegisterInput(KeyState,KeyTracker, MouseState, MouseTracker);
 }

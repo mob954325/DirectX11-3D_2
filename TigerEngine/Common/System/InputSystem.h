@@ -1,7 +1,9 @@
 #pragma once
-
+#include <pch.h>
 #include <Mouse.h>
 #include <Keyboard.h>
+#include <System/Singleton.h>
+
 
 using namespace DirectX;
 
@@ -12,13 +14,11 @@ public:
 		const Mouse::State& MouseState, const Mouse::ButtonStateTracker& MouseTracker) = 0;
 };
 
-class InputSystem
+class InputSystem : public Singleton<InputSystem>
 {
 public:
-	InputSystem();
-	~InputSystem() {};
-
-	static InputSystem* Instance;
+	InputSystem(token) {};
+	~InputSystem() = default;
 
 	InputProcesser* m_pInputProcessers = nullptr;
 
@@ -33,4 +33,10 @@ public:
 
 	void Update(float DeltaTime);
 	bool Initialize(HWND hWnd, InputProcesser* processer);
+	
+	void Register(InputProcesser* input);
+	void UpdateRegisterInput(const Keyboard::State& KeyState, const Keyboard::KeyboardStateTracker& KeyTracker,
+		const Mouse::State& MouseState, const Mouse::ButtonStateTracker& MouseTracker);
+private:
+	std::vector<InputProcesser*> registered;
 };

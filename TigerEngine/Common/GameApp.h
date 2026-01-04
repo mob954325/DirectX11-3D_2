@@ -29,9 +29,6 @@ public:
 	UINT			clientWidth{};						
 	UINT			clientHeight{};						
 
-	GameTimer		gameTimer{};
-	InputSystem		inputSystem{};
-
 	std::shared_ptr<IRenderer>	renderer{};
 
 	UINT internalWidth = 1920;

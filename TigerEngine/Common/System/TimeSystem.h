@@ -7,11 +7,13 @@
 **/
 
 #pragma once
+#include <System/Singleton.h>
 
-class GameTimer
+class GameTimer : public Singleton<GameTimer>
 {
 public:
-	GameTimer();
+	GameTimer(token);
+	~GameTimer() = default;
 
 	float TotalTime()const;  // in seconds
 	float DeltaTime()const; // in seconds
@@ -20,17 +22,17 @@ public:
 	void Start(); // Call when unpaused.
 	void Stop();  // Call when paused.
 	void Tick();  // Call every frame.
-	static GameTimer* m_Instance;
+	
 private:
-	double mSecondsPerCount;
-	double mDeltaTime;
+	double mSecondsPerCount{};
+	double mDeltaTime{};
 
-	__int64 mBaseTime;
-	__int64 mPausedTime;
-	__int64 mStopTime;
-	__int64 mPrevTime;
-	__int64 mCurrTime;
+	__int64 mBaseTime{};
+	__int64 mPausedTime{};
+	__int64 mStopTime{};
+	__int64 mPrevTime{};
+	__int64 mCurrTime{};
 
-	bool mStopped;
+	bool mStopped = false;
 
 };

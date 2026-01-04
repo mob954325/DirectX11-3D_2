@@ -19,7 +19,11 @@ auto singleHierarchy(std::shared_ptr<GameObject> obj)
     auto& scl = trans->scale;
 
     ImGui::DragFloat3("Position", &pos.x, 0.1f);
-    ImGui::DragFloat3("Rotation", &rot.x, 0.1f);
+
+    Vector3 rotEuler = { XMConvertToDegrees(rot.x), XMConvertToDegrees(rot.y),  XMConvertToDegrees(rot.z) };
+    ImGui::DragFloat3("Rotation", &rotEuler.x, 0.1f);
+    rot = { XMConvertToRadians(rotEuler.x), XMConvertToRadians(rotEuler.y),  XMConvertToRadians(rotEuler.z) };
+
     ImGui::DragFloat3("Scale", &scl.x, 0.1f);
     if(ImGui::Button("Destory"))
     {

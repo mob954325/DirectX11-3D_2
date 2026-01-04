@@ -2,6 +2,8 @@
 #include "pch.h"
 #include "Helper.h"
 #include "Renderer/DirectX11Renderer.h"
+#include "System/InputSystem.h"
+#include "System/TimeSystem.h"
 
 // Debug 모듈관련 헤더 파일 및 라이브러리
 // #include "Helper.h"
@@ -121,7 +123,7 @@ bool GameApp::Initialize(UINT Width, UINT Height)
 	UpdateWindow(hwnd);
 
 	// 시스템 초기화
-	inputSystem.Initialize(hwnd, this);
+	InputSystem::Instance().Initialize(hwnd, this);
 
 	renderer = std::make_shared<DirectX11Renderer>();
 	renderer->Initialize(hwnd, clientWidth, clientHeight);
@@ -130,7 +132,7 @@ bool GameApp::Initialize(UINT Width, UINT Height)
 	if (!OnInitialize()) return false;
 
 	// 타이머 초기화
-	gameTimer.Reset();
+	GameTimer::Instance().Reset();
 
 	return true;
 }
@@ -165,8 +167,8 @@ bool GameApp::Run()
 
 void GameApp::Update()
 {
-	gameTimer.Tick();
-	inputSystem.Update(gameTimer.DeltaTime());
+	GameTimer::Instance().Tick();
+	InputSystem::Instance().Update(Singleton<GameTimer>::Instance().DeltaTime());
 	OnUpdate();
 }
 
