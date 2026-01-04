@@ -31,15 +31,16 @@ public:
 
 	ComPtr<ID3D11Device> GetDevice() const;
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() const;
+	ComPtr<ID3D11RenderTargetView> GetBackBufferRTV() const;
+	ComPtr<ID3D11DepthStencilView> GetDepthStencilView() const;
 	
 private:
 	ComPtr<ID3D11Device>			device{};			// 디바이스
 	ComPtr<ID3D11DeviceContext>		deviceContext{};	// 디바이스 컨텍스트
 	ComPtr<IDXGISwapChain1>			swapChain{};		// 스왑체인 
-	ComPtr<ID3D11RenderTargetView>	renderTargetView{};	// 랜더 타겟	
+	ComPtr<ID3D11RenderTargetView>	backBufferRTV{};	// 랜더 타겟	
 
 	D3D11_VIEWPORT					renderViewport{};
-	ComPtr<ID3D11DepthStencilState> depthStencilState{};
 	ComPtr<ID3D11DepthStencilView>	depthStencilView{};	// 뎊스 스텐실 뷰
 
 	

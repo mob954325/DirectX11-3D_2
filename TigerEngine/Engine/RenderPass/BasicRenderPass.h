@@ -1,7 +1,3 @@
-// 251229
-// TODO 일단 forward로 만들어보고 나중에 GbufferRenderPass로 변경하기
-// 나중에 이 클래스를 abstract 클래스로 만들고 패스 만들어보기
-
 #pragma once
 #include "pch.h"
 #include "../../Common/Renderer/IRenderPass.h"
@@ -31,5 +27,4 @@ public:
 					std::shared_ptr<Camera> cam) override;
 
 protected:
-	virtual void CreateEffect(ComPtr<ID3D11Device>& device);
 };

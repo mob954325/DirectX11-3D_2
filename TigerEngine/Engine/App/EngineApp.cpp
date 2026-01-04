@@ -4,6 +4,9 @@
 #include "Manager/ShaderManager.h"
 #include <Entity/GameObject.h>
 #include <Entity/Camera.h>
+#include <RenderPass/DirectionalLightPass.h>
+#include <RenderPass/GBufferRenderPass.h> 
+#include <RenderPass/SkyboxRenderPass.h>
 
 EngineApp::EngineApp(HINSTANCE hInstance)
 	: GameApp(hInstance)
@@ -17,7 +20,6 @@ EngineApp::~EngineApp()
 bool EngineApp::OnInitialize()
 {
 	/* ------------------------------ init renderer ----------------------------- */
-	// TODO Directx11renderer에만 processScene이 있음 구조 수정할 것
 	dxRenderer = std::static_pointer_cast<DirectX11Renderer>(renderer); 
 	imguiRenderer = std::make_unique<ImguiRenderer>();
 	imguiRenderer->Initialize(hwnd, dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
@@ -33,8 +35,23 @@ bool EngineApp::OnInitialize()
 	sceneSystem->SetCurrentSceneByIndex(); 	// render first scene
 
 	/* ----------------------------- init renderpass ---------------------------- */
-	basicRenderPass = std::make_shared<BasicRenderPass>();
-	basicRenderPass->Init(dxRenderer->GetDevice());
+	auto gpass = std::make_shared<GBufferRenderPass>();
+	gpass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext(), clientWidth, clientHeight);
+	gpass->SetDepthStencilView(dxRenderer->GetDepthStencilView());
+	renderPasses.push_back(gpass);
+
+	auto dlpass = std::make_shared<DirectionalLightPass>();
+	dlpass->Init(dxRenderer->GetDevice());
+	dlpass->SetGBufferSRV(gpass->GetShaderResourceViews());
+	dlpass->SetDepthStencilView(dxRenderer->GetDepthStencilView());
+	dlpass->SetRenderTargetView(dxRenderer->GetBackBufferRTV());
+	renderPasses.push_back(dlpass);
+
+	auto sbpass = std::make_shared<SkyboxRenderPass>();
+	sbpass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext(), clientWidth, clientHeight);
+	sbpass->SetDepthStencilView(dxRenderer->GetDepthStencilView());
+	sbpass->SetRenderTargetView(dxRenderer->GetBackBufferRTV());
+	renderPasses.push_back(sbpass);
 
 	/* ------------------------------ init freeCam ------------------------------ */
 	freeCamera = std::make_shared<GameObject>();
@@ -61,8 +78,17 @@ void EngineApp::OnRender()
 {
 	BeginRender(); 					// 업데이트 준비
 
-	auto rp = std::dynamic_pointer_cast<IRenderPass>(basicRenderPass); // 임시
-	dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), rp, freeCamera->GetComponent<Camera>());  // 렌더러가 씬을 렌더링
+	for(auto& pass : renderPasses)
+	{	
+		if(typeid(*pass) == typeid(GBufferRenderPass))
+		{
+			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCamera->GetComponent<Camera>());  // 렌더러가 씬을 렌더링
+		}
+		else
+		{
+			dxRenderer->ProcessScene(nullptr, pass, freeCamera->GetComponent<Camera>());  // 렌더러가 씬을 렌더링
+		}
+	}
 
 	editor->Render(sceneSystem); 	// 엔진 오버레이 렌더링
 	imguiRenderer->Render();		// imgui 렌더링

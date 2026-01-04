@@ -23,6 +23,10 @@ public:
 	void OnStart() override;
 	void OnUpdate(float delta) override;
 
+	float GetPovAngle() { return povAngle; }
+	float GetNearDist() { return nearDist; }
+	float GetFarDist() { return farDist; }
+
 	
 	void OnInputProcess(const Keyboard::State& KeyState, const Keyboard::KeyboardStateTracker& KeyTracker,
 		const Mouse::State& MouseState, const Mouse::ButtonStateTracker& MouseTracker) override;

@@ -95,6 +95,9 @@ add_executable(${PROJECT_NAME} WIN32
 
     # RenderPass
     Engine/RenderPass/BasicRenderPass.cpp
+    Engine/RenderPass/GBufferRenderPass.cpp
+    Engine/RenderPass/DirectionalLightPass.cpp
+    Engine/RenderPass/SkyboxRenderPass.cpp
 
     # Components
     Engine/Components/FBXData.cpp

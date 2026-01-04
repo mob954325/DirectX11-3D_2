@@ -7,7 +7,7 @@ REGISTER_COMPONENT(FBXData);
 void FBXData::OnInitialize()
 {
     // 임시
-    fbxAsset = FBXResourceManager::Instance().LoadFBXByPath("Assets/Resource/sphere.fbx");
+    fbxAsset = FBXResourceManager::Instance().LoadFBXByPath("Assets/Resource/char.fbx");
     meshes = fbxAsset->meshes; 
 }
 

@@ -102,7 +102,7 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 
 	ComPtr<ID3D11Texture2D> pBackBufferTexture;
 	HR_T(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture));
-	HR_T(device->CreateRenderTargetView(pBackBufferTexture.Get(), nullptr, renderTargetView.GetAddressOf()));
+	HR_T(device->CreateRenderTargetView(pBackBufferTexture.Get(), nullptr, backBufferRTV.GetAddressOf()));
 
 	renderViewport = {};
 	renderViewport.TopLeftX = 0;
@@ -126,14 +126,6 @@ void DirectX11Renderer::Initialize(HWND hwnd, int width, int height)
 	descDepth.CPUAccessFlags = 0;
 	descDepth.MiscFlags = 0;
 
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc = {};
-	depthStencilDesc.DepthEnable = TRUE;
-	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-	depthStencilDesc.StencilEnable = FALSE;
-
-	device->CreateDepthStencilState(&depthStencilDesc, &depthStencilState);
-
 	// create depthStencil texture
 	ComPtr<ID3D11Texture2D> pTextureDepthStencil;
 	HR_T(device->CreateTexture2D(&descDepth, nullptr, pTextureDepthStencil.GetAddressOf()));
@@ -154,16 +146,16 @@ void DirectX11Renderer::OnResize(int width, int height)
 	//renderTargetView.Reset();
 	ComPtr<ID3D11Texture2D> pBackBufferTexture;
 	HR_T(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture));
-	HR_T(device->CreateRenderTargetView(pBackBufferTexture.Get(), nullptr, renderTargetView.GetAddressOf()));
+	HR_T(device->CreateRenderTargetView(pBackBufferTexture.Get(), nullptr, backBufferRTV.GetAddressOf()));
 }
 
 void DirectX11Renderer::BeginRender()
 {
 #if USE_FLIPMODE == 1
-	deviceContext->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencilView.Get());
+	deviceContext->OMSetRenderTargets(1, backBufferRTV.GetAddressOf(), depthStencilView.Get());
 #endif	
-	Color color(0.1f, 0.2f, 0.3f, 1.0f);
-	deviceContext->ClearRenderTargetView(renderTargetView.Get(), color);
+	Color color(0.0f, 0.0f, 0.0f, 0.0f);
+	deviceContext->ClearRenderTargetView(backBufferRTV.Get(), color);
 	deviceContext->ClearDepthStencilView(depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
@@ -179,18 +171,23 @@ void DirectX11Renderer::ProcessScene
 
 	renderPass->Execute(deviceContext, scene, cam);	
 	// getrenderable from scene
-	auto renderComps = scene->GetRenderables();
 
-	// TODO renderqueue 구성완료하기
-	// add queue
-	std::for_each(renderComps.begin(), renderComps.end(), [this](auto comp)
-	{ 
-		// 이거 Data없을 때의 예외처리 필요함
-		renderQueue.AddCommand(comp->GetCommand()); 
-	});	
+	if(scene)
+	{
+		auto renderComps = scene->GetRenderables();
 
-	// execute pass, queue
-	renderQueue.Execute(deviceContext);
+		// add queue
+		std::for_each(renderComps.begin(), renderComps.end(), [this](auto comp)
+		{ 
+			// 이거 Data없을 때의 예외처리 필요함
+			renderQueue.AddCommand(comp->GetCommand()); 
+		});	
+
+		// execute pass, queue
+		renderQueue.Execute(deviceContext);
+	}
+
+	renderPass->End(deviceContext);
 }
 
 ComPtr<ID3D11Device> DirectX11Renderer::GetDevice() const
@@ -201,4 +198,14 @@ ComPtr<ID3D11Device> DirectX11Renderer::GetDevice() const
 ComPtr<ID3D11DeviceContext> DirectX11Renderer::GetDeviceContext() const
 {
     return deviceContext;
+}
+
+ComPtr<ID3D11RenderTargetView> DirectX11Renderer::GetBackBufferRTV() const
+{
+    return backBufferRTV;
+}
+
+ComPtr<ID3D11DepthStencilView> DirectX11Renderer::GetDepthStencilView() const
+{
+    return depthStencilView;
 }

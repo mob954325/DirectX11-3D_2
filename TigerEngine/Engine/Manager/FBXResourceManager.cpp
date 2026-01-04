@@ -3,6 +3,7 @@
 #include <assimp\Importer.hpp>
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
+#include <DirectXTex.h>
 
 void FBXResourceManager::ProcessNode(std::shared_ptr<FBXResourceAsset>& pAsset, aiNode* pNode, const aiScene* pScene)
 {
@@ -159,7 +160,23 @@ std::vector<Texture> FBXResourceManager::loadMaterialTextures(std::shared_ptr<FB
 				std::string filename = std::string(str.C_Str());
 				filename = pAsset->directory + '\\' + filename;
 				std::wstring filenamews = std::wstring(filename.begin(), filename.end());
-				HR_T(CreateWICTextureFromFile(device.Get(), deviceContext.Get(), filenamews.c_str(), nullptr, texture.pTexture.GetAddressOf()));
+
+				std::filesystem::path p(filename);
+
+				if (p.extension() == ".tga")
+				{
+					DirectX::ScratchImage image;
+					ComPtr<ID3D11Resource> tgaTexture{};
+
+					HR_T(DirectX::LoadFromTGAFile(filenamews.c_str(), DirectX::TGA_FLAGS_NONE, nullptr, image)); // Load the TGA data
+					HR_T(DirectX::CreateTexture(device.Get(), image.GetImages(), image.GetImageCount(), image.GetMetadata(), tgaTexture.GetAddressOf())); // convert image to texture
+
+					HR_T(device.Get()->CreateShaderResourceView(tgaTexture.Get(), nullptr, texture.pTexture.GetAddressOf()));
+				}
+				else
+				{
+					HR_T(CreateWICTextureFromFile(device.Get(), deviceContext.Get(), filenamews.c_str(), nullptr, texture.pTexture.GetAddressOf())); 
+				}
 			}
 
 			texture.type = typeName;

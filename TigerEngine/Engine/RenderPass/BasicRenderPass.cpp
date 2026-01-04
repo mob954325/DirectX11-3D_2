@@ -119,8 +119,3 @@ void BasicRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_
 	
 	context->PSSetSamplers(0, 1, sampleLinear.GetAddressOf());
 }
-
-void BasicRenderPass::CreateEffect(ComPtr<ID3D11Device>& device)
-{
-	// ...
-}
