@@ -44,7 +44,7 @@ bool EngineApp::OnInitialize()
 	sceneSystem->GetCurrentScene()->AddGameObject(freeCamera); // scene에 카메라 등록
 
 	auto camComp = freeCamera->AddComponent<Camera>();
-	camComp->SetProjection(DirectX::XM_1DIV2PI, clientWidth, clientHeight, 0.1, 1000);
+	camComp->SetProjection(DirectX::XM_PIDIV2, clientWidth, clientHeight, 0.1, 1000);
 
 	return true;
 }
