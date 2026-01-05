@@ -38,4 +38,10 @@ $env:VCPKG_ROOT
 ```
 로 실행해서 경로를 확인합니다.
 
+종속성 세팅
+```
+vcpkg install nlohmann-json
+vcpkg install assimp:x64-windows
+```
+
 
