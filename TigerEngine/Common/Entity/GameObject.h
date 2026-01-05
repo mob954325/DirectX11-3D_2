@@ -6,6 +6,9 @@
 #include <Entity/RenderComponent.h>
 #include <Scene/Scene.h>
 
+#define RTTR_DLL
+#include <rttr/registration>
+
 /// <summary>
 /// GameObject는 컴포넌트를 담고 있는 순수한 컨테이너
 /// </summary>
@@ -21,7 +24,6 @@ public:
 	template<typename T>
 	std::shared_ptr<T> GetComponent();
 
-	
 	std::shared_ptr<Transform> GetTransform() const;
 	std::vector<std::shared_ptr<IComponent>>& GetIComponents();
 	
@@ -35,15 +37,14 @@ public:
 	/// @brief 게임 오브젝트가 포함될 씬 설정 함수
 	void SetScene(Scene* scene);
 
+	std::string name = "NoNamed";	
+	
+	float value = 0;
 protected:
 	Scene* currentScene{}; // 현재 게임 오브젝트가 존재하는 씬 참조 변수
-	std::string name = "NoNamed";
 	std::shared_ptr<Transform> transform;
 	std::vector<std::shared_ptr<IComponent>> components;
 	bool isDestory = false;
-
-private:
-	// ...
 };
 
 template <typename T>

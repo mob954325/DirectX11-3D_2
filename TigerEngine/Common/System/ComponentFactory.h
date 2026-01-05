@@ -18,6 +18,8 @@ public:
     ComponentFactory(token) {};
     ~ComponentFactory() = default;
 
+    using createCompFunc = std::function<std::shared_ptr<IComponent>(std::shared_ptr<GameObject>&)>;
+
     template<typename T>
     void Register(std::string compName) 
     {
@@ -25,11 +27,11 @@ public:
         registeredComponents.insert({compName, createComp});
     }
 
-    const std::unordered_map<std::string, std::function<std::shared_ptr<IComponent>(std::shared_ptr<GameObject>&)>>& GetRegisteredComponents()
+    const std::unordered_map<std::string, createCompFunc>& GetRegisteredComponents()
     {
         return registeredComponents;
     }
 
 private:
-    std::unordered_map<std::string, std::function<std::shared_ptr<IComponent>(std::shared_ptr<GameObject>&)>> registeredComponents; // 컴포넌트 이름, 컴포넌트 생성 람다 함수
+    std::unordered_map<std::string, createCompFunc> registeredComponents; // 컴포넌트 이름, 컴포넌트 생성 람다 함수
 };

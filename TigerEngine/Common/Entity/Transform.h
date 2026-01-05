@@ -3,6 +3,9 @@
 #include "SimpleMath.h"
 #include "IComponent.h"
 
+#define RTTR_DLL
+#include <rttr/registration>
+
 class Transform : public IComponent
 {
 public:

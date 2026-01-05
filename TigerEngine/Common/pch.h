@@ -31,10 +31,17 @@
 #include <imgui_impl_win32.h>
 #include <imgui_impl_dx11.h>
 
-
 namespace Math = DirectX::SimpleMath;
 using namespace DirectX;
 using namespace Microsoft::WRL;
 using namespace DirectX::SimpleMath;
+
+// Windows.h의 min/max 매크로를 해제하여 RTTR과의 충돌 방지
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
 
 #endif //PCH_H

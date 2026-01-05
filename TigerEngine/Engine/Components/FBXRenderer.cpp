@@ -1,5 +1,5 @@
 #include "FBXRenderer.h"
-#include "Manager/ComponentFactory.h"
+#include "System/ComponentFactory.h"
 #include "Scene/Scene.h"
 #include <Components/FBXData.h>
 #include <Manager/ShaderManager.h>

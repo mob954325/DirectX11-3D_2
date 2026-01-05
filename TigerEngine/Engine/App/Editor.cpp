@@ -1,5 +1,9 @@
 #include "Editor.h"
-#include <Manager/ComponentFactory.h>
+#include <System/ComponentFactory.h>
+
+// RTTR
+#define RTTR_DLL
+#include <rttr/registration>
 
 void Editor::Render(std::unique_ptr<SceneSystem> &sceneSystem)
 {
@@ -56,6 +60,25 @@ void Editor::RenderInspector()
     {
         if(selectedObject) 
         {
+            /* ------------------------------- gameobject ------------------------------- */
+            rttr::type t = rttr::type::get(selectedObject.get());
+            ImGui::Text("Type : %s", t.get_name().to_string().c_str());
+
+            for(auto& prop : t.get_properties())
+            {
+                rttr::variant value = prop.get_value(selectedObject);   // 프로퍼티 값
+                std::string name = prop.get_name().to_string();         // 프로퍼티 이름
+                if(value.is_type<std::string>() && name == "GameObject")
+                {
+                    ImGui::Text("Name : %s", name.c_str());
+                    char buf[256]{};
+                    strncpy_s(buf, value.get_value<std::string>().c_str(), sizeof(buf) - 1);
+                    ImGui::InputText(name.c_str(), buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue);
+                    prop.set_value(selectedObject, std::string(buf));
+                }
+            }
+
+            /* -------------------------------- transform ------------------------------- */
             auto trans = selectedObject->GetTransform();
             auto& pos = trans->position;
             auto& rot = trans->rotation;
@@ -72,7 +95,8 @@ void Editor::RenderInspector()
             {
                 selectedObject->Destory();
             }
-        
+            
+            /* ---------------------------- add component 내용 ---------------------------- */
             if(ImGui::Button("Add Component"))
             {
                 ImGui::OpenPopup("ComponentMenu"); // 1. popup 열라고 명령 
@@ -106,6 +130,24 @@ void Editor::RenderInspector()
             
                 ImGui::EndPopup();
             }
+
+            /* ------------------------------- 컴포넌트 내용 출력 ------------------------------- */
+            for(auto& comp : selectedObject->GetIComponents())
+            {                
+                // ...
+                auto compsmap = ComponentFactory::Instance().GetRegisteredComponents();
+                auto it = compsmap.find(std::string(typeid(comp).name())); // TODO 이름 넘길 방법 찾아야함 컴포넌트는 등록된 이름을 모름
+                if(it != compsmap.end())
+                {
+                    // TODO 컴포넌트 별로 출력 내용 처리 260105
+                    ImGui::Text(it->first.c_str());
+                    ImGui::NewLine();
+                }
+            }
+        }
+        else
+        {
+            ImGui::Text("No gameObject selected");
         }
     }
     ImGui::End();

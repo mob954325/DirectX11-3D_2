@@ -36,6 +36,7 @@ set(COMMON_SOURCE
     Common/System/InputSystem.cpp
     Common/System/SceneSystem.cpp
     Common/System/TimeSystem.cpp
+    Common/System/ComponentFactory.h
 )
 
 # 라이브러리 추가
@@ -106,7 +107,6 @@ add_executable(${PROJECT_NAME} WIN32
 
     # Manager
     Engine/Manager/FBXResourceManager.cpp
-    Engine/Manager/ComponentFactory.h
     Engine/Manager/ShaderManager.cpp
 
     # Commands
@@ -134,12 +134,16 @@ add_subdirectory(External/directxtex)
 add_subdirectory(External/directxtk)
 
 find_package(assimp CONFIG REQUIRED) # assimp/헤더파일명 으로 가져오기
+find_package(nlohmann_json CONFIG REQUIRED) # assimp/헤더파일명 으로 가져오기
+find_package(RTTR CONFIG REQUIRED)
 
 # =========================================================
 # 3. 라이브러리 연결 및 종속성 설정
 # =========================================================
 target_link_libraries(common_lib PUBLIC 
     assimp::assimp
+    nlohmann_json::nlohmann_json
+    RTTR::Core
 )
 
 
@@ -160,6 +164,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
     # vcpkg
     assimp::assimp
+    nlohmann_json::nlohmann_json
+    RTTR::Core
 )
 
 # =========================================================

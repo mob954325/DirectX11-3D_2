@@ -1,5 +1,14 @@
 #include "GameObject.h"
 
+RTTR_REGISTRATION
+{
+    rttr::registration::class_<GameObject>("GameObject")
+        .constructor<>()
+            (rttr::policy::ctor::as_std_shared_ptr) // ??
+        .property("GameObject", &GameObject::name)
+        .property("Value", &GameObject::value);
+}
+
 std::string GameObject::GetName() const
 {
     return name;

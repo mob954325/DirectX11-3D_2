@@ -1,6 +1,6 @@
 #include "FBXData.h"
 #include "Helper.h"
-#include <Manager/ComponentFactory.h>
+#include <System/ComponentFactory.h>
 
 REGISTER_COMPONENT(FBXData);
 

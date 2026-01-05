@@ -11,7 +11,7 @@ protected:
 public:
 	IComponent() = default;
 	virtual ~IComponent() = default;
-
+	
 	/// <summary>
 	/// IComponent가 처음 실행될 때 실행됩니다.
 	/// </summary>
