@@ -12,7 +12,6 @@ public:
 	void OnInitialize() override;
 	void OnStart() override;
 	void OnUpdate(float delta) override;
-
 	
 private:
     void CreateBoneInfo();

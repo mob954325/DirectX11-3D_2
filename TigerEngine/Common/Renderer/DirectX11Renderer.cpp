@@ -179,14 +179,18 @@ void DirectX11Renderer::ProcessScene
 		// add queue
 		for(auto it = renderComps.begin(); it != renderComps.end();)
 		{
-			if(it->expired()) 
+			if(it->expired()) // renderable 컴포넌트가 소멸함
 			{
 				it = renderComps.erase(it);
 				continue;
 			}
 			
 			auto comp = it->lock();
-			renderQueue.AddCommand(comp->GetCommand()); 
+			if(!comp->GetCommand().expired()) // renderable이 데이터가 있을 때만 커맨드 생성
+			{
+				renderQueue.AddCommand(comp->GetCommand().lock()); 
+			}
+			
 			it++;
 		}
 

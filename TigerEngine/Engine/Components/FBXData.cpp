@@ -1,6 +1,7 @@
 #include "FBXData.h"
 #include "Helper.h"
 #include <System/ComponentFactory.h>
+#include <Components/FBXRenderer.h>
 
 RTTR_REGISTRATION
 {
@@ -18,6 +19,9 @@ void FBXData::OnInitialize()
     path = "Assets/Resource/char.fbx";
     fbxAsset = FBXResourceManager::Instance().LoadFBXByPath("Assets/Resource/char.fbx");
     meshes = fbxAsset->meshes; 
+
+    auto renderer = owner->GetComponent<FBXRenderer>();
+    if(!renderer.expired()) renderer.lock()->OnInitialize();
 }
 
 const std::vector<Mesh>& FBXData::GetMesh() const

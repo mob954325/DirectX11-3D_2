@@ -9,7 +9,7 @@ REGISTER_COMPONENT(FBXRenderer);
 void FBXRenderer::OnInitialize()
 {
     fbxData = owner->GetComponent<FBXData>().lock();
-    CreateBoneInfo();
+	if(!fbxData.expired()) CreateBoneInfo(); // 임시
 }
 
 void FBXRenderer::OnStart()
@@ -18,6 +18,8 @@ void FBXRenderer::OnStart()
 
 void FBXRenderer::OnUpdate(float delta)
 {
+	if(fbxData.expired()) return;
+
     auto modelAsset = fbxData.lock()->GetFBXInfo();
     if (!modelAsset->animations.empty() && isAnimPlay)
 	{
