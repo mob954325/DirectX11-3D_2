@@ -78,7 +78,7 @@ void Editor::RenderInspector()
             {
                 rttr::variant value = prop.get_value(obj);   // 프로퍼티 값
                 std::string name = prop.get_name().to_string();         // 프로퍼티 이름
-                if(value.is_type<std::string>() && name == "GameObject")
+                if(value.is_type<std::string>() && name == "Name")
                 {
                     ImGui::Text("Name : %s", name.c_str());
                     char buf[256]{};

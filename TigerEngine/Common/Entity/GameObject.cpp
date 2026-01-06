@@ -4,8 +4,8 @@ RTTR_REGISTRATION
 {
     rttr::registration::class_<GameObject>("GameObject")
         .constructor<>()
-            (rttr::policy::ctor::as_std_shared_ptr) // ??
-        .property("GameObject", &GameObject::name);
+            (rttr::policy::ctor::as_std_shared_ptr) 
+        .property("Name", &GameObject::name);
 }
 
 std::string GameObject::GetName() const
@@ -64,11 +64,21 @@ void GameObject::SetScene(Scene* scene)
 
 nlohmann::json GameObject::Serialize() const
 {
+    // gameObject
+    //  properties
+    //      name : gmaeName
+    //      component_1
+    //          component1_element_1
+    //          component1_element_2
+    //          ....
+    //      component_2
+    //          ....
+
     nlohmann::json datas;
 
     rttr::type t = rttr::type::get(*this);
-    datas["type"] = t.get_name().to_string();       
-    datas["properties"] = nlohmann::json::object(); // 객체 생성
+    datas["type"] = t.get_name().to_string();    
+    //datas["properties"] = nlohmann::json::object(); // 객체 생성
 
     for(auto& prop : t.get_properties())
     {
@@ -82,7 +92,7 @@ nlohmann::json GameObject::Serialize() const
 
         for(auto& comp : components)
         {
-            //datas["properties"][propName] = comp->Serialize(); // TODO 컴포넌트 json 직렬화 완료하기
+            datas["properties"][comp->GetName()] = comp->Serialize(); // TODO 컴포넌트 json 직렬화 완료하기
         }
     }
     
