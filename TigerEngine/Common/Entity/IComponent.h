@@ -1,12 +1,17 @@
 ﻿#pragma once
 #include <pch.h>
 
+#define RTTR_DLL
+#include <rttr/registration>
+
 class GameObject; // forward declear
 
 class IComponent
 {
+	RTTR_ENABLE()
 protected:
-	GameObject* owner{}; // 해당 컴포넌트를 소유하고 있는 게임 오브젝트
+	GameObject* owner{}; 	// 해당 컴포넌트를 소유하고 있는 게임 오브젝트
+	std::string name{};		// 해당 컴포넌트 이름
 
 public:
 	IComponent() = default;
@@ -27,6 +32,15 @@ public:
 	/// </summary>
 	virtual void OnUpdate(float delta) {};
 
-	void SetOwner(GameObject* obj) { owner = obj; }
+	// 컴포넌트에 부착된 게임 오브젝트 찾기 ( getter )
 	GameObject* GetOwner() { return owner; }
+
+	// 컴포넌트에 부착된 게임 오브젝트 설정 ( setter )
+	void SetOwner(GameObject* obj) { owner = obj; }
+
+	// 컴포넌트 찾기를 위한 이름 getter
+	std::string GetName() const { return name; }
+
+	// 컴포넌트 찾기를 위한 이름 setter
+	void SetName(std::string str) { name = str; }
 };

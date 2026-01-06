@@ -79,18 +79,6 @@ void Editor::RenderInspector()
             }
 
             /* -------------------------------- transform ------------------------------- */
-            auto trans = selectedObject->GetTransform();
-            auto& pos = trans->position;
-            auto& rot = trans->rotation;
-            auto& scl = trans->scale;
-
-            ImGui::DragFloat3("Position", &pos.x, 0.1f);
-
-            Vector3 rotEuler = { XMConvertToDegrees(rot.x), XMConvertToDegrees(rot.y),  XMConvertToDegrees(rot.z) };
-            ImGui::DragFloat3("Rotation", &rotEuler.x, 0.1f);
-            rot = { XMConvertToRadians(rotEuler.x), XMConvertToRadians(rotEuler.y),  XMConvertToRadians(rotEuler.z) };
-
-            ImGui::DragFloat3("Scale", &scl.x, 0.1f);
             if(ImGui::Button("Destory"))
             {
                 selectedObject->Destory();
@@ -134,13 +122,11 @@ void Editor::RenderInspector()
             /* ------------------------------- 컴포넌트 내용 출력 ------------------------------- */
             for(auto& comp : selectedObject->GetIComponents())
             {                
-                // ...
-                auto compsmap = ComponentFactory::Instance().GetRegisteredComponents();
-                auto it = compsmap.find(std::string(typeid(comp).name())); // TODO 이름 넘길 방법 찾아야함 컴포넌트는 등록된 이름을 모름
-                if(it != compsmap.end())
+                auto comps = ComponentFactory::Instance().GetRegisteredComponents();
+                auto name = comp->GetName();
+                if(auto it = comps.find(comp->GetName()); it != comps.end())
                 {
-                    // TODO 컴포넌트 별로 출력 내용 처리 260105
-                    ImGui::Text(it->first.c_str());
+                    RenderComponentInfo(it->first, comp);
                     ImGui::NewLine();
                 }
             }
@@ -151,4 +137,68 @@ void Editor::RenderInspector()
         }
     }
     ImGui::End();
+}
+
+template<typename T>
+void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
+{
+    if(compName == "Transform")
+    {
+        rttr::type t = rttr::type::get(*comp); // 역참조로 실제 인스턴스 정보 가져오기
+        ImGui::Text(t.get_name().to_string().c_str());
+
+        for(auto& prop : t.get_properties())
+        {
+            rttr::variant value = prop.get_value(*comp);   // 프로퍼티 값
+            std::string name = prop.get_name().to_string();         // 프로퍼티 이름
+            if(value.is_type<DirectX::SimpleMath::Vector3>() && name == "Position")
+            {
+                DirectX::SimpleMath::Vector3 pos = value.get_value<DirectX::SimpleMath::Vector3>();
+                ImGui::DragFloat3("Position", &pos.x, 0.1f);
+                prop.set_value(*comp, pos);
+            }
+            else if(value.is_type<DirectX::SimpleMath::Vector3>() && name == "Rotation")
+            {
+                DirectX::SimpleMath::Vector3 rot = value.get_value<DirectX::SimpleMath::Vector3>();
+                DirectX::SimpleMath::Vector3 rotEuler = { XMConvertToDegrees(rot.x), XMConvertToDegrees(rot.y),  XMConvertToDegrees(rot.z) };
+                ImGui::DragFloat3("Rotation", &rotEuler.x, 0.1f);
+                rot = { XMConvertToRadians(rotEuler.x), XMConvertToRadians(rotEuler.y),  XMConvertToRadians(rotEuler.z) };
+                prop.set_value(*comp, rot);
+            }
+            else if(value.is_type<DirectX::SimpleMath::Vector3>() && name == "Scale")
+            {
+                DirectX::SimpleMath::Vector3 scl = value.get_value<DirectX::SimpleMath::Vector3>();
+                ImGui::DragFloat3("Scale", &scl.x, 0.1f);
+                prop.set_value(*comp, scl);
+            }
+        } 
+    }
+    else if(compName == "FBXData")
+    {
+        rttr::type t = rttr::type::get(*comp); // 역참조로 실제 인스턴스 정보 가져오기
+        ImGui::Text(t.get_name().to_string().c_str());
+
+        for(auto& prop : t.get_properties())
+        {
+            rttr::variant value = prop.get_value(*comp);   // 프로퍼티 값
+            std::string name = prop.get_name().to_string();// 프로퍼티 이름
+            if(value.is_type<std::string>() && name == "DataPath")
+            {
+                std::string path = value.get_value<std::string>();
+
+                // 현재 경로 표시   
+                ImGui::Text("Current Path: %s", path.c_str());
+                
+                // 탐색기 열기 버튼
+                if (ImGui::Button("Browse..."))
+                {
+                    
+                }
+            }
+        }        
+    }
+    else if(compName == "FBXRenderer")
+    {
+        ImGui::Text("FBXRenderer");
+    }
 }

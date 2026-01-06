@@ -10,7 +10,7 @@
         return true; \
     }()
 
-/// @brief 컴포넌트 관리 및 조회용 클래스
+/// @brief 컴포넌트 조회용 클래스
 /// 엔진에 사용하는 모든 컴포넌트들은 해당 클래스에 등록된다.
 class ComponentFactory : public Singleton<ComponentFactory>
 {
@@ -23,7 +23,12 @@ public:
     template<typename T>
     void Register(std::string compName) 
     {
-        auto createComp = [](std::shared_ptr<GameObject>& obj){ return obj->AddComponent<T>(); };
+        auto createComp = [compName](std::shared_ptr<GameObject>& obj)
+        { 
+            auto comp = obj->AddComponent<T>();
+            comp->SetName(compName);
+            return comp; 
+        };
         registeredComponents.insert({compName, createComp});
     }
 

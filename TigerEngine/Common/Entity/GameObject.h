@@ -5,6 +5,7 @@
 #include <vector>
 #include <Entity/RenderComponent.h>
 #include <Scene/Scene.h>
+#include <System/ComponentFactory.h>
 
 #define RTTR_DLL
 #include <rttr/registration>

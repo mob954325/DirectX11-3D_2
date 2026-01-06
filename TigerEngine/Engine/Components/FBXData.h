@@ -6,6 +6,7 @@
 
 class FBXData : public IComponent
 {
+    RTTR_ENABLE(IComponent)
 public:
     void OnInitialize() override;
     const std::vector<Mesh>& GetMesh() const;

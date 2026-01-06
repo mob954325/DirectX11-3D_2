@@ -10,7 +10,6 @@ RTTR_REGISTRATION
 		.property("Rotation", &Transform::rotation)
 		.property("Scale", &Transform::scale);
 
-	// TODO 겹치는 프로퍼티 따로 빼기
 	rttr::registration::class_<DirectX::SimpleMath::Vector3>("Vector3")
 		.constructor<>()
 		.constructor<float, float, float>()

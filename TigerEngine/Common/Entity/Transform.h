@@ -3,12 +3,13 @@
 #include "SimpleMath.h"
 #include "IComponent.h"
 
-#define RTTR_DLL
-#include <rttr/registration>
-
 class Transform : public IComponent
 {
+	RTTR_ENABLE(IComponent)
 public:
+	Transform() { SetName("Transform"); }
+	~Transform() = default;
+
 	Vector3 position{ 0,0,0 };
 	Vector3 rotation{ 0,0,0 };
 	Vector3 scale{ 1,1,1 };
