@@ -18,7 +18,7 @@ public:
     ComponentFactory(token) {};
     ~ComponentFactory() = default;
 
-    using createCompFunc = std::function<std::shared_ptr<IComponent>(std::shared_ptr<GameObject>&)>;
+    using createCompFunc = std::function<std::weak_ptr<IComponent>(std::shared_ptr<GameObject>&)>;
 
     template<typename T>
     void Register(std::string compName) 
@@ -26,7 +26,7 @@ public:
         auto createComp = [compName](std::shared_ptr<GameObject>& obj)
         { 
             auto comp = obj->AddComponent<T>();
-            comp->SetName(compName);
+            comp.lock()->SetName(compName);
             return comp; 
         };
         registeredComponents.insert({compName, createComp});

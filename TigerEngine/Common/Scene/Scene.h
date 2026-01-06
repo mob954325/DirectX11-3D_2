@@ -20,9 +20,9 @@ public:
 	std::shared_ptr<GameObject> GetGameObjectByName(std::string name);
 
 	void AddRenderable(std::shared_ptr<RenderComponent> comp);
-	std::vector<std::shared_ptr<RenderComponent>>& GetRenderables();
+	std::vector<std::weak_ptr<RenderComponent>>& GetRenderables();
 
 protected:
 	std::multimap<std::string, std::shared_ptr<GameObject>> gameObjects; // mapping gameobjects;
-	std::vector<std::shared_ptr<RenderComponent>> renderableComponents;
+	std::vector<std::weak_ptr<RenderComponent>> renderableComponents;
 };

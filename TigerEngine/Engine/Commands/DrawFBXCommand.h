@@ -7,11 +7,11 @@
 class DrawFBXCommand : public IRenderCommand
 {
 public:
-    void CreateCommand(std::shared_ptr<FBXResourceAsset> fbxData, BonePoseBuffer& bonePoses, std::shared_ptr<Transform>& transform); 
+    void CreateCommand(std::weak_ptr<FBXResourceAsset> fbxData, BonePoseBuffer& bonePoses, std::weak_ptr<Transform>& transform); 
     void Execute(ComPtr<ID3D11DeviceContext>& context) override;
 
 private:	
-    std::shared_ptr<FBXResourceAsset> fbxData{};	
+    std::weak_ptr<FBXResourceAsset> fbxData{};	
 	BonePoseBuffer bonePoses{};
 	Transform transform{};
 

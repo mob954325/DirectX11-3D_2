@@ -20,13 +20,15 @@ public:
 	GameObject(Scene* scene, std::string name) : name(name) { SetScene(scene); }
 
 	template<typename T>
-	std::shared_ptr<T> AddComponent();	
+	std::weak_ptr<T> AddComponent();	
 	
 	template<typename T>
-	std::shared_ptr<T> GetComponent();
+	std::weak_ptr<T> GetComponent();
 
-	std::shared_ptr<Transform> GetTransform() const;
-	std::vector<std::shared_ptr<IComponent>>& GetIComponents();
+	void RemoveComponent(std::weak_ptr<IComponent> comp);
+
+	std::weak_ptr<Transform> GetTransform() const;
+	std::vector<std::shared_ptr<IComponent>> GetIComponents();
 	
 	bool IsDestory();
 	void Destory();
@@ -39,17 +41,16 @@ public:
 	void SetScene(Scene* scene);
 
 	std::string name = "NoNamed";	
-	
-	float value = 0;
+
 protected:
 	Scene* currentScene{}; // 현재 게임 오브젝트가 존재하는 씬 참조 변수
-	std::shared_ptr<Transform> transform;
-	std::vector<std::shared_ptr<IComponent>> components;
+	std::weak_ptr<Transform> transform;
+	std::vector<std::shared_ptr<IComponent>> 	components;
 	bool isDestory = false;
 };
 
 template <typename T>
-inline std::shared_ptr<T> GameObject::AddComponent()
+inline std::weak_ptr<T> GameObject::AddComponent()
 {
 	static_assert(std::is_base_of_v<IComponent, T>,
 		"T must inherit from IComponent"); // T는 IComponent를 상속받았는가? 
@@ -68,9 +69,9 @@ inline std::shared_ptr<T> GameObject::AddComponent()
 }
 
 template <typename T>
-inline std::shared_ptr<T> GameObject::GetComponent()
+inline std::weak_ptr<T> GameObject::GetComponent()
 {
-	std::shared_ptr<T> res = {};
+	std::weak_ptr<T> res = {};
 	std::for_each(components.begin(), components.end(), [&res](auto comp)
 	{
 		if(typeid(*comp) == typeid(T)) res = std::dynamic_pointer_cast<T>(comp);

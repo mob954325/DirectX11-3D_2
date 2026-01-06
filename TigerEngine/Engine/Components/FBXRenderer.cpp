@@ -8,7 +8,7 @@ REGISTER_COMPONENT(FBXRenderer);
 
 void FBXRenderer::OnInitialize()
 {
-    fbxData = owner->GetComponent<FBXData>();
+    fbxData = owner->GetComponent<FBXData>().lock();
     CreateBoneInfo();
 }
 
@@ -18,7 +18,7 @@ void FBXRenderer::OnStart()
 
 void FBXRenderer::OnUpdate(float delta)
 {
-    auto modelAsset = fbxData->GetFBXInfo();
+    auto modelAsset = fbxData.lock()->GetFBXInfo();
     if (!modelAsset->animations.empty() && isAnimPlay)
 	{
 		//progressAnimationTime += GameTimer::m_Instance->DeltaTime();
@@ -61,7 +61,7 @@ void FBXRenderer::OnUpdate(float delta)
 
 void FBXRenderer::CreateBoneInfo()
 {
-    auto modelAsset = fbxData->GetFBXInfo();
+    auto modelAsset = fbxData.lock()->GetFBXInfo();
     int size = modelAsset->skeletalInfo.m_bones.size();
 	for (int i = 0; i < size; i++)
 	{
@@ -100,6 +100,6 @@ void FBXRenderer::CreateBoneInfo()
 void FBXRenderer::CreateCommand()
 {	
 	auto command = std::make_shared<DrawFBXCommand>();
-	command->CreateCommand(fbxData->GetFBXInfo(), bonePoses, owner->GetTransform());
+	command->CreateCommand(fbxData.lock()->GetFBXInfo(), bonePoses, owner->GetTransform());
 	SetCommand(command); //
 }

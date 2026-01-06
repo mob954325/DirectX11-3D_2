@@ -43,7 +43,7 @@ void Editor::RenderHierarchy(std::unique_ptr<SceneSystem> &sceneSystem)
         {
             ImGui::PushID(obj.get()); // 고유 ID 부여 (ID 충돌 방지)
             
-            if (ImGui::Selectable(obj->GetName().c_str(), selectedObject == obj))
+            if (ImGui::Selectable(obj->GetName().c_str(), selectedObject.lock() == obj))
             {
                 this->SelectObject(obj);
             }
@@ -58,15 +58,20 @@ void Editor::RenderInspector()
 {
     ImGui::Begin("Inspector");
     {
-        if(selectedObject) 
+        if(selectedObject.expired())
         {
+            ImGui::Text("No gameObject selected");
+        }
+        else
+        {
+            auto obj = selectedObject.lock();
             /* ------------------------------- gameobject ------------------------------- */
-            rttr::type t = rttr::type::get(selectedObject.get());
+            rttr::type t = rttr::type::get(obj.get());
             ImGui::Text("Type : %s", t.get_name().to_string().c_str());
 
             for(auto& prop : t.get_properties())
             {
-                rttr::variant value = prop.get_value(selectedObject);   // 프로퍼티 값
+                rttr::variant value = prop.get_value(obj);   // 프로퍼티 값
                 std::string name = prop.get_name().to_string();         // 프로퍼티 이름
                 if(value.is_type<std::string>() && name == "GameObject")
                 {
@@ -74,14 +79,14 @@ void Editor::RenderInspector()
                     char buf[256]{};
                     strncpy_s(buf, value.get_value<std::string>().c_str(), sizeof(buf) - 1);
                     ImGui::InputText(name.c_str(), buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue);
-                    prop.set_value(selectedObject, std::string(buf));
+                    prop.set_value(obj, std::string(buf));
                 }
             }
 
             /* -------------------------------- transform ------------------------------- */
             if(ImGui::Button("Destory"))
             {
-                selectedObject->Destory();
+                obj->Destory();
             }
             
             /* ---------------------------- add component 내용 ---------------------------- */
@@ -104,7 +109,7 @@ void Editor::RenderInspector()
                     if(ImGui::MenuItem(name.c_str()))
                     {
                         // 1. 생성 람다 함수를 통해 새 컴포넌트 생성
-                        creatorFunc(selectedObject);
+                        creatorFunc(obj);
                     
                         // 2. 현재 작업 중인 오브젝트에 추가
                         // GameObject에 AddComponent(std::shared_ptr<Component>) 형태의 함수가 있어야 합니다.
@@ -120,20 +125,16 @@ void Editor::RenderInspector()
             }
 
             /* ------------------------------- 컴포넌트 내용 출력 ------------------------------- */
-            for(auto& comp : selectedObject->GetIComponents())
+            for(auto& comp : obj->GetIComponents())
             {                
-                auto comps = ComponentFactory::Instance().GetRegisteredComponents();
+                auto registeredComps = ComponentFactory::Instance().GetRegisteredComponents();
                 auto name = comp->GetName();
-                if(auto it = comps.find(comp->GetName()); it != comps.end())
+                if(auto it = registeredComps.find(name); it != registeredComps.end())
                 {
                     RenderComponentInfo(it->first, comp);
                     ImGui::NewLine();
                 }
             }
-        }
-        else
-        {
-            ImGui::Text("No gameObject selected");
         }
     }
     ImGui::End();
@@ -200,5 +201,15 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
     else if(compName == "FBXRenderer")
     {
         ImGui::Text("FBXRenderer");
+    }
+
+    if (compName != "Transform") 
+    {
+        ImGui::PushID(comp.get());
+        if(ImGui::Button("Remove Component"))
+        {
+            selectedObject.lock()->RemoveComponent(comp);
+        }
+        ImGui::PopID();
     }
 }

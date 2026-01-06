@@ -57,10 +57,10 @@ bool EngineApp::OnInitialize()
 	freeCamera = std::make_shared<GameObject>();
 	freeCamera->SetName("Main Camera");
 	freeCamera->SetScene(sceneSystem->GetCurrentScene().get());
-	freeCamera->GetTransform()->position = { 0, 0, -30};
+	freeCamera->GetTransform().lock()->position = { 0, 0, -30};
 	sceneSystem->GetCurrentScene()->AddGameObject(freeCamera); // scene에 카메라 등록
 
-	auto camComp = freeCamera->AddComponent<Camera>();
+	auto camComp = freeCamera->AddComponent<Camera>().lock();
 	camComp->SetProjection(DirectX::XM_PIDIV2, clientWidth, clientHeight, 0.1, 1000);
 
 	return true;
@@ -82,11 +82,11 @@ void EngineApp::OnRender()
 	{	
 		if(typeid(*pass) == typeid(GBufferRenderPass))
 		{
-			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCamera->GetComponent<Camera>());  // 렌더러가 씬을 렌더링
+			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCamera->GetComponent<Camera>().lock());  // 렌더러가 씬을 렌더링
 		}
 		else
 		{
-			dxRenderer->ProcessScene(nullptr, pass, freeCamera->GetComponent<Camera>());  // 렌더러가 씬을 렌더링
+			dxRenderer->ProcessScene(nullptr, pass, freeCamera->GetComponent<Camera>().lock());  // 렌더러가 씬을 렌더링
 		}
 	}
 

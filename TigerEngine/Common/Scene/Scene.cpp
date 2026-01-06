@@ -3,20 +3,18 @@
 
 void Scene::OnRender(std::unique_ptr<RenderQueue>& renderQueue)
 {
-	for (auto& obj : gameObjects)
+	for(auto it = gameObjects.begin(); it != gameObjects.end(); it++)
 	{
-		std::shared_ptr<GameObject> gameObject = obj.second;		
-		if(gameObject->IsDestory()) continue;
+		auto gameObject = it->second;
+		// .. rendering
 	}
 }
 
 void Scene::OnUpdate(float deltaTime)
 {
-	for (auto& obj : gameObjects)
+	for(auto it = gameObjects.begin(); it != gameObjects.end(); it++)
 	{
-		std::shared_ptr<GameObject> gameObject = obj.second;	
-		if(gameObject->IsDestory()) continue;
-
+		auto gameObject = it->second;
 		for(auto& rComp : gameObject->GetIComponents())
 		{
 			rComp->OnUpdate(deltaTime);
@@ -28,8 +26,9 @@ void Scene::CheckDestroy()
 {
 	for(auto it = gameObjects.begin(); it != gameObjects.end();)
 	{
-		if(it->second->IsDestory())
-		{
+		auto gameObject = it->second;
+		if(gameObject->IsDestory())
+		{	
 			it = gameObjects.erase(it);
 		}
 		else
@@ -70,7 +69,7 @@ void Scene::AddRenderable(std::shared_ptr<RenderComponent> comp)
 	renderableComponents.push_back(comp);
 }
 
-std::vector<std::shared_ptr<RenderComponent>>& Scene::GetRenderables()
+std::vector<std::weak_ptr<RenderComponent>>& Scene::GetRenderables()
 {
 	return renderableComponents;
 }

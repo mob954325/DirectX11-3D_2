@@ -173,15 +173,22 @@ void DirectX11Renderer::ProcessScene
 	// getrenderable from scene
 
 	if(scene)
-	{
+	{		
 		auto renderComps = scene->GetRenderables();
 
 		// add queue
-		std::for_each(renderComps.begin(), renderComps.end(), [this](auto comp)
-		{ 
-			// 이거 Data없을 때의 예외처리 필요함
+		for(auto it = renderComps.begin(); it != renderComps.end();)
+		{
+			if(it->expired()) 
+			{
+				it = renderComps.erase(it);
+				continue;
+			}
+			
+			auto comp = it->lock();
 			renderQueue.AddCommand(comp->GetCommand()); 
-		});	
+			it++;
+		}
 
 		// execute pass, queue
 		renderQueue.Execute(deviceContext);

@@ -8,7 +8,7 @@ REGISTER_COMPONENT(MeshRenderer);
 
 void MeshRenderer::OnInitialize()
 {
-    auto comp = owner->GetComponent<FBXData>();
+    auto comp = owner->GetComponent<FBXData>().lock();
     if(comp)
     {
         SetData(comp->GetFBXInfo());

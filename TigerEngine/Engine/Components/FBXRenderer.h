@@ -18,7 +18,7 @@ private:
     void CreateBoneInfo();
 	void CreateCommand();	// 매 프레임마다 어떻게 그려질지 정한다.
 
-    std::shared_ptr<FBXData> fbxData{}; // 참조할 FBX 데이터
+    std::weak_ptr<FBXData> fbxData{}; // 참조할 FBX 데이터
 	std::shared_ptr<DrawFBXCommand> command;
 
 	// 모델 인스턴스 데이터

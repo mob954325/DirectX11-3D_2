@@ -15,5 +15,5 @@ private:
     template<typename T>
     void RenderComponentInfo(std::string name, std::shared_ptr<T> comp);
     
-    std::shared_ptr<GameObject> selectedObject; // 현재 inspector 정보를 보고 있는 게임 오브젝트
+    std::weak_ptr<GameObject> selectedObject; // 현재 inspector 정보를 보고 있는 게임 오브젝트
 };

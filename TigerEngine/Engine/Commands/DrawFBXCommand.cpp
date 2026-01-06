@@ -3,11 +3,11 @@
 #include <Datas/TransformData.h>
 #include <Datas/MaterialData.h>
 
-void DrawFBXCommand::CreateCommand(std::shared_ptr<FBXResourceAsset> data, BonePoseBuffer& bonePoses, std::shared_ptr<Transform>& transform)
+void DrawFBXCommand::CreateCommand(std::weak_ptr<FBXResourceAsset> fbxData, BonePoseBuffer& bonePoses, std::weak_ptr<Transform>& transform)
 {
-    this->fbxData = data;
+    this->fbxData = fbxData;
     this->bonePoses = bonePoses;
-    this->transform = *transform;
+    this->transform = *transform.lock();
 
     boneOffsetBuffer = ShaderManager::Instance().GetBoneOffsetCB();
     bonePoseBuffer = ShaderManager::Instance().GetBonePoseCB();
@@ -17,26 +17,27 @@ void DrawFBXCommand::CreateCommand(std::shared_ptr<FBXResourceAsset> data, BoneP
 
 void DrawFBXCommand::Execute(ComPtr<ID3D11DeviceContext> &context)
 {
-    if(fbxData->meshes.empty()) return; // 그릴 메쉬가 없음 -> FBXData가 없음
+    if(fbxData.expired()) return; // 그릴 메쉬가 없음 -> data 없음
+	auto lockedFbxData = fbxData.lock();
 
     context->UpdateSubresource(bonePoseBuffer.Get(), 0, nullptr, &bonePoses, 0, 0);
-	context->UpdateSubresource(boneOffsetBuffer.Get(), 0, nullptr, &fbxData->m_BoneOffsets, 0, 0);
+	context->UpdateSubresource(boneOffsetBuffer.Get(), 0, nullptr, &lockedFbxData->m_BoneOffsets, 0, 0);
 	context->VSSetConstantBuffers(3, 1, bonePoseBuffer.GetAddressOf());
 	context->VSSetConstantBuffers(4, 1, boneOffsetBuffer.GetAddressOf());
 
 	TransformData tb = {};
-	tb.isRigid = fbxData->skeletalInfo.IsRigid();
+	tb.isRigid = lockedFbxData->skeletalInfo.IsRigid();
 	tb.world = XMMatrixTranspose(transform.GetWorldTransform());
-	int size = fbxData->meshes.size();
+	int size = lockedFbxData->meshes.size();
 	for (size_t i = 0; i < size; i++)
 	{
-		MaterialData meshMaterial = fbxData->meshes[i].GetMaterial();
+		MaterialData meshMaterial = lockedFbxData->meshes[i].GetMaterial();
 		context->UpdateSubresource(materialBuffer.Get(), 0, nullptr, &meshMaterial, 0, 0);		
-		tb.refBoneIndex = fbxData->meshes[i].refBoneIndex;
+		tb.refBoneIndex = lockedFbxData->meshes[i].refBoneIndex;
     
 		context->UpdateSubresource(transformBuffer.Get(), 0, nullptr, &tb, 0, 0);
 		context->VSSetConstantBuffers(2, 1, transformBuffer.GetAddressOf());
 		context->PSSetConstantBuffers(1, 1, materialBuffer.GetAddressOf());
-		fbxData->meshes[i].Draw(context);
+		lockedFbxData->meshes[i].Draw(context);
 	}
 }
