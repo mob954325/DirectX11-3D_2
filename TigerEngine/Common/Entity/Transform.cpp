@@ -26,3 +26,35 @@ Matrix Transform::GetWorldTransform() const
 		   Matrix::CreateFromYawPitchRoll(rotation) *
 		   Matrix::CreateTranslation(position);
 }
+
+nlohmann::json Transform::Serialize()
+{
+	nlohmann::json datas;
+
+    rttr::type t = rttr::type::get(*this);
+    datas["type"] = t.get_name().to_string();       
+    datas["properties"] = nlohmann::json::object(); // 객체 생성
+
+    for(auto& prop : t.get_properties())
+    {
+        std::string propName = prop.get_name().to_string();
+        rttr::variant value = prop.get_value(*this);
+	    if(value.is_type<DirectX::SimpleMath::Vector3>() && propName == "Position")
+        {
+            auto v = value.get_value<Vector3>();
+            datas["properties"][propName] = {v.x, v.y, v.z};
+        }
+        else if(value.is_type<DirectX::SimpleMath::Vector3>() && propName == "Rotation")
+        {
+            auto v = value.get_value<Vector3>();
+            datas["properties"][propName] = {v.x, v.y, v.z};
+        }
+        else if(value.is_type<DirectX::SimpleMath::Vector3>() && propName == "Scale")
+        {
+            auto v = value.get_value<Vector3>();
+            datas["properties"][propName] = {v.x, v.y, v.z};
+        }
+	}
+
+    return datas;
+}

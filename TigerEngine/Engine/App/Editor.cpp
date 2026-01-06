@@ -1,13 +1,14 @@
 #include "Editor.h"
 #include <System/ComponentFactory.h>
+#include <commdlg.h>
 
 // RTTR
 #define RTTR_DLL
 #include <rttr/registration>
 
-void Editor::Render(std::unique_ptr<SceneSystem> &sceneSystem)
+void Editor::Render(std::unique_ptr<SceneSystem> &sceneSystem, HWND& hwnd)
 {
-    RenderMenuBar();
+    RenderMenuBar(sceneSystem, hwnd);
     RenderHierarchy(sceneSystem);
     RenderInspector();
 }
@@ -17,12 +18,16 @@ void Editor::SelectObject(std::shared_ptr<GameObject> obj)
     selectedObject = obj;
 }
 
-void Editor::RenderMenuBar()
+void Editor::RenderMenuBar(std::unique_ptr<SceneSystem> &sceneSystem, HWND& hwnd)
 {
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("File"))
         {
+            if (ImGui::MenuItem("Save"))
+			{
+				SaveCurrentScene(sceneSystem, hwnd);
+			}
 
             ImGui::EndMenu();
         }
@@ -212,4 +217,38 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
         }
         ImGui::PopID();
     }
+}
+
+void Editor::SaveCurrentScene(std::unique_ptr<SceneSystem>& sceneSystem, HWND& hwnd)
+{
+	// 파일 저장 다이얼로그
+	OPENFILENAMEA ofn = {};
+	char szFile[260] = {};
+
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = hwnd;
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = "JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0";
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+	ofn.lpstrDefExt = "json";
+
+	if (GetSaveFileNameA(&ofn) != TRUE)
+		return; // 사용자가 취소함
+
+	std::string filename = szFile;
+
+	// GameWorld를 파일에 저장
+	if (sceneSystem->GetCurrentScene()->SaveToJson(filename))
+	{
+		MessageBoxA(hwnd, "Scene saved successfully!", "Save", MB_OK | MB_ICONINFORMATION);
+	}
+	else
+	{
+		MessageBoxA(hwnd, "Failed to save scene!", "Error", MB_OK | MB_ICONERROR);
+	}
 }

@@ -90,7 +90,7 @@ void EngineApp::OnRender()
 		}
 	}
 
-	editor->Render(sceneSystem); 	// 엔진 오버레이 렌더링
+	editor->Render(sceneSystem, hwnd); 	// 엔진 오버레이 렌더링
 	imguiRenderer->Render();		// imgui 렌더링
 
 	EndRender(); 					// 업데이트 마무리

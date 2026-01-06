@@ -22,6 +22,10 @@ public:
 	void AddRenderable(std::shared_ptr<RenderComponent> comp);
 	std::vector<std::weak_ptr<RenderComponent>>& GetRenderables();
 
+	/// @brief json으로 scene정보를 저장하는 함수
+	/// @param filename 저장할 파일 이름
+	bool SaveToJson(const std::string& filename) const;
+
 protected:
 	std::multimap<std::string, std::shared_ptr<GameObject>> gameObjects; // mapping gameobjects;
 	std::vector<std::weak_ptr<RenderComponent>> renderableComponents;

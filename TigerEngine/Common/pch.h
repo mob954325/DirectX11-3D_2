@@ -45,3 +45,5 @@ using namespace DirectX::SimpleMath;
 #endif
 
 #endif //PCH_H
+
+#include <nlohmann/json.hpp>

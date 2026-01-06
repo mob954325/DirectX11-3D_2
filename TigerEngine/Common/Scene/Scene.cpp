@@ -73,3 +73,25 @@ std::vector<std::weak_ptr<RenderComponent>>& Scene::GetRenderables()
 {
 	return renderableComponents;
 }
+
+bool Scene::SaveToJson(const std::string &filename) const
+{
+	nlohmann::json root;
+
+	root["objects"] = nlohmann::json::array();
+	for(auto& obj : gameObjects)
+	{
+		if(!obj.second) continue;
+		
+		nlohmann::json objData = obj.second->Serialize();
+		root["objects"].push_back(objData);
+	}
+
+	std::ofstream file(filename);
+	if(!file.is_open()) return false;
+
+	file << root.dump(2); // ??
+	file.close();
+
+	return true;
+}

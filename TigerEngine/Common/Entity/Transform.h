@@ -15,6 +15,7 @@ public:
 	Vector3 scale{ 1,1,1 };
 
 	Matrix GetWorldTransform() const;
+	nlohmann::json Serialize() override;
 
 	std::shared_ptr<Transform> parent{};
 };

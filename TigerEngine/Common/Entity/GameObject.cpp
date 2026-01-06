@@ -61,3 +61,30 @@ void GameObject::SetScene(Scene* scene)
 	transform = AddComponent<Transform>();
     currentScene = scene;
 }
+
+nlohmann::json GameObject::Serialize() const
+{
+    nlohmann::json datas;
+
+    rttr::type t = rttr::type::get(*this);
+    datas["type"] = t.get_name().to_string();       
+    datas["properties"] = nlohmann::json::object(); // 객체 생성
+
+    for(auto& prop : t.get_properties())
+    {
+        std::string propName = prop.get_name().to_string();
+        rttr::variant value = prop.get_value(*this);
+
+        if(value.is_type<std::string>())
+        {
+            datas["properties"][propName] = value.get_value<std::string>();
+        }
+
+        for(auto& comp : components)
+        {
+            //datas["properties"][propName] = comp->Serialize(); // TODO 컴포넌트 json 직렬화 완료하기
+        }
+    }
+    
+    return datas;
+}

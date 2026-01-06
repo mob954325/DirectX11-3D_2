@@ -40,7 +40,11 @@ public:
 	/// @brief 게임 오브젝트가 포함될 씬 설정 함수
 	void SetScene(Scene* scene);
 
-	std::string name = "NoNamed";	
+	/// @brief 데이터 저장을 위한 직렬화 데이터 반환 함수
+	/// @return 직렬화된 json 객체
+	nlohmann::json Serialize() const;
+
+	std::string name = "NoNamed";	// 리플렉션을 위해 public으로 공개
 
 protected:
 	Scene* currentScene{}; // 현재 게임 오브젝트가 존재하는 씬 참조 변수
