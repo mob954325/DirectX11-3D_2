@@ -16,8 +16,8 @@ REGISTER_COMPONENT(FBXData);
 void FBXData::OnInitialize()
 {
     // 임시
-    path = "Assets/Resource/char.fbx";
-    fbxAsset = FBXResourceManager::Instance().LoadFBXByPath("Assets/Resource/sphere.fbx");
+    path = "Assets\\Resource\\char.fbx";
+    fbxAsset = FBXResourceManager::Instance().LoadFBXByPath("Assets\\Resource\\sphere.fbx");
     meshes = fbxAsset->meshes; 
 
     auto renderer = owner->GetComponent<FBXRenderer>(); // TODO load 후 컴포넌트 추가할 때 터짐 이거 수정하면 이 주석 제거할 것

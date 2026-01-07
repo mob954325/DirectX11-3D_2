@@ -270,11 +270,14 @@ void Editor::LoadScene(std::unique_ptr<SceneSystem> &sceneSystem, HWND &hwnd)
 	ofn.lpstrFileTitle = NULL;
 	ofn.nMaxFileTitle = 0;
 	ofn.lpstrInitialDir = NULL;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT 
+            | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;
 	ofn.lpstrDefExt = "json";
 
-if (GetOpenFileNameA(&ofn) != TRUE)
-	return; // 사용자가 취소함
+    // NOTE : GetOpenFileNameA를 한 뒤로 CWD (Current Working Directory)가 선택한 폴더로 변경된다.
+    // ->  OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR 플래그 추가 해줘서 방지
+    if (GetOpenFileNameA(&ofn) != TRUE) 
+	    return; // 사용자가 취소함
 
     std::string filename = szFile;
 
