@@ -18,12 +18,12 @@ public:
     ComponentFactory(token) {};
     ~ComponentFactory() = default;
 
-    using createCompFunc = std::function<std::weak_ptr<IComponent>(std::shared_ptr<GameObject>&)>;
+    using createCompFunc = std::function<std::weak_ptr<IComponent>(GameObject*)>;
 
     template<typename T>
     void Register(std::string compName) 
     {
-        auto createComp = [compName](std::shared_ptr<GameObject>& obj)
+        auto createComp = [compName](GameObject* obj)
         { 
             auto comp = obj->AddComponent<T>();
             comp.lock()->SetName(compName);

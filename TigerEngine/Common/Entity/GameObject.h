@@ -21,7 +21,8 @@ public:
 
 	template<typename T>
 	std::weak_ptr<T> AddComponent();	
-	
+	std::weak_ptr<IComponent> AddComponentByName(std::string name, GameObject* obj);
+		
 	template<typename T>
 	std::weak_ptr<T> GetComponent();
 
@@ -43,6 +44,7 @@ public:
 	/// @brief 데이터 저장을 위한 직렬화 데이터 반환 함수
 	/// @return 직렬화된 json 객체
 	nlohmann::json Serialize() const;
+	void Deserialize(const nlohmann::json objData);
 
 	std::string name = "NoNamed";	// 리플렉션을 위해 public으로 공개
 

@@ -16,6 +16,7 @@ public:
 
 	Matrix GetWorldTransform() const;
 	nlohmann::json Serialize() override;
+	void Deserialize(nlohmann::json data) override;
 
 	std::shared_ptr<Transform> parent{};
 };

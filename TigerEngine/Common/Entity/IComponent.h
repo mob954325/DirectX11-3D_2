@@ -34,6 +34,7 @@ public:
 
 	// 컴포넌트 내용 직렬화해서 json으로 반환하는 함수
 	virtual nlohmann::json Serialize() { return nlohmann::json::object(); }
+	virtual void Deserialize(nlohmann::json data) {};
 
 	// 컴포넌트에 부착된 게임 오브젝트 찾기 ( getter )
 	GameObject* GetOwner() { return owner; }

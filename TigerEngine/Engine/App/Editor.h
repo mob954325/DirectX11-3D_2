@@ -2,6 +2,9 @@
 #include "pch.h"
 #include "System/SceneSystem.h"
 
+/// @brief imgui를 사용하고 렌더링 하는 객체
+/// @date 26 01 07
+/// @details
 class Editor
 {
 public:
@@ -17,6 +20,7 @@ private:
     void RenderComponentInfo(std::string name, std::shared_ptr<T> comp);
 
     void SaveCurrentScene(std::unique_ptr<SceneSystem> &sceneSystem, HWND& hwnd);
+    void LoadScene(std::unique_ptr<SceneSystem> &sceneSystem, HWND& hwnd);
     
     std::weak_ptr<GameObject> selectedObject; // 현재 inspector 정보를 보고 있는 게임 오브젝트
 };

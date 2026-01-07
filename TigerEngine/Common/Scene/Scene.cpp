@@ -74,6 +74,17 @@ std::vector<std::weak_ptr<RenderComponent>>& Scene::GetRenderables()
 	return renderableComponents;
 }
 
+void Scene::ClearScene()
+{
+	for(auto& it : gameObjects)
+	{
+		auto obj = it.second;
+		obj->Destory();	
+	}
+	
+	gameObjects.clear();
+}
+
 bool Scene::SaveToJson(const std::string &filename) const
 {
 	nlohmann::json root;
@@ -94,4 +105,59 @@ bool Scene::SaveToJson(const std::string &filename) const
 	file.close();
 
 	return true;
+}
+
+bool Scene::LoadToJson(const std::string &filename)
+{
+	std::ifstream file(filename);
+	if(!file.is_open()) return false;
+
+	nlohmann::json root;
+
+	try
+	{
+		file >> root;
+	}
+	catch(const nlohmann::json::exception& e)
+	{	// 파일 열기 실패
+		MessageBoxA(nullptr, e.what(), "Error", MB_OK | MB_ICONERROR);
+		file.close();
+		return false;
+	}
+	file.close();	
+
+	ClearScene();
+	
+	// json 데이터에 objects 객체이나 배열이 없음
+	if(!root.contains("objects") || !root["objects"].is_array()) return false;
+
+	for(const auto& objData : root["objects"])
+	{
+		if(!objData.contains("type")) continue;
+
+		std::string typeName = objData["type"]; // 클래스 타입 : GameObject
+		
+		// 이름 찾기
+		std::string objectName = "";
+		if(objData.contains("properties")) objectName = objData["properties"]["Name"];
+
+		auto instance = AddGameObjectByName(objectName);
+		if(!instance) continue; 
+
+		instance->Deserialize(objData["properties"]);
+	}
+
+    return true;
+}
+
+std::weak_ptr<GameObject> Scene::GetGameobjectFromScene(std::string name)
+{
+	if(auto it = gameObjects.find(name); it != gameObjects.end())
+	{
+		return it->second;
+	}
+	else
+	{
+		return std::shared_ptr<GameObject>(); // 빈 객체 보내기
+	}
 }

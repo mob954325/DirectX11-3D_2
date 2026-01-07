@@ -24,10 +24,14 @@ void Editor::RenderMenuBar(std::unique_ptr<SceneSystem> &sceneSystem, HWND& hwnd
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("Save"))
+            if (ImGui::MenuItem("Save current scene"))
 			{
 				SaveCurrentScene(sceneSystem, hwnd);
 			}
+            else if(ImGui::MenuItem("Load scene"))
+            {
+                LoadScene(sceneSystem, hwnd);
+            }
 
             ImGui::EndMenu();
         }
@@ -114,7 +118,7 @@ void Editor::RenderInspector()
                     if(ImGui::MenuItem(name.c_str()))
                     {
                         // 1. 생성 람다 함수를 통해 새 컴포넌트 생성
-                        creatorFunc(obj);
+                        creatorFunc(obj.get());
                     
                         // 2. 현재 작업 중인 오브젝트에 추가
                         // GameObject에 AddComponent(std::shared_ptr<Component>) 형태의 함수가 있어야 합니다.
@@ -251,4 +255,38 @@ void Editor::SaveCurrentScene(std::unique_ptr<SceneSystem>& sceneSystem, HWND& h
 	{
 		MessageBoxA(hwnd, "Failed to save scene!", "Error", MB_OK | MB_ICONERROR);
 	}
+}
+
+void Editor::LoadScene(std::unique_ptr<SceneSystem> &sceneSystem, HWND &hwnd)
+{
+    OPENFILENAMEA ofn ={};
+    char szFile[256] = {};
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFile = szFile;
+    ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = "JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0";
+	ofn.nFilterIndex = 1;
+	ofn.lpstrFileTitle = NULL;
+	ofn.nMaxFileTitle = 0;
+	ofn.lpstrInitialDir = NULL;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+	ofn.lpstrDefExt = "json";
+
+if (GetOpenFileNameA(&ofn) != TRUE)
+	return; // 사용자가 취소함
+
+    std::string filename = szFile;
+
+    auto scene = sceneSystem->GetCurrentScene();
+
+    // scene으로 파일 데이터 로드하기
+    if (scene->LoadToJson(filename))
+    {
+    	MessageBoxA(hwnd, "Scene loaded successfully!", "Load", MB_OK | MB_ICONINFORMATION);
+    }
+    else
+    {
+    	MessageBoxA(hwnd, "Failed to load scene! File not found.", "Error", MB_OK | MB_ICONERROR);
+    }
 }

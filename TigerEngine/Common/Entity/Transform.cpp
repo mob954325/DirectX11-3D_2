@@ -58,3 +58,32 @@ nlohmann::json Transform::Serialize()
 
     return datas;
 }
+
+void Transform::Deserialize(nlohmann::json data)
+{
+    // data : data["objects"]["properties"]["components"]["현재 컴포넌트"]
+
+    auto propData = data["properties"];
+
+    rttr::type t = rttr::type::get(*this);
+    for(auto& prop : t.get_properties())
+    {
+        std::string propName = prop.get_name().to_string();
+        rttr::variant value = prop.get_value(*this);
+	    if(value.is_type<DirectX::SimpleMath::Vector3>() && propName == "Position")
+        {
+            Vector3 vec = { propData["Position"][0], propData["Position"][1], propData["Position"][2] };
+            prop.set_value(*this, vec);
+        }
+        else if(value.is_type<DirectX::SimpleMath::Vector3>() && propName == "Rotation")
+        {
+            Vector3 vec = { propData["Rotation"][0], propData["Rotation"][1], propData["Rotation"][2] };
+            prop.set_value(*this, vec);
+        }
+        else if(value.is_type<DirectX::SimpleMath::Vector3>() && propName == "Scale")
+        {
+            Vector3 vec = { propData["Scale"][0], propData["Scale"][1], propData["Scale"][2] };
+            prop.set_value(*this, vec);
+        }
+	}
+}
