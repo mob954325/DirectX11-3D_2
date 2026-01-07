@@ -1,5 +1,19 @@
 #include "Camera.h"
 #include <Entity/GameObject.h>
+#include <System/ComponentFactory.h>
+
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<Camera>("Camera")
+		.constructor<>()
+			(rttr::policy::ctor::as_std_shared_ptr)
+		.property("moveSpeed", 	&Camera::GetSpeed, 			&Camera::SetSpeed)
+		.property("rotSpeed", 	&Camera::GetRotateSpeed,	&Camera::SetRotateSpeed)
+		.property("nearDist", 	&Camera::GetNearDist, 		&Camera::SetNearDist)
+		.property("farDist", 	&Camera::GetFarDist, 		&Camera::SetFarDist);
+}
+
+// REGISTER_COMPONENT(Camera);
 
 Vector3 Camera::GetForward()
 {
@@ -96,6 +110,77 @@ void Camera::SetProjection(float povAngle, int width, int height, float targetNe
 Matrix Camera::GetProjection() const
 {
 	return projection;
+}
+
+nlohmann::json Camera::Serialize()
+{
+	nlohmann::json datas;
+
+    rttr::type t = rttr::type::get(*this);
+    datas["type"] = t.get_name().to_string();       
+    datas["properties"] = nlohmann::json::object(); // 객체 생성
+
+    for(auto& prop : t.get_properties())
+    {
+        std::string propName = prop.get_name().to_string();
+        rttr::variant value = prop.get_value(*this);
+	    if(value.is_type<float>() && propName == "moveSpeed")
+        {
+            auto v = value.get_value<float>();
+            datas["properties"][propName] = v;
+        }
+        else if(value.is_type<float>() && propName == "rotSpeed")
+        {
+            auto v = value.get_value<float>();
+            datas["properties"][propName] = v;
+        }
+        else if(value.is_type<float>() && propName == "nearDist")
+        {
+            auto v = value.get_value<float>();
+            datas["properties"][propName] = v;
+        }
+		else if(value.is_type<float>() && propName == "farDist")
+        {
+            auto v = value.get_value<float>();
+            datas["properties"][propName] = v;
+        }
+	}
+
+    return datas;
+}
+
+void Camera::Deserialize(nlohmann::json data)
+{
+	// data : data["objects"]["properties"]["components"]["현재 컴포넌트"]
+
+    auto propData = data["properties"];
+
+    rttr::type t = rttr::type::get(*this);
+    for(auto& prop : t.get_properties())
+    {
+        std::string propName = prop.get_name().to_string();
+        rttr::variant value = prop.get_value(*this);
+	    if(value.is_type<float>() && propName == "moveSpeed")
+        {
+            auto v = propData["moveSpeed"];
+            prop.set_value(*this, v);
+        }
+        else if(value.is_type<float>() && propName == "rotSpeed")
+        {
+            auto v = propData["rotSpeed"];
+            prop.set_value(*this, v);
+        }
+        else if(value.is_type<float>() && propName == "nearDist")
+        {
+            auto v = propData["nearDist"];
+            prop.set_value(*this, v);
+        }
+		else if(value.is_type<float>() && propName == "farDist")
+        {
+            auto v = propData["farDist"];
+            prop.set_value(*this, v);
+        }
+	}
 }
 
 void Camera::OnInputProcess(const Keyboard::State &KeyState, const Keyboard::KeyboardStateTracker &KeyTracker, const Mouse::State &MouseState, const Mouse::ButtonStateTracker &MouseTracker)

@@ -3,10 +3,14 @@
 #include "IComponent.h"
 #include <System/InputSystem.h>
 
+#define RTTR_DLL
+#include <rttr/registration>
+
 using namespace DirectX::SimpleMath;
 
 class Camera : public IComponent, public InputProcesser
 {
+	//RTTR_ENABLE()
 public:
 	Vector3 GetForward();
 	Vector3 GetRight();
@@ -23,11 +27,24 @@ public:
 	void OnStart() override;
 	void OnUpdate(float delta) override;
 
-	float GetPovAngle() { return povAngle; }
-	float GetNearDist() { return nearDist; }
-	float GetFarDist() { return farDist; }
+	float GetSpeed() { return moveSpeed; }
+	void SetSpeed(float value) {  moveSpeed = value; }
 
+	float GetRotateSpeed() { return rotSpeed; }
+	void SetRotateSpeed(float value) { rotSpeed = value;}
+
+	float GetPovAngle() { return povAngle; }
+	void SetPovAngle(float angle) { povAngle = angle; }
+
+	float GetNearDist() { return nearDist; }
+	void SetNearDist(float value) { nearDist = value; }
 	
+	float GetFarDist() { return farDist; }
+	void SetFarDist(float value) { farDist = value; }
+
+	nlohmann::json Serialize() override;
+	void Deserialize(nlohmann::json data) override;
+
 	void OnInputProcess(const Keyboard::State& KeyState, const Keyboard::KeyboardStateTracker& KeyTracker,
 		const Mouse::State& MouseState, const Mouse::ButtonStateTracker& MouseTracker) override;
 private:
