@@ -12,8 +12,9 @@ public:
 					std::shared_ptr<Camera> cam) override;    
     void End(ComPtr<ID3D11DeviceContext>& context) override;
 
-    void SetDepthStencilView(ComPtr<ID3D11DepthStencilView>& dsv);
-    void SetRenderTargetView(ComPtr<ID3D11RenderTargetView>& rtv);
+	ComPtr<ID3D11ShaderResourceView> GetShadowSRV() { return shaderResourceView; };
+	Matrix GetShadowView() { return shadowView; }
+	Matrix GetShadowProjection() { return shadowProj; }
 
 private:
 	ComPtr<ID3D11InputLayout> 			inputLayout{};

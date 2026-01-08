@@ -17,6 +17,9 @@ public:
     void SetDepthStencilView(ComPtr<ID3D11DepthStencilView>& dsv);
     void SetRenderTargetView(ComPtr<ID3D11RenderTargetView>& rtv);
 
+    void SetShadowViewProj(Matrix view, Matrix proj);
+    void SetShadowSRV(ComPtr<ID3D11ShaderResourceView>& srv);
+
 private:
 	ComPtr<ID3D11InputLayout> 			inputLayout{};
 	ComPtr<ID3D11SamplerState> 			samplerLinear{};
@@ -42,9 +45,12 @@ private:
     UINT clientHeight{};
 
     Camera* camera{};
-
+    Matrix shadowView{};
+    Matrix shadowProj{};
+    
     std::vector<ComPtr<ID3D11ShaderResourceView>>* gbufferSRVs{};
-
+    ComPtr<ID3D11ShaderResourceView> shadowSRV;
+    
     // PBR IBL 텍스쳐
     ComPtr<ID3D11ShaderResourceView> IBLIrradiance;
 	ComPtr<ID3D11ShaderResourceView> IBLSpecular;

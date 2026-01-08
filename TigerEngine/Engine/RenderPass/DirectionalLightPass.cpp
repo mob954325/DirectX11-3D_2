@@ -131,6 +131,8 @@ void DirectionalLightPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::sh
 
 	ConstantBuffer cb;
 	cb.CameraPos = cam->GetOwner()->GetTransform().lock()->position;
+	cb.shadowView = shadowView;
+	cb.shadowProjection = shadowProj;
 
 	// 11, 12, 13 -> color, normal, worldpos
 	// 4 shadow depth
@@ -163,7 +165,7 @@ void DirectionalLightPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::sh
 	context->PSSetConstantBuffers(0, 1, cameraCB.GetAddressOf());
 
 	context->PSSetShaderResources(11, SRVs.size(), SRVs.data());			// gbuffer texture 바인드
-	// context->PSSetShaderResources(4, 1, m_shadowMapSRV.GetAddressOf());	    // shadow map 바인드
+	context->PSSetShaderResources(4, 1, shadowSRV.GetAddressOf());	// shadow
 	context->PSSetShaderResources(8, 1, IBLIrradiance.GetAddressOf());	// Irradiance
 	context->PSSetShaderResources(9, 1, IBLSpecular.GetAddressOf());		// Sepcular
 	context->PSSetShaderResources(10, 1, IBLLookUpTable.GetAddressOf());	// LUT
@@ -182,9 +184,8 @@ void DirectionalLightPass::End(ComPtr<ID3D11DeviceContext> &context)
 	// srv unbind
 	vector<ID3D11ShaderResourceView*> nullSRVs(gbufferSRVs->size(), nullptr);
 	context->PSSetShaderResources(11, gbufferSRVs->size(), nullSRVs.data());	// gbuffer tex
-
-	// vector<ID3D11ShaderResourceView*> nullSRVs2(1, nullptr);
-	// context->PSSetShaderResources(4, 1, nullSRVs2.data());				// shadow map
+	
+	context->PSSetShaderResources(4, 1, &nullSRVs[0]);
 }
 
 void DirectionalLightPass::SetClient(UINT width, UINT height)
@@ -204,6 +205,17 @@ void DirectionalLightPass::SetDepthStencilView(ComPtr<ID3D11DepthStencilView> &d
 void DirectionalLightPass::SetRenderTargetView(ComPtr<ID3D11RenderTargetView> &rtv)
 {
     renderTargetView = rtv;
+}
+
+void DirectionalLightPass::SetShadowViewProj(Matrix view, Matrix proj)
+{
+	shadowView = view;
+	shadowProj = proj;
+}
+
+void DirectionalLightPass::SetShadowSRV(ComPtr<ID3D11ShaderResourceView> &srv)
+{
+	shadowSRV = srv;
 }
 
 void DirectionalLightPass::CreateQuad(ComPtr<ID3D11Device> &device)

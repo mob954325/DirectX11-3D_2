@@ -143,9 +143,9 @@ void ShadowRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared
 	context->VSSetShader(vertexShader.Get(), 0, 0);
 	// m_pDeviceContext->PSSetShader(NULL, NULL, 0); // 렌더 타겟에 기록할 RGBA가 없으므로 실행하지 않는다.
 	context->PSSetShader(pixelShader.Get(), NULL, 0); // 
-    context->PSSetShaderResources(4, 1, shaderResourceView.GetAddressOf());
 }
 
 void ShadowRenderPass::End(ComPtr<ID3D11DeviceContext> &context)
 {
+	context->PSSetShaderResources(4, 1, shaderResourceView.GetAddressOf());
 }

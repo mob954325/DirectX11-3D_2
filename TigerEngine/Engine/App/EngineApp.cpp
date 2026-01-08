@@ -61,6 +61,8 @@ bool EngineApp::OnInitialize()
 	dlpass->SetGBufferSRV(gpass->GetShaderResourceViews());
 	dlpass->SetDepthStencilView(dxRenderer->GetDepthStencilView());
 	dlpass->SetRenderTargetView(dxRenderer->GetBackBufferRTV());
+	dlpass->SetShadowViewProj(shadowPass->GetShadowView(), shadowPass->GetShadowProjection());
+	dlpass->SetShadowSRV(shadowPass->GetShadowSRV());
 	renderPasses.push_back(dlpass);
 
 	auto sbpass = std::make_shared<SkyboxRenderPass>();
