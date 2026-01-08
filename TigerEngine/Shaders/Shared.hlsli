@@ -37,10 +37,6 @@ cbuffer ConstantBuffer : register(b0)   // PerFrame
     float4 LightSpecular;   // 정반사    
     float Shininess;        // 광택지수
     float3 CameraPos;       // 카메라 위치        
-    
-    float Metalness;
-    float Roughness;
-    float2 pad;
 }
 
 cbuffer Material : register(b1) // PerMaterial
@@ -56,8 +52,12 @@ cbuffer Material : register(b1) // PerMaterial
     
     int hasMetalness;
     int hasRoughness;    
-    int hasShininess;    
-    float pad2;
+    int hasShininess;        
+    float pad1;
+
+    float Metalness;
+    float Roughness;
+    float2 pad2;
 };
 
 cbuffer ModelTransform : register(b2)

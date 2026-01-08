@@ -1,27 +1,19 @@
 #include "ShadowRenderPass.h"
 #include "Entity/GameObject.h"
 
-struct ConstantBuffer
+struct ConstantBuffer   // TODO 정리하기
 {
 	Matrix cameraView;
 	Matrix cameraProjection;
 
-	Vector4 lightDirection;
 	Matrix shadowView;
 	Matrix shadowProjection;
-
-	Color lightColor;
 
 	Vector4 ambient;	// 환경광
 	Vector4 diffuse;	// 난반사
 	Vector4 specular;	// 정반사
 	FLOAT shininess;	// 광택지수
 	Vector3 CameraPos;	// 카메라 위치
-
-	FLOAT metalness;	//  
-	FLOAT roughness;	//
-	FLOAT ambientOcclusion;
-	FLOAT pad3;
 };
 
 void ShadowRenderPass::Init(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& deviceContext, Camera* cam)

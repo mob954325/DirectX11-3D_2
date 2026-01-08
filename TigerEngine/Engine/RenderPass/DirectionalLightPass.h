@@ -51,8 +51,8 @@ private:
 	ComPtr<ID3D11ShaderResourceView> IBLLookUpTable;
 
     // lights
-    Color lightColor{};
-    Vector3 lightDir{1, 1, 1};
+    Color lightColor{1, 1, 1};
+    Vector3 lightDir{0, -1, 0};
     float lightIntensity = 1;
     
     // quad
