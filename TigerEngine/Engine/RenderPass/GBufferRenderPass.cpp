@@ -141,6 +141,7 @@ void GBufferRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::share
 
 	context->VSSetShader(vertexShader.Get(), 0, 0);
 	context->VSSetConstantBuffers(0, 1, cbCamera.GetAddressOf());
+	context->PSSetConstantBuffers(0, 1, cbCamera.GetAddressOf());
 
 	context->RSSetState(rasterizerState.Get());
 	context->RSSetViewports(1, &renderViewport);

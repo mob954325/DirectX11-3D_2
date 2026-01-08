@@ -35,12 +35,15 @@ private:
     ComPtr<ID3D11RasterizerState>       rasterizerState{};
 	
 	ComPtr<ID3D11Buffer> 				lightDirectionBufferCB{};
+	ComPtr<ID3D11Buffer> 				cameraCB{}; // TODO A
 	
 	D3D11_VIEWPORT 						renderViewport = {};
     UINT clientWidth{};
     UINT clientHeight{};
 
-    std::vector<ComPtr<ID3D11ShaderResourceView>> gbufferSRVs{};
+    Camera* camera{};
+
+    std::vector<ComPtr<ID3D11ShaderResourceView>>* gbufferSRVs{};
 
     // PBR IBL 텍스쳐
     ComPtr<ID3D11ShaderResourceView> IBLIrradiance;

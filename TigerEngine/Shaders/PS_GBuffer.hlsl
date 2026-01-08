@@ -16,7 +16,7 @@ GBufferOut main(PS_INPUT_MODEL input)
     GBufferOut gOut;
     gOut.Position = float4(input.PosWS, 1.0f);
     
-    // ±¤¿øÃ³¸® ºÎºÐ =====================================================================
+    // ï¿½ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½Îºï¿½ =====================================================================
     // base(diffuse) texture Sampling 
     float4 albedo = txDiffuse.Sample(samLinear, input.Tex);
     if (!hasDiffuse)
@@ -49,7 +49,7 @@ GBufferOut main(PS_INPUT_MODEL input)
     // normalSample
     float3x3 TBN = float3x3(input.Tangent, input.Bitangent, input.NormWS);
     float3 normalMapSample = txNormal.Sample(samLinear, input.Tex).rgb;
-    // normal mapÀÌ ¾øÀ» °æ¿ì¸¦ ´ëºñ
+    // normal mapï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¸¦ ï¿½ï¿½ï¿½
     if (!hasNormal)
     {
         normalMapSample = float3(0.5f, 0.5f, 1.0f); // flat normal (no perturbation)

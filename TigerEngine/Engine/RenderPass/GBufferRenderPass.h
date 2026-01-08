@@ -41,6 +41,8 @@ private:
     UINT clientWidth{};
     UINT clientHeight{};
 
+	Camera* camera{};
+
     enum class EGbuffer
 	{
 		BaseColor = 0,

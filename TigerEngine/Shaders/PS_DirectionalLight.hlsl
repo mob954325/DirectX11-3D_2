@@ -22,7 +22,7 @@ float3 FresnelSchlick(float3 F0, float cosTheta) // F0 == relfection factor
 }
 
 // G(l,v,h) 
-float GSchlickGGX(float3 norm, float3 viewVec, float k) // K : ºí·¯ °¨¼Ò ÀÎÀÚ
+float GSchlickGGX(float3 norm, float3 viewVec, float k) // K : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 {
     float NdotV = dot(norm, viewVec);
     float denom = NdotV * (1.0 - k) + k;
@@ -59,15 +59,15 @@ float4 main(PS_INPUT_QUAD input) : SV_TARGET
     
     float3 lightColor = LightColor.rgb;
     
-    float3 Lo = normalize((float3) CameraPos - (float3) worldSpacePos); // ºûÀÌ ´«À¸·Î °¡´Â ¹æÇâ : ÇöÀç À§Ä¡ -> eye ( view Vector )
+    float3 Lo = normalize((float3) CameraPos - (float3) worldSpacePos); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ -> eye ( view Vector )
 
-    float3 Li = normalize(lightDirWorld); // ºû ¹æÇâ
+    float3 Li = normalize(lightDirWorld); // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     float3 Lh = normalize(Li + Lo); // half-vector between Li and Lo        
     
     float NdotL = saturate(dot(finalNorm, Li)); // dot(Normal, Light Direction)
     float NdotO = saturate(dot(finalNorm, Lo)); // dot(Normal, View)
     
-    // ±×¸²ÀÚÃ³¸® ºÎºÐ =====================================================================
+    // ï¿½×¸ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ ï¿½Îºï¿½ =====================================================================
     float finalShadow = 1.0f;
     // Light Space
     float4 positionShadow = mul(float4(worldSpacePos, 1.0f), ShadowView);
@@ -81,12 +81,12 @@ float4 main(PS_INPUT_QUAD input) : SV_TARGET
     shadowUV.y = -shadowUV.y;
     shadowUV = shadowUV * 0.5f + 0.5f;
     
-    // NDCÁÂÇ¥°è¿¡¼­ Texture ÁÂÇ¥°è·Î º¯È¯
+    // NDCï¿½ï¿½Ç¥ï¿½è¿¡ï¿½ï¿½ Texture ï¿½ï¿½Ç¥ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
     if (shadowUV.x >= 0.0 && shadowUV.x <= 1.0 && shadowUV.y >= 0.0 && shadowUV.y <= 1.0)
     {
         float sampleShadowDepth = txShadow.Sample(samLinear, shadowUV).r;
         
-        // currentShadowDepth°¡ ´õ Å©¸é µÚ ÂÊ¿¡ ÀÖÀ¸¹Ç·Î Á÷Á¢±¤ Â÷´Ü
+        // currentShadowDepthï¿½ï¿½ ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         if (currentShadowDepth > sampleShadowDepth + 0.001)
         {
             finalShadow = 0.0f;
@@ -100,7 +100,7 @@ float4 main(PS_INPUT_QUAD input) : SV_TARGET
     // Cook-Torrance Specular BRDF   
 
     
-    // ±âº» ¹Ý»çÀ²(F0) = lerp(ºñ±Ý¼Ó Æò±Õ ¹Ý»ç, baseColor(ÅØ½ºÃ³), matalness)
+    // ï¿½âº» ï¿½Ý»ï¿½ï¿½ï¿½(F0) = lerp(ï¿½ï¿½Ý¼ï¿½ ï¿½ï¿½ï¿½ ï¿½Ý»ï¿½, baseColor(ï¿½Ø½ï¿½Ã³), matalness)
     float3 F0 = lerp(float3(0.04, 0.04, 0.04), (float3) baseColor, metal);
     
     {   
@@ -108,7 +108,7 @@ float4 main(PS_INPUT_QUAD input) : SV_TARGET
         float3 F = FresnelSchlick(F0, max(0, dot(Lh, Lo)));
         float G = GSmithMethod(finalNorm, Lo, Li, rough);
     
-        // Ç¥¸é »ê¶õ
+        // Ç¥ï¿½ï¿½ ï¿½ï¿½ï¿½
         float3 kd = lerp(float3(1, 1, 1) - F, float3(0, 0, 0), metal);
     
         // Lambert diffuse BRDF  
@@ -130,7 +130,7 @@ float4 main(PS_INPUT_QUAD input) : SV_TARGET
         float3 F = FresnelSchlick(F0, NdotO);
         float3 kd = lerp(1.0 - F, 0.0, metal);
         
-        float3 diffuseIBL = kd * (float3)baseColor * irradiance / PI; // irradiance mapÀÌ 1/pi°¡ Æ÷ÇÔµÇ¾îÀÖÀ¸¸é Á¦°Å ÀÖÀ¸¸é 1/pi Ãß°¡ÇÏ±â
+        float3 diffuseIBL = kd * (float3)baseColor * irradiance / PI; // irradiance mapï¿½ï¿½ 1/piï¿½ï¿½ ï¿½ï¿½ï¿½ÔµÇ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 1/pi ï¿½ß°ï¿½ï¿½Ï±ï¿½
         
         // IBL specular        
         uint specularTexureLevels, width, height;        
@@ -140,10 +140,10 @@ float4 main(PS_INPUT_QUAD input) : SV_TARGET
         
         float3 PrefilteredColor = txIBLSepcualar.SampleLevel(samLinear, R, rough * specularTexureLevels).rgb;
         
-        // dot(Normal,View) , roughness¸¦ ÅØ¼¿ÁÂÇ¥·Î ¹Ì¸®°è»êµÈ F*G , G Æò±Õ°ªÀ» »ùÇÃ¸µÇÑ´Ù  
+        // dot(Normal,View) , roughnessï¿½ï¿½ ï¿½Ø¼ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ F*G , G ï¿½ï¿½Õ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½Ñ´ï¿½  
         float2 specularBRDF = txIBLLookUpTable.Sample(samLinear, float2(NdotO, rough)).rg;
         
-        // ÄîÅä·±½º Spceular BRDF ±Ù»ç½Ä
+        // ï¿½ï¿½ï¿½ä·±ï¿½ï¿½ Spceular BRDF ï¿½Ù»ï¿½ï¿½
         float3 specularIBL = PrefilteredColor * (F0 * specularBRDF.x + specularBRDF.y); // x : normal dot view, y : roughtness
         
         inDirectLighting = (diffuseIBL + specularIBL);

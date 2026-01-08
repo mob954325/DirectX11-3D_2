@@ -168,14 +168,13 @@ void DirectX11Renderer::ProcessScene
 	(std::shared_ptr<Scene> scene, std::shared_ptr<IRenderPass> renderPass, std::shared_ptr<Camera> cam)
 {
 	renderQueue.Clear();
-
 	renderPass->Execute(deviceContext, scene, cam);	
+	
 	// getrenderable from scene
-
 	if(scene)
 	{		
 		auto renderComps = scene->GetRenderables();
-
+		
 		// add queue
 		for(auto it = renderComps.begin(); it != renderComps.end();)
 		{
@@ -193,7 +192,7 @@ void DirectX11Renderer::ProcessScene
 			
 			it++;
 		}
-
+		
 		// execute pass, queue
 		renderQueue.Execute(deviceContext);
 	}

@@ -1,6 +1,31 @@
 #include "DirectionalLightPass.h"
 #include "DDSTextureLoader.h"
 
+#include "Entity/GameObject.h"
+
+struct ConstantBuffer   // TODO 정리하기
+{
+	Matrix cameraView;
+	Matrix cameraProjection;
+
+	Vector4 lightDirection;
+	Matrix shadowView;
+	Matrix shadowProjection;
+
+	Color lightColor;
+
+	Vector4 ambient;	// 환경광
+	Vector4 diffuse;	// 난반사
+	Vector4 specular;	// 정반사
+	FLOAT shininess;	// 광택지수
+	Vector3 CameraPos;	// 카메라 위치
+
+	FLOAT metalness;	//  
+	FLOAT roughness;	//
+	FLOAT ambientOcclusion;
+	FLOAT pad3;
+};
+
 struct LightDirectionCB
 {
 	Vector4 lightDirection;
@@ -30,7 +55,6 @@ void DirectionalLightPass::Init(ComPtr<ID3D11Device> &device)
     /* --------------------------------- 셰이더 만들기 -------------------------------- */
 	ComPtr<ID3DBlob> vertexShaderBuffer{};
 	// Light Pass
-	vertexShaderBuffer.Reset();
 	HR_T(CompileShaderFromFile(L"Shaders\\VS_DirectionalLight.hlsl", "main", "vs_5_0", vertexShaderBuffer.GetAddressOf()));
 	HR_T(device->CreateInputLayout(layout, ARRAYSIZE(layout),vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), inputLayout.GetAddressOf()));
 	HR_T(device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, vertexShader.GetAddressOf()));
@@ -98,14 +122,23 @@ void DirectionalLightPass::Init(ComPtr<ID3D11Device> &device)
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	HR_T(device->CreateBuffer(&bufferDesc, nullptr, lightDirectionBufferCB.GetAddressOf()));
+
+    bufferDesc = {};
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(ConstantBuffer);
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	HR_T(device->CreateBuffer(&bufferDesc, nullptr, cameraCB.GetAddressOf()));
 }
 
 void DirectionalLightPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, std::shared_ptr<Camera> cam)
 {
 	LightDirectionCB lightdirCB;
-	//lightDir.Normalize();
 	lightdirCB.lightDirection = Vector4(lightDir.x, lightDir.y, lightDir.z, lightIntensity);
 	lightdirCB.lightColor = lightColor;
+
+	ConstantBuffer cb;
+	cb.CameraPos = cam->GetOwner()->GetTransform().lock()->position;
 
 	// 11, 12, 13 -> color, normal, worldpos
 	// 4 shadow depth
@@ -116,13 +149,13 @@ void DirectionalLightPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::sh
 	context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencliView.Get()); // backbuffer -> 스왑체인꺼 가져와야함
 	context->OMSetDepthStencilState(dpethStencliState.Get(), 0); // Depth test OFF, write OFF
 
-	vector<ID3D11ShaderResourceView*> SRVs = // 이거 GBufferState에서 가져와야함
+	std::vector<ID3D11ShaderResourceView*> SRVs =
 	{
-		gbufferSRVs[0].Get(),
-		gbufferSRVs[1].Get(),
-		gbufferSRVs[2].Get(),
-		gbufferSRVs[3].Get(),
-		gbufferSRVs[4].Get()
+	    (*gbufferSRVs)[0].Get(),
+	    (*gbufferSRVs)[1].Get(),
+	    (*gbufferSRVs)[2].Get(),
+	    (*gbufferSRVs)[3].Get(),
+	    (*gbufferSRVs)[4].Get()
 	};
 
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -134,6 +167,8 @@ void DirectionalLightPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::sh
 
 	context->UpdateSubresource(lightDirectionBufferCB.Get(), 0, nullptr, &lightdirCB, 0, 0);
 	context->PSSetConstantBuffers(5, 1, lightDirectionBufferCB.GetAddressOf());
+	context->UpdateSubresource(cameraCB.Get(), 0, nullptr, &cb, 0, 0);
+	context->PSSetConstantBuffers(0, 1, cameraCB.GetAddressOf());
 
 	context->PSSetShaderResources(11, SRVs.size(), SRVs.data());			// gbuffer texture 바인드
 	// context->PSSetShaderResources(4, 1, m_shadowMapSRV.GetAddressOf());	    // shadow map 바인드
@@ -153,8 +188,8 @@ void DirectionalLightPass::End(ComPtr<ID3D11DeviceContext> &context)
     context->OMSetBlendState(nullptr, blendFactor, 0xffffffff);
 	
 	// srv unbind
-	vector<ID3D11ShaderResourceView*> nullSRVs(gbufferSRVs.size(), nullptr);
-	context->PSSetShaderResources(11, gbufferSRVs.size(), nullSRVs.data());	// gbuffer tex
+	vector<ID3D11ShaderResourceView*> nullSRVs(gbufferSRVs->size(), nullptr);
+	context->PSSetShaderResources(11, gbufferSRVs->size(), nullSRVs.data());	// gbuffer tex
 
 	// vector<ID3D11ShaderResourceView*> nullSRVs2(1, nullptr);
 	// context->PSSetShaderResources(4, 1, nullSRVs2.data());				// shadow map
@@ -166,7 +201,7 @@ void DirectionalLightPass::SetClient(UINT width, UINT height)
 
 void DirectionalLightPass::SetGBufferSRV(std::vector<ComPtr<ID3D11ShaderResourceView>> &srvs)
 {
-    gbufferSRVs = srvs;
+    gbufferSRVs = &srvs;
 }
 
 void DirectionalLightPass::SetDepthStencilView(ComPtr<ID3D11DepthStencilView> &dsv)

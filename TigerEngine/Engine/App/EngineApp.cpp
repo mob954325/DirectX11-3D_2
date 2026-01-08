@@ -7,6 +7,7 @@
 #include <RenderPass/DirectionalLightPass.h>
 #include <RenderPass/GBufferRenderPass.h> 
 #include <RenderPass/SkyboxRenderPass.h>
+#include <RenderPass/ShadowRenderPass.h>
 
 EngineApp::EngineApp(HINSTANCE hInstance)
 	: GameApp(hInstance)
@@ -34,7 +35,22 @@ bool EngineApp::OnInitialize()
 	sceneSystem->AddScene();				// create first scene
 	sceneSystem->SetCurrentSceneByIndex(); 	// render first scene
 
+	/* ------------------------------ init freeCam ------------------------------ */
+	freeCamera = std::make_shared<GameObject>();
+	freeCamera->SetName("Main Camera");
+	freeCamera->SetScene(sceneSystem->GetCurrentScene().get());
+	freeCamera->GetTransform().lock()->position = { 0, 0, -30};
+	sceneSystem->GetCurrentScene()->AddGameObject(freeCamera); // scene에 카메라 등록
+
+	auto camComp = freeCamera->AddComponent<Camera>().lock();
+	camComp->SetProjection(DirectX::XM_PIDIV2, clientWidth, clientHeight, 0.1, 1000);
+
 	/* ----------------------------- init renderpass ---------------------------- */
+	// NOTE : 랜더링하는 순서대로 추가 할 것
+	auto shadowPass = std::make_shared<ShadowRenderPass>();
+	shadowPass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext(), freeCamera->GetComponent<Camera>().lock().get());
+	renderPasses.push_back(shadowPass);
+
 	auto gpass = std::make_shared<GBufferRenderPass>();
 	gpass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext(), clientWidth, clientHeight);
 	gpass->SetDepthStencilView(dxRenderer->GetDepthStencilView());
@@ -53,16 +69,6 @@ bool EngineApp::OnInitialize()
 	sbpass->SetRenderTargetView(dxRenderer->GetBackBufferRTV());
 	renderPasses.push_back(sbpass);
 
-	/* ------------------------------ init freeCam ------------------------------ */
-	freeCamera = std::make_shared<GameObject>();
-	freeCamera->SetName("Main Camera");
-	freeCamera->SetScene(sceneSystem->GetCurrentScene().get());
-	freeCamera->GetTransform().lock()->position = { 0, 0, -30};
-	sceneSystem->GetCurrentScene()->AddGameObject(freeCamera); // scene에 카메라 등록
-
-	auto camComp = freeCamera->AddComponent<Camera>().lock();
-	camComp->SetProjection(DirectX::XM_PIDIV2, clientWidth, clientHeight, 0.1, 1000);
-
 	return true;
 }
 
@@ -77,12 +83,16 @@ void EngineApp::OnUpdate()
 void EngineApp::OnRender()
 {
 	BeginRender(); 					// 업데이트 준비
-
+	
 	for(auto& pass : renderPasses)
 	{	
 		if(typeid(*pass) == typeid(GBufferRenderPass))
 		{
 			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCamera->GetComponent<Camera>().lock());  // 렌더러가 씬을 렌더링
+		}
+		else if(typeid(*pass) == typeid(ShadowRenderPass))
+		{
+			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCamera->GetComponent<Camera>().lock()); 
 		}
 		else
 		{
