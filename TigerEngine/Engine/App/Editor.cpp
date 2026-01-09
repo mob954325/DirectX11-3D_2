@@ -238,7 +238,8 @@ void Editor::SaveCurrentScene(std::unique_ptr<SceneSystem>& sceneSystem, HWND& h
 	ofn.lpstrFileTitle = NULL;
 	ofn.nMaxFileTitle = 0;
 	ofn.lpstrInitialDir = NULL;
-	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT 
+            | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR;;
 	ofn.lpstrDefExt = "json";
 
 	if (GetSaveFileNameA(&ofn) != TRUE)
