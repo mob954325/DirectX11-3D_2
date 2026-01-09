@@ -37,6 +37,7 @@ set(COMMON_SOURCE
     Common/System/SceneSystem.cpp
     Common/System/TimeSystem.cpp
     Common/System/ComponentFactory.h
+    Common/System/CameraSystem.cpp
 )
 
 # 라이브러리 추가
@@ -133,6 +134,7 @@ endif()
 # DirectXTK 폴더를 호출하여 그 안에 정의된 라이브러리 타겟(DirectXTK_Lib)을 가져옵니다.
 add_subdirectory(External/directxtex)
 add_subdirectory(External/directxtk)
+add_subdirectory(External/ImguiFileDialog)
 
 find_package(assimp CONFIG REQUIRED) # assimp/헤더파일명 으로 가져오기
 find_package(nlohmann_json CONFIG REQUIRED) # assimp/헤더파일명 으로 가져오기
@@ -156,6 +158,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     # 2. External에 있는 라이브러리
     DirectXTK_Lib
     DirectXTex_Lib
+    ImGuiFileDialog # Imgui 파일 탐색기 https://github.com/aiekick/ImGuiFileDialog/tree/master
 
     # 3. 시스템 라이브러리
     d3d11
