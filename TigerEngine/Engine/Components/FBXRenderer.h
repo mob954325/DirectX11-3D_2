@@ -8,11 +8,15 @@
 
 class FBXRenderer : public RenderComponent
 {
+	RTTR_ENABLE(IComponent)
 public:
 	void OnInitialize() override;
 	void OnStart() override;
 	void OnUpdate(float delta) override;
 	
+	nlohmann::json Serialize() override;
+	void Deserialize(nlohmann::json data) override;
+
 private:
     void CreateBoneInfo();
 	void CreateCommand();	// 매 프레임마다 어떻게 그려질지 정한다.

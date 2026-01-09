@@ -4,6 +4,13 @@
 #include <Components/FBXData.h>
 #include <Manager/ShaderManager.h>
 
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<FBXRenderer>("FBXRenderer")
+		.constructor<>()
+			(rttr::policy::ctor::as_std_shared_ptr);
+}
+
 REGISTER_COMPONENT(FBXRenderer);
 
 void FBXRenderer::OnInitialize()
@@ -59,6 +66,35 @@ void FBXRenderer::OnUpdate(float delta)
 	}	
 
 	CreateCommand();
+}
+
+nlohmann::json FBXRenderer::Serialize()
+{
+	nlohmann::json datas;
+
+    rttr::type t = rttr::type::get(*this);
+    datas["type"] = t.get_name().to_string();       
+    datas["properties"] = nlohmann::json::object(); // 객체 생성
+
+    for(auto& prop : t.get_properties())
+    {
+
+	}
+
+    return datas;
+}
+
+void FBXRenderer::Deserialize(nlohmann::json data)
+{
+	// data : data["objects"]["properties"]["components"]["현재 컴포넌트"]
+
+    auto propData = data["properties"];
+
+    rttr::type t = rttr::type::get(*this);
+    for(auto& prop : t.get_properties())
+    {
+		
+	}
 }
 
 void FBXRenderer::CreateBoneInfo()
