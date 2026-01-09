@@ -1,6 +1,9 @@
 #include "Editor.h"
 #include <System/ComponentFactory.h>
 #include <commdlg.h>
+#include <ImGuiFileDialog.h>
+
+#include <Components/FBXData.h>
 
 // RTTR
 #define RTTR_DLL
@@ -202,7 +205,26 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
                 // 탐색기 열기 버튼
                 if (ImGui::Button("Browse..."))
                 {
-                    
+                    IGFD::FileDialogConfig config;
+                    config.path = ".";
+                    ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".fbx", config);
+                }
+                    // display
+                if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) 
+                {
+                    if (ImGuiFileDialog::Instance()->IsOk()) 
+                    { // action if OK
+                        std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();     // 절대 경로 + 파일 이름
+                        std::string currFilePath = ImGuiFileDialog::Instance()->GetCurrentFileName();   // 진짜 파일 이름만 뜸
+                        std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();           // 절대 경로만 뜸
+                        std::string fileFilterPath = ImGuiFileDialog::Instance()->GetCurrentFilter();   // 확장자만 나옴
+                        // action
+
+                        std::shared_ptr<FBXData> fbxDataComp = std::dynamic_pointer_cast<FBXData>(comp);
+                        fbxDataComp->ChangeData(filePathName);
+                    }
+                    // close
+                    ImGuiFileDialog::Instance()->Close();
                 }
             }
         }        

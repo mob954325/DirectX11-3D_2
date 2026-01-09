@@ -34,6 +34,16 @@ const std::shared_ptr<FBXResourceAsset> FBXData::GetFBXInfo() const
     return fbxAsset;
 }
 
+void FBXData::ChangeData(std::string path)
+{
+    fbxAsset = FBXResourceManager::Instance().LoadFBXByPath(path);
+    meshes = fbxAsset->meshes; 
+    this->path = path;
+
+    auto renderer = owner->GetComponent<FBXRenderer>(); // TODO load 후 컴포넌트 추가할 때 터짐 이거 수정하면 이 주석 제거할 것
+    if(!renderer.expired()) renderer.lock()->OnInitialize();
+}
+
 nlohmann::json FBXData::Serialize()
 {
     nlohmann::json datas;

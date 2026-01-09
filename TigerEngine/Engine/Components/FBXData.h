@@ -12,6 +12,8 @@ public:
     const std::vector<Mesh>& GetMesh() const;
     const std::shared_ptr<FBXResourceAsset> GetFBXInfo() const;
 
+    void ChangeData(std::string path);
+
     nlohmann::json Serialize() override;
 	void Deserialize(nlohmann::json data) override;
     
