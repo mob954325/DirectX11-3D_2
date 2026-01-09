@@ -1,6 +1,5 @@
 #pragma once
-#include "../pch.h"
-#include "SimpleMath.h"
+#include "pch.h"
 #include "IComponent.h"
 
 class Transform : public IComponent
@@ -18,6 +17,6 @@ public:
 	nlohmann::json Serialize() override;
 	void Deserialize(nlohmann::json data) override;
 
-	std::shared_ptr<Transform> parent{};
+	//std::shared_ptr<Transform> parent{};
 };
 

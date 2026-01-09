@@ -13,7 +13,7 @@ RTTR_REGISTRATION
 		.property("farDist", 	&Camera::GetFarDist, 		&Camera::SetFarDist);
 }
 
-// REGISTER_COMPONENT(Camera);
+REGISTER_COMPONENT(Camera);
 
 Vector3 Camera::GetForward()
 {

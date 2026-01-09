@@ -27,7 +27,7 @@ public:
 	// 매 랜더링 시 호출되는 함수
 	void ProcessScene(std::shared_ptr<Scene> scene, 
 					  std::shared_ptr<IRenderPass> renderPass,
-					  std::shared_ptr<Camera> cam);
+					  Camera* cam);
 
 	ComPtr<ID3D11Device> GetDevice() const;
 	ComPtr<ID3D11DeviceContext> GetDeviceContext() const;

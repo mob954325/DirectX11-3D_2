@@ -3,11 +3,11 @@
 #include "Manager/FBXResourceManager.h"
 #include "Manager/ShaderManager.h"
 #include <Entity/GameObject.h>
-#include <Entity/Camera.h>
 #include <RenderPass/DirectionalLightPass.h>
 #include <RenderPass/GBufferRenderPass.h> 
 #include <RenderPass/SkyboxRenderPass.h>
 #include <RenderPass/ShadowRenderPass.h>
+#include "System/CameraSystem.h"
 
 EngineApp::EngineApp(HINSTANCE hInstance)
 	: GameApp(hInstance)
@@ -35,20 +35,13 @@ bool EngineApp::OnInitialize()
 	sceneSystem->AddScene();				// create first scene
 	sceneSystem->SetCurrentSceneByIndex(); 	// render first scene
 
-	/* ------------------------------ init freeCam ------------------------------ */
-	freeCamera = std::make_shared<GameObject>();
-	freeCamera->SetName("Main Camera");
-	freeCamera->SetScene(sceneSystem->GetCurrentScene().get());
-	freeCamera->GetTransform().lock()->position = { 0, 0, -30};
-	sceneSystem->GetCurrentScene()->AddGameObject(freeCamera); // scene에 카메라 등록
-
-	auto camComp = freeCamera->AddComponent<Camera>().lock();
-	camComp->SetProjection(DirectX::XM_PIDIV2, clientWidth, clientHeight, 0.1, 1000);
+	/* --------------------------- create free camera --------------------------- */
+	CameraSystem::Instance().CreateFreeCamera(clientWidth, clientHeight, sceneSystem->GetCurrentScene().get());
 
 	/* ----------------------------- init renderpass ---------------------------- */
 	// NOTE : 랜더링하는 순서대로 추가 할 것
 	auto shadowPass = std::make_shared<ShadowRenderPass>();
-	shadowPass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext(), freeCamera->GetComponent<Camera>().lock().get());
+	shadowPass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext(), CameraSystem::Instance().GetFreeCamera());
 	renderPasses.push_back(shadowPass);
 
 	auto gpass = std::make_shared<GBufferRenderPass>();
@@ -80,25 +73,29 @@ void EngineApp::OnUpdate()
 	
 	// Scene의 오브젝트 업데이트 호출
 	sceneSystem->UpdateScene(GameTimer::Instance().DeltaTime());
+
+	CameraSystem::Instance().FreeCameraUpdate(GameTimer::Instance().DeltaTime());
 }
 
 void EngineApp::OnRender()
 {
 	BeginRender(); 					// 업데이트 준비
 	
+	auto freeCam = CameraSystem::Instance().GetFreeCamera();	
+
 	for(auto& pass : renderPasses)
 	{	
 		if(typeid(*pass) == typeid(GBufferRenderPass))
 		{
-			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCamera->GetComponent<Camera>().lock());  // 렌더러가 씬을 렌더링
+			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCam);  // 렌더러가 씬을 렌더링
 		}
 		else if(typeid(*pass) == typeid(ShadowRenderPass))
 		{
-			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCamera->GetComponent<Camera>().lock()); 
+			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCam); 
 		}
 		else
 		{
-			dxRenderer->ProcessScene(nullptr, pass, freeCamera->GetComponent<Camera>().lock());  // 렌더러가 씬을 렌더링
+			dxRenderer->ProcessScene(nullptr, pass, freeCam);  // 렌더러가 씬을 렌더링
 		}
 	}
 

@@ -14,7 +14,7 @@ public:
 	virtual void Execute(
 		ComPtr<ID3D11DeviceContext>& context,
 		std::shared_ptr<Scene> scene,
-		std::shared_ptr<Camera> cam
+		Camera* cam
 	) = 0;
 
 	virtual void End(ComPtr<ID3D11DeviceContext>& context) = 0;

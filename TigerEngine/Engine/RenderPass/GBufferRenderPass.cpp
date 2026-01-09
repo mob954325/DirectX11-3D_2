@@ -110,7 +110,7 @@ void GBufferRenderPass::Init(ComPtr<ID3D11Device> &device, ComPtr<ID3D11DeviceCo
 	HR_T(device->CreateBuffer(&bufferDesc, nullptr, cbCamera.GetAddressOf()));
 }
 
-void GBufferRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, std::shared_ptr<Camera> cam)
+void GBufferRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, Camera* cam)
 {
     // GBuffer 초기화
 	float clearValue[4] = { 0,0,0,0 };

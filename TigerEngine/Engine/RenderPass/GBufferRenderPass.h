@@ -8,7 +8,7 @@ public:
 	void Init(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceContext>& deviceContext, UINT width, UINT height);
 	void Execute( ComPtr<ID3D11DeviceContext>& context, 
 					std::shared_ptr<Scene> scene,
-					std::shared_ptr<Camera> cam) override;    
+					Camera* cam) override;    
     void End(ComPtr<ID3D11DeviceContext>& context) override;
     void SetDepthStencilView(ComPtr<ID3D11DepthStencilView>& dsv);
 

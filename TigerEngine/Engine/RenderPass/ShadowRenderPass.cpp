@@ -103,7 +103,7 @@ void ShadowRenderPass::Init(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceCon
 	shadowView = XMMatrixLookAtLH(shadowPos, shadowLookAt, Vector3(0.0f, 1.0f, 0.0f));
 }
 
-void ShadowRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, std::shared_ptr<Camera> cam)
+void ShadowRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, Camera* cam)
 {
     // 바인딩 해제
 	ID3D11ShaderResourceView* nullSRV[1] = { nullptr };

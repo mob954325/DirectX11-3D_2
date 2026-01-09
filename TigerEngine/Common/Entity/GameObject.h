@@ -3,12 +3,10 @@
 #include "Transform.h"
 #include <string> 
 #include <vector>
-#include <Entity/RenderComponent.h>
 #include <Scene/Scene.h>
 #include <System/ComponentFactory.h>
 
-#define RTTR_DLL
-#include <rttr/registration>
+class RenderComponent; // NOTE : transform과 순환 참조 일어남?
 
 /// <summary>
 /// GameObject는 컴포넌트를 담고 있는 순수한 컨테이너
@@ -16,8 +14,12 @@
 class GameObject
 {
 public:
-	GameObject() {};
-	GameObject(Scene* scene, std::string name) : name(name) { SetScene(scene); }
+	GameObject() { Initialize(); };
+	GameObject(Scene* scene, std::string name) : GameObject()
+	{ 
+		this->name = name;
+		SetScene(scene); 
+	}
 
 	template<typename T>
 	std::weak_ptr<T> AddComponent();	
@@ -50,9 +52,11 @@ public:
 
 protected:
 	Scene* currentScene{}; // 현재 게임 오브젝트가 존재하는 씬 참조 변수
-	std::weak_ptr<Transform> transform;
+	std::weak_ptr<Transform> transform{};
 	std::vector<std::shared_ptr<IComponent>> 	components;
 	bool isDestory = false;
+
+	void Initialize();
 };
 
 template <typename T>

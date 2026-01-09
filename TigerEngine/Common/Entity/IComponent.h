@@ -1,9 +1,6 @@
 ﻿#pragma once
 #include <pch.h>
 
-#define RTTR_DLL
-#include <rttr/registration>
-
 class GameObject; // forward declear
 
 class IComponent

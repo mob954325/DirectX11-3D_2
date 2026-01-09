@@ -10,8 +10,11 @@ using namespace DirectX::SimpleMath;
 
 class Camera : public IComponent, public InputProcesser
 {
-	//RTTR_ENABLE()
+	RTTR_ENABLE(IComponent)
 public:
+	Camera() { SetName("Camera"); } 
+	~Camera() {};
+
 	Vector3 GetForward();
 	Vector3 GetRight();
 	Matrix GetView();

@@ -75,7 +75,6 @@ Scene *GameObject::GetScene()
 
 void GameObject::SetScene(Scene* scene)
 {
-	transform = AddComponent<Transform>();
     currentScene = scene;
 }
 
@@ -149,4 +148,9 @@ void GameObject::Deserialize(const nlohmann::json objData)
             }
         }
     }
+}
+
+void GameObject::Initialize()
+{
+    transform = AddComponent<Transform>();
 }

@@ -78,7 +78,7 @@ void SkyboxRenderPass::Init(ComPtr<ID3D11Device>& device, ComPtr<ID3D11DeviceCon
     HR_T(CreateDDSTextureFromFile(device.Get(), L"Assets\\Resource\\skyboxEnvHDR.dds", nullptr, skyboxTexture.GetAddressOf()));
 }
 
-void SkyboxRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, std::shared_ptr<Camera> cam)
+void SkyboxRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, Camera* cam)
 {
     // 카메라용 뷰 행렬과, 투영행렬
 	Matrix m_skyboxProjection = XMMatrixPerspectiveFovLH(cam->GetPovAngle(), clientWidth / (FLOAT)clientHeight, 0.1, cam->GetFarDist());

@@ -26,7 +26,6 @@ public:
 	std::unique_ptr<Editor> editor{};
 	
 	vector<std::shared_ptr<IRenderPass>> renderPasses;
-	std::shared_ptr<GameObject> freeCamera{}; // 에디터 모드에서 보는 카메라
 
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) override;
 	void OnInputProcess(const Keyboard::State& KeyState, const Keyboard::KeyboardStateTracker& KeyTracker,

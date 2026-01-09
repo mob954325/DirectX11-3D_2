@@ -79,7 +79,7 @@ void BasicRenderPass::Init(ComPtr<ID3D11Device>& device)
 
 }
 
-void BasicRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, std::shared_ptr<Camera> cam)
+void BasicRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, Camera* cam)
 {
 	// 카메라, 클라이언트 화면 크기, ...
 	// 상수 버퍼 설정

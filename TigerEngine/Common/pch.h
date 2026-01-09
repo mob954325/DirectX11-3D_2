@@ -44,6 +44,9 @@ using namespace DirectX::SimpleMath;
 #undef max
 #endif
 
-#endif //PCH_H
-
 #include <nlohmann/json.hpp>
+
+#define RTTR_DLL
+#include <rttr/registration>
+
+#endif //PCH_H
