@@ -232,6 +232,7 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
     else if(compName == "FBXRenderer")
     {
         ImGui::Text("FBXRenderer");
+        // FBX 애니메이션 관련 내용 추가하기 
     }
 
     if (compName != "Transform") 

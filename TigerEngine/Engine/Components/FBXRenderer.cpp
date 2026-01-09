@@ -9,6 +9,8 @@ RTTR_REGISTRATION
 	rttr::registration::class_<FBXRenderer>("FBXRenderer")
 		.constructor<>()
 			(rttr::policy::ctor::as_std_shared_ptr);
+		// TODO 애니메이션 관련 변수 빼기
+		// 애니메이션 인덱스, 애니메이션 실행시간, 애니메이션 실행 여부
 }
 
 REGISTER_COMPONENT(FBXRenderer);
@@ -30,7 +32,7 @@ void FBXRenderer::OnUpdate(float delta)
     auto modelAsset = fbxData.lock()->GetFBXInfo();
     if (!modelAsset->animations.empty() && isAnimPlay)
 	{
-		//progressAnimationTime += GameTimer::m_Instance->DeltaTime();
+		progressAnimationTime += delta;
 		progressAnimationTime = fmod(progressAnimationTime, modelAsset->animations[animationIndex].m_duration);
 	}
 
