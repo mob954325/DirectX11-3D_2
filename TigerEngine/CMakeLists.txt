@@ -149,7 +149,6 @@ target_link_libraries(common_lib PUBLIC
     RTTR::Core
 )
 
-
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     # 1. 자체 정의 라이브러리
     common_lib
@@ -174,6 +173,44 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 # =========================================================
 # 4. 리소스 및 셰이더 파일 복사 설정
+# =========================================================
+
+# hlsl 셰이더 파일 추가
+set(PS_FILES
+    PS_Basic.hlsl
+    PS_DepthOnlyPass.hlsl
+    PS_DirectionalLight.hlsl
+    PS_GBuffer.hlsl
+    PS_PBR.hlsl
+    PS_Skybox.hlsl
+    PS_Solid.hlsl
+)
+
+set(VS_FILES
+    VS_Basic.hlsl
+    VS_DpethOnlyPass.hlsl
+    VS_GBuffer.hlsl
+    VS_SkinnedMesh.hlsl
+    VS_Skybox.hlsl
+)
+
+# 셰이더 타입, 모델 설정
+set_source_files_properties(
+    ${PS_FILES}
+    PROPERTIES
+    VS_SHADER_TYPE "Pixel" # Set the shader stage (Vertex, Pixel, Compute, etc.)
+    VS_SHADER_MODEL "5.0"  # Set the desired shader model (e.g., 5.0, 6.0, 6.6)
+)
+
+set_source_files_properties(
+    ${VS_FILES}
+    PROPERTIES
+    VS_SHADER_TYPE "Vertex"
+    VS_SHADER_MODEL "5.0"
+)
+
+# =========================================================
+# 5. 리소스 및 셰이더 파일 복사 설정
 # =========================================================
 
 # 1. 복사할 리소스 폴더 설정 
