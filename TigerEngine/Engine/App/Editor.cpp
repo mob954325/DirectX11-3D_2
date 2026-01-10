@@ -231,8 +231,32 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
     }
     else if(compName == "FBXRenderer")
     {
-        ImGui::Text("FBXRenderer");
-        // FBX 애니메이션 관련 내용 추가하기 
+        rttr::type t = rttr::type::get(*comp);
+        ImGui::Text(t.get_name().to_string().c_str());
+
+        for(auto& prop : t.get_properties())
+        {
+            rttr::variant value = prop.get_value(*comp);            // 프로퍼티 값
+            std::string name = prop.get_name().to_string();         // 프로퍼티 이름
+            if(value.is_type<int>() && name == "AnimationIndex")
+            {
+                int v = value.get_value<int>();
+                ImGui::InputInt("Play Animation Index", &v);
+                // prop.set_value(*comp, v);
+            }
+            else if(value.is_type<float>() && name == "AnimationPlayTime")
+            {
+                float v = value.get_value<float>();
+                ImGui::DragFloat("Time", &v, 0.1f);
+                prop.set_value(*comp, v);
+            }
+            else if(value.is_type<bool>() && name == "IsAnimationPlay")
+            {
+                bool v = value.get_value<bool>();
+                ImGui::Checkbox("isPlay", &v);
+                prop.set_value(*comp, v);
+            }
+        } 
     }
 
     if (compName != "Transform") 

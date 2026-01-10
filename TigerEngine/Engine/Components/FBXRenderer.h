@@ -17,6 +17,16 @@ public:
 	nlohmann::json Serialize() override;
 	void Deserialize(nlohmann::json data) override;
 
+	// animation
+	int GetAnimationIndex() { return animationIndex; }
+	void SetAnimationIndex(int index) { animationIndex = index; }
+	
+	float GetProgressAnimationTime() { return progressAnimationTime; }	
+	void SetProgressAnimationTime(float animTime) { progressAnimationTime = animTime; }
+
+	bool GetIsAnimationPlay() { return isAnimPlay; }
+	void SetIsAnimationPlay(bool value) { isAnimPlay = value; }
+
 private:
     void CreateBoneInfo();
 	void CreateCommand();	// 매 프레임마다 어떻게 그려질지 정한다.
@@ -33,6 +43,6 @@ private:
 
     // animation info
     int animationIndex = 0;             // 현재 실행 중인 애니메이션 인덱스
-    int progressAnimationTime = 0.0f;   // 현재 애니메이션 시간
+    float progressAnimationTime = 0.0f;   // 현재 애니메이션 시간
     bool isAnimPlay = true;             
 };
