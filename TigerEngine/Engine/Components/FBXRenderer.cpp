@@ -19,6 +19,7 @@ REGISTER_COMPONENT(FBXRenderer);
 void FBXRenderer::OnInitialize()
 {
     fbxData = owner->GetComponent<FBXData>().lock();
+	bones.clear();
 	if(!fbxData.expired()) CreateBoneInfo(); // 임시
 }
 
