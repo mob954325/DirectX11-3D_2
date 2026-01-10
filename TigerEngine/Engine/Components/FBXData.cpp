@@ -81,6 +81,9 @@ void FBXData::Deserialize(nlohmann::json data)
         {
             std::string str = propData["DataPath"];
             prop.set_value(*this, str);
+
+            fbxAsset = FBXResourceManager::Instance().LoadFBXByPath(str);
+            meshes = fbxAsset->meshes; 
         }
 	}
 }
