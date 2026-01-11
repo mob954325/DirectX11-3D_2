@@ -101,6 +101,7 @@ add_executable(${PROJECT_NAME} WIN32
     Engine/RenderPass/DirectionalLightPass.cpp
     Engine/RenderPass/SkyboxRenderPass.cpp
     Engine/RenderPass/ShadowRenderPass.cpp
+    # Engine/RenderPass/DebugDrawPass.cpp
 
     # Components
     Engine/Components/FBXData.cpp
@@ -114,6 +115,9 @@ add_executable(${PROJECT_NAME} WIN32
     # Commands
     Engine/Commands/DrawMeshCommand.cpp
     Engine/Commands/DrawFBXCommand.cpp
+
+    # Util
+    # Engine/Util/DebugDraw.cpp
 )
 
 # Engine부에서 사용할 폴더들

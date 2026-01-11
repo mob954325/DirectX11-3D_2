@@ -3,9 +3,6 @@
 #include "IComponent.h"
 #include <System/InputSystem.h>
 
-#define RTTR_DLL
-#include <rttr/registration>
-
 using namespace DirectX::SimpleMath;
 
 class Camera : public IComponent, public InputProcesser

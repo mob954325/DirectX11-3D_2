@@ -5,8 +5,8 @@
 #include <vector>
 #include <Scene/Scene.h>
 #include <System/ComponentFactory.h>
-
-class RenderComponent; // NOTE : transform과 순환 참조 일어남?
+#include <Entity/RenderComponent.h>
+class RenderComponent; // NOTE : IComponent 있는 거랑 순환 참조 조심하기
 
 /// <summary>
 /// GameObject는 컴포넌트를 담고 있는 순수한 컨테이너
@@ -48,6 +48,10 @@ public:
 	nlohmann::json Serialize() const;
 	void Deserialize(const nlohmann::json objData);
 
+	/// @brief 에디터 오브젝트 피킹을 위한 AABB 업데이트
+	void UpdateAABB();
+	const BoundingBox GetAABB() { return aabbBox; }
+
 	std::string name = "NoNamed";	// 리플렉션을 위해 public으로 공개
 
 protected:
@@ -55,6 +59,8 @@ protected:
 	std::weak_ptr<Transform> transform{};
 	std::vector<std::shared_ptr<IComponent>> 	components;
 	bool isDestory = false;
+
+	BoundingBox aabbBox{};
 
 	void Initialize();
 };

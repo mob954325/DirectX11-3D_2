@@ -161,3 +161,31 @@ std::weak_ptr<GameObject> Scene::GetGameobjectFromScene(std::string name)
 		return std::shared_ptr<GameObject>(); // 빈 객체 보내기
 	}
 }
+
+std::weak_ptr<GameObject> Scene::RayCastGameObject(const Ray &ray, float *outDistance)
+{
+	std::shared_ptr<GameObject> hitObject{};
+	float minDistant = FLT_MAX;
+
+	for(auto& [name, obj]: gameObjects)
+	{
+		if(!obj) continue;
+
+		float outDist = 0.0f;
+		if(ray.Intersects(obj->GetAABB(), outDist))
+		{
+			if(outDist < minDistant)
+			{
+				minDistant = outDist;
+				hitObject = obj;
+			}
+		}
+	}
+
+	if(outDistance != nullptr && hitObject)
+	{
+		*outDistance = minDistant;
+	}
+
+    return hitObject;
+}

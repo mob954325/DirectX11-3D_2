@@ -4,10 +4,14 @@
 #include "Renderer/RenderQueue.h"
 #include <map>
 #include <vector>
+#include <System/Singleton.h>
 
-class SceneSystem
+class SceneSystem : public Singleton<SceneSystem>
 {
 public:
+	SceneSystem(token) {};
+	~SceneSystem() = default;
+
 	void BeforUpdate();
 	void UpdateScene(float deltaTime);
 	void RenderScene(std::unique_ptr<RenderQueue>& renderQueue);

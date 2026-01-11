@@ -1,18 +1,29 @@
 #include "Editor.h"
+#include <System/CameraSystem.h>
 #include <System/ComponentFactory.h>
+#include "System/SceneSystem.h"
+
 #include <commdlg.h>
 #include <ImGuiFileDialog.h>
 
 #include <Components/FBXData.h>
+#include <Entity/Camera.h>
+#include <Util/DebugDraw.h>
 
-// RTTR
-#define RTTR_DLL
-#include <rttr/registration>
-
-void Editor::Render(std::unique_ptr<SceneSystem> &sceneSystem, HWND& hwnd)
+void Editor::Update()
 {
-    RenderMenuBar(sceneSystem, hwnd);
-    RenderHierarchy(sceneSystem);
+    Scene* currScene = SceneSystem::Instance().GetCurrentScene().get();
+
+    currScene->ForEachGameObject([](std::shared_ptr<GameObject> obj){
+        if(obj->GetName() == "FreeCamera") return;        
+        obj->UpdateAABB();
+     });    
+}
+
+void Editor::Render(HWND &hwnd)
+{
+    RenderMenuBar(hwnd);
+    RenderHierarchy();
     RenderInspector();
 }
 
@@ -21,7 +32,7 @@ void Editor::SelectObject(std::shared_ptr<GameObject> obj)
     selectedObject = obj;
 }
 
-void Editor::RenderMenuBar(std::unique_ptr<SceneSystem> &sceneSystem, HWND& hwnd)
+void Editor::RenderMenuBar(HWND& hwnd)
 {
     if (ImGui::BeginMainMenuBar())
     {
@@ -29,11 +40,11 @@ void Editor::RenderMenuBar(std::unique_ptr<SceneSystem> &sceneSystem, HWND& hwnd
         {
             if (ImGui::MenuItem("Save current scene"))
 			{
-				SaveCurrentScene(sceneSystem, hwnd);
+				SaveCurrentScene(hwnd);
 			}
             else if(ImGui::MenuItem("Load scene"))
             {
-                LoadScene(sceneSystem, hwnd);
+                LoadScene(hwnd);
             }
 
             ImGui::EndMenu();
@@ -42,22 +53,22 @@ void Editor::RenderMenuBar(std::unique_ptr<SceneSystem> &sceneSystem, HWND& hwnd
     ImGui::EndMainMenuBar();
 }
 
-void Editor::RenderHierarchy(std::unique_ptr<SceneSystem> &sceneSystem)
+void Editor::RenderHierarchy()
 {
     ImGui::Begin("World Hierarchy");
     {
         if(ImGui::Button("Create GameObject"))
         {
-            sceneSystem->GetCurrentScene()->AddGameObjectByName("NewGameObject");
+            SceneSystem::Instance().GetCurrentScene()->AddGameObjectByName("NewGameObject");
         }
 
-        sceneSystem->GetCurrentScene()->ForEachGameObject([this](std::shared_ptr<GameObject> obj)
+        SceneSystem::Instance().GetCurrentScene()->ForEachGameObject([this](std::shared_ptr<GameObject> obj)
         {
             ImGui::PushID(obj.get()); // 고유 ID 부여 (ID 충돌 방지)
             
             if (ImGui::Selectable(obj->GetName().c_str(), selectedObject.lock() == obj))
             {
-                this->SelectObject(obj);
+                SelectObject(obj);
             }
 
             ImGui::PopID();
@@ -270,7 +281,7 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
     }
 }
 
-void Editor::SaveCurrentScene(std::unique_ptr<SceneSystem>& sceneSystem, HWND& hwnd)
+void Editor::SaveCurrentScene(HWND& hwnd)
 {
 	// 파일 저장 다이얼로그
 	OPENFILENAMEA ofn = {};
@@ -295,7 +306,7 @@ void Editor::SaveCurrentScene(std::unique_ptr<SceneSystem>& sceneSystem, HWND& h
 	std::string filename = szFile;
 
 	// GameWorld를 파일에 저장
-	if (sceneSystem->GetCurrentScene()->SaveToJson(filename))
+	if (SceneSystem::Instance().GetCurrentScene()->SaveToJson(filename))
 	{
 		MessageBoxA(hwnd, "Scene saved successfully!", "Save", MB_OK | MB_ICONINFORMATION);
 	}
@@ -305,7 +316,7 @@ void Editor::SaveCurrentScene(std::unique_ptr<SceneSystem>& sceneSystem, HWND& h
 	}
 }
 
-void Editor::LoadScene(std::unique_ptr<SceneSystem> &sceneSystem, HWND &hwnd)
+void Editor::LoadScene(HWND &hwnd)
 {
     OPENFILENAMEA ofn ={};
     char szFile[256] = {};
@@ -329,7 +340,7 @@ void Editor::LoadScene(std::unique_ptr<SceneSystem> &sceneSystem, HWND &hwnd)
 
     std::string filename = szFile;
 
-    auto scene = sceneSystem->GetCurrentScene();
+    auto scene = SceneSystem::Instance().GetCurrentScene();
 
     // scene으로 파일 데이터 로드하기
     if (scene->LoadToJson(filename))
@@ -339,5 +350,46 @@ void Editor::LoadScene(std::unique_ptr<SceneSystem> &sceneSystem, HWND &hwnd)
     else
     {
     	MessageBoxA(hwnd, "Failed to load scene! File not found.", "Error", MB_OK | MB_ICONERROR);
+    }
+}
+
+void Editor::OnInputProcess(const Keyboard::State &KeyState, const Keyboard::KeyboardStateTracker &KeyTracker, const Mouse::State &MouseState, const Mouse::ButtonStateTracker &MouseTracker)
+{
+    // check picking gameOject
+    
+    if(MouseTracker.leftButton == Mouse::ButtonStateTracker::PRESSED)
+    {
+        if(!ImGui::GetIO().WantCaptureMouse)
+        {
+            // 마우스 스크린 좌표를 [0, 1] -> [-1, 1] 로 변경
+            float x = (2.0f * MouseState.x) / screenWidth - 1.0f;
+            float y = 1.0f - (2.0f * MouseState.y) / screenHeight;
+
+            auto cam = CameraSystem::Instance().GetFreeCamera();
+            cameraView = cam->GetView();
+            cameraProjection = cam->GetProjection();
+            Matrix invViewProj = (cameraView * cameraProjection).Invert();
+
+            Vector4 nearNDC(x, y, 0.0f, 1.0f);
+            Vector4 farNDC(x, y, 1.0f, 1.0f);
+
+            // NDC -> World
+            Vector4 nearWorld = Vector4::Transform(nearNDC, invViewProj);
+            Vector4 farWorld = Vector4::Transform(farNDC, invViewProj);
+            
+            // 투영 행렬은 원근을 만들기 때문에 perpective divide로 월드 좌표를 얻는다.
+            nearWorld /= nearWorld.w;
+            farWorld /= farWorld.w;
+
+            Vector3 dir = farWorld - nearWorld;
+
+            dir.Normalize();
+            Ray ray(Vector3(nearWorld), dir);
+
+            float outHitDistance = 0.0f;
+            auto hitObject = SceneSystem::Instance().GetCurrentScene()->RayCastGameObject(ray, &outHitDistance);
+
+            selectedObject = hitObject;
+        }
     }
 }

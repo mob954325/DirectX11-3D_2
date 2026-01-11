@@ -29,14 +29,14 @@ bool EngineApp::OnInitialize()
 	FBXResourceManager::Instance().GetDevice(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
 	ShaderManager::Instance().CreateCB(dxRenderer->GetDevice());
 
-	sceneSystem = std::make_unique<SceneSystem>();
 	editor = std::make_unique<Editor>();
+	editor->GetScreenSize(clientWidth, clientHeight);
 
-	sceneSystem->AddScene();				// create first scene
-	sceneSystem->SetCurrentSceneByIndex(); 	// render first scene
+	SceneSystem::Instance().AddScene();				// create first scene
+	SceneSystem::Instance().SetCurrentSceneByIndex(); 	// render first scene
 
 	/* --------------------------- create free camera --------------------------- */
-	CameraSystem::Instance().CreateFreeCamera(clientWidth, clientHeight, sceneSystem->GetCurrentScene().get());
+	CameraSystem::Instance().CreateFreeCamera(clientWidth, clientHeight, SceneSystem::Instance().GetCurrentScene().get());
 
 	/* ----------------------------- init renderpass ---------------------------- */
 	// NOTE : 랜더링하는 순서대로 추가 할 것
@@ -69,12 +69,14 @@ bool EngineApp::OnInitialize()
 
 void EngineApp::OnUpdate()
 {
-	sceneSystem->BeforUpdate();
+	SceneSystem::Instance().BeforUpdate();
 	
 	// Scene의 오브젝트 업데이트 호출
-	sceneSystem->UpdateScene(GameTimer::Instance().DeltaTime());
+	SceneSystem::Instance().UpdateScene(GameTimer::Instance().DeltaTime());
 
 	CameraSystem::Instance().FreeCameraUpdate(GameTimer::Instance().DeltaTime());
+
+	editor->Update();
 }
 
 void EngineApp::OnRender()
@@ -87,11 +89,11 @@ void EngineApp::OnRender()
 	{	
 		if(typeid(*pass) == typeid(GBufferRenderPass))
 		{
-			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCam);  // 렌더러가 씬을 렌더링
+			dxRenderer->ProcessScene(SceneSystem::Instance().GetCurrentScene(), pass, freeCam);  // 렌더러가 씬을 렌더링
 		}
 		else if(typeid(*pass) == typeid(ShadowRenderPass))
 		{
-			dxRenderer->ProcessScene(sceneSystem->GetCurrentScene(), pass, freeCam); 
+			dxRenderer->ProcessScene(SceneSystem::Instance().GetCurrentScene(), pass, freeCam); 
 		}
 		else
 		{
@@ -99,7 +101,7 @@ void EngineApp::OnRender()
 		}
 	}
 
-	editor->Render(sceneSystem, hwnd); 	// 엔진 오버레이 렌더링
+	editor->Render(hwnd); 	// 엔진 오버레이 렌더링
 	imguiRenderer->Render();		// imgui 렌더링
 
 	EndRender(); 					// 업데이트 마무리
@@ -131,5 +133,6 @@ LRESULT EngineApp::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 void EngineApp::OnInputProcess(const Keyboard::State &KeyState, const Keyboard::KeyboardStateTracker &KeyTracker, const Mouse::State &MouseState, const Mouse::ButtonStateTracker &MouseTracker)
 {
 	__super::OnInputProcess(KeyState, KeyTracker, MouseState, MouseTracker);
+	editor->OnInputProcess(KeyState, KeyTracker, MouseState, MouseTracker);
 	InputSystem::Instance().UpdateRegisterInput(KeyState,KeyTracker, MouseState, MouseTracker);
 }

@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "DirectXCollision.h"
 
 RTTR_REGISTRATION
 {
@@ -148,6 +149,20 @@ void GameObject::Deserialize(const nlohmann::json objData)
             }
         }
     }
+}
+
+void GameObject::UpdateAABB()
+{
+    BoundingBox aabb({0.0f,0.0f,0.0f}, {2.5f,2.5f,2.5f});
+
+    Transform* trans = transform.lock().get();
+
+    //Vector3 updatedExtent = aabb.Extents * trans->scale;
+    //aabbBox.Center = trans->position;
+    //aabbBox.Extents = updatedExtent;
+
+    Matrix worldMatrix = trans->GetWorldTransform();
+    aabbBox.Transform(aabbBox, worldMatrix);
 }
 
 void GameObject::Initialize()

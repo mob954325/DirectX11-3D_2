@@ -22,7 +22,6 @@ public:
 	void OnRender() override;
 
 	std::unique_ptr<ImguiRenderer> imguiRenderer{};
-	std::unique_ptr<SceneSystem> sceneSystem{};
 	std::unique_ptr<Editor> editor{};
 	
 	vector<std::shared_ptr<IRenderPass>> renderPasses;

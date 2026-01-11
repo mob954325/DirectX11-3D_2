@@ -32,12 +32,14 @@ public:
 	/// @brief json 파일을 읽어서 scene에 로드하는 함수
 	/// @param 불러오는 파일 이름
 	bool LoadToJson(const std::string& filename);
-
 	
 	int GetObjectCount() { return gameObjects.size(); }
 	std::weak_ptr<GameObject> GetGameobjectFromScene(std::string name);
 
+	std::weak_ptr<GameObject> RayCastGameObject(const Ray& ray, float* outDistance);
+
 protected:
+	// std::vector<GameObject> gameObjects;
 	std::multimap<std::string, std::shared_ptr<GameObject>> gameObjects; // TODO 나중에 어떻게 관리할지 정하기
 	std::vector<std::weak_ptr<RenderComponent>> renderableComponents;
 };
