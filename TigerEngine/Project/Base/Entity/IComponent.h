@@ -1,0 +1,47 @@
+﻿#pragma once
+#include "../pch.h"
+
+class GameObject; // forward declear
+
+class IComponent
+{
+	RTTR_ENABLE()
+protected:
+	GameObject* owner{}; 	// 해당 컴포넌트를 소유하고 있는 게임 오브젝트
+	std::string name{};		// 해당 컴포넌트 이름
+
+public:
+	IComponent() = default;
+	virtual ~IComponent() = default;
+	
+	/// <summary>
+	/// IComponent가 처음 실행될 때 실행됩니다.
+	/// </summary>
+	virtual void OnInitialize() {};
+
+	/// <summary>
+	/// OnUpdate()를 실행하기 전 ***한 번*** 실행됩니다.
+	/// </summary>
+	virtual void OnStart() {};
+
+	/// <summary>
+	/// GameEngine에 매 프레임마다 OnUpdate()내 에서 호출됩니다.
+	/// </summary>
+	virtual void OnUpdate(float delta) {};
+
+	// 컴포넌트 내용 직렬화해서 json으로 반환하는 함수
+	virtual nlohmann::json Serialize() { return nlohmann::json::object(); }
+	virtual void Deserialize(nlohmann::json data) {};
+
+	// 컴포넌트에 부착된 게임 오브젝트 찾기 ( getter )
+	GameObject* GetOwner() { return owner; }
+
+	// 컴포넌트에 부착된 게임 오브젝트 설정 ( setter )
+	void SetOwner(GameObject* obj) { owner = obj; }
+
+	// 컴포넌트 찾기를 위한 이름 getter
+	std::string GetName() const { return name; }
+
+	// 컴포넌트 찾기를 위한 이름 setter
+	void SetName(std::string str) { name = str; }
+};

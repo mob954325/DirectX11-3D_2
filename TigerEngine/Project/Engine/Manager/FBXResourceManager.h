@@ -1,0 +1,36 @@
+#pragma once
+#include <map>
+#include <string>
+#include <memory>
+
+#include "directxtk/WICTextureLoader.h"
+#include "Datas/SkeletonInfo.h"
+#include "Datas/Animation.h"
+#include "Datas/Mesh.h"
+#include "System/Singleton.h"
+#include "Datas/FBXResourceData.h"
+
+class FBXResourceManager : public Singleton<FBXResourceManager>
+{
+	// 해당 매니저에서 fbx를 읽는다.
+	// 이미 읽은 fbx는 map에 저장된다.
+	std::map<std::string, std::weak_ptr<FBXResourceAsset>> assets;
+
+	// texture 불러오기 위한 device, deviceContext
+	ComPtr<ID3D11Device> device = nullptr;
+	ComPtr<ID3D11DeviceContext> deviceContext = nullptr;
+
+	// 에셋 내용 로드 함수들
+	void ProcessNode(std::shared_ptr<FBXResourceAsset>& pAsset, aiNode* pNode, const aiScene* pScene);
+	Mesh ProcessMesh(std::shared_ptr<FBXResourceAsset>& pAsset, aiMesh* pMesh, const aiScene* pScene);
+	void ProcessBoneWeight(std::shared_ptr<FBXResourceAsset>& pAsset, aiMesh* pMesh);
+	std::vector<Texture> loadMaterialTextures(std::shared_ptr<FBXResourceAsset>& pAsset, aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene);
+	void loadEmbeddedTexture(const aiTexture* embeddedTexture, ComPtr<ID3D11ShaderResourceView>& outTexture);
+
+public:
+    FBXResourceManager(token) {};
+    ~FBXResourceManager() = default;
+
+	void GetDevice(const ComPtr<ID3D11Device>& pDevice, const ComPtr<ID3D11DeviceContext>& pDeviceContext);
+	std::shared_ptr<FBXResourceAsset> LoadFBXByPath(std::string path);
+};
