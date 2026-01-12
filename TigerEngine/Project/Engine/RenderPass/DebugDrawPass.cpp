@@ -36,12 +36,12 @@ void DebugDrawPass::End(ComPtr<ID3D11DeviceContext> &context)
 	context->RSSetState(nullptr);
 }
 
-void DebugDrawPass::SetDepthStencilView(ComPtr<ID3D11DepthStencilView> &dsv)
+void DebugDrawPass::SetDepthStencilView(const ComPtr<ID3D11DepthStencilView> &dsv)
 {
     depthStencliView = dsv;
 }
 
-void DebugDrawPass::SetRenderTargetView(ComPtr<ID3D11RenderTargetView> &rtv)
+void DebugDrawPass::SetRenderTargetView(const ComPtr<ID3D11RenderTargetView> &rtv)
 {
     renderTargetView = rtv;
 }

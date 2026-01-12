@@ -67,6 +67,12 @@ bool EngineApp::OnInitialize()
 	sbpass->SetRenderTargetView(dxRenderer->GetBackBufferRTV());
 	renderPasses.push_back(sbpass);
 
+	auto debugpass = std::make_shared<DebugDrawPass>();
+	debugpass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
+	debugpass->SetDepthStencilView(dxRenderer->GetDepthStencilView());
+	debugpass->SetRenderTargetView(dxRenderer->GetBackBufferRTV());
+	renderPasses.push_back(debugpass);
+
 	return true;
 }
 
