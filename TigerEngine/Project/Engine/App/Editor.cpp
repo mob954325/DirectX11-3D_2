@@ -9,6 +9,13 @@
 #include "Entity/Camera.h"
 #include "../Util/DebugDraw.h"
 
+void Editor::Initialize(const ComPtr<ID3D11Device>& device, const ComPtr<ID3D11DeviceContext>& deviceContext)
+{
+    DebugDraw::Initialize(device, deviceContext);
+    this->device = device;
+    this->context = deviceContext;
+}
+
 void Editor::Update()
 {
     Scene* currScene = SceneSystem::Instance().GetCurrentScene().get();
@@ -24,11 +31,19 @@ void Editor::Render(HWND &hwnd)
     RenderMenuBar(hwnd);
     RenderHierarchy();
     RenderInspector();
+    RenderDebugAABBDraw();
+}
+
+void Editor::RenderEnd(const ComPtr<ID3D11DeviceContext>& context)
+{
+    context->OMSetBlendState(nullptr, nullptr, 0xFFFFFFFF);
+    context->OMSetDepthStencilState(nullptr, 0);
+    context->RSSetState(nullptr);
 }
 
 void Editor::SelectObject(std::shared_ptr<GameObject> obj)
 {
-    selectedObject = obj;
+    selectedObject = obj.get();
 }
 
 void Editor::RenderMenuBar(HWND& hwnd)
@@ -65,7 +80,7 @@ void Editor::RenderHierarchy()
         {
             ImGui::PushID(obj.get()); // 고유 ID 부여 (ID 충돌 방지)
             
-            if (ImGui::Selectable(obj->GetName().c_str(), selectedObject.lock() == obj))
+            if (ImGui::Selectable(obj->GetName().c_str(), selectedObject == obj.get()))
             {
                 SelectObject(obj);
             }
@@ -80,81 +95,85 @@ void Editor::RenderInspector()
 {
     ImGui::Begin("Inspector");
     {
-        if(selectedObject.expired())
+        if(!selectedObject)
         {
             ImGui::Text("No gameObject selected");
         }
         else
         {
-            auto obj = selectedObject.lock();
-            /* ------------------------------- gameobject ------------------------------- */
-            rttr::type t = rttr::type::get(obj.get());
-            ImGui::Text("Type : %s", t.get_name().to_string().c_str());
+            auto obj = selectedObject;
+            if (!obj->IsDestory())
+            {
+                /* ------------------------------- gameobject ------------------------------- */
+                rttr::type t = rttr::type::get(obj);
+                ImGui::Text("Type : %s", t.get_name().to_string().c_str());
 
-            for(auto& prop : t.get_properties())
-            {
-                rttr::variant value = prop.get_value(obj);   // 프로퍼티 값
-                std::string name = prop.get_name().to_string();         // 프로퍼티 이름
-                if(value.is_type<std::string>() && name == "Name")
+                for (auto& prop : t.get_properties())
                 {
-                    ImGui::Text("Name : %s", name.c_str());
-                    char buf[256]{};
-                    strncpy_s(buf, value.get_value<std::string>().c_str(), sizeof(buf) - 1);
-                    ImGui::InputText(name.c_str(), buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue);
-                    prop.set_value(obj, std::string(buf));
-                }
-            }
-
-            /* -------------------------------- transform ------------------------------- */
-            if(ImGui::Button("Destory"))
-            {
-                obj->Destory();
-            }
-            
-            /* ---------------------------- add component 내용 ---------------------------- */
-            if(ImGui::Button("Add Component"))
-            {
-                ImGui::OpenPopup("ComponentMenu"); // 1. popup 열라고 명령 
-                // open component menu
-                // - select component -> ???
-                // - call obj->AddComponent<T>()
-            }
-        
-            // 2. 해당 ID를 가진 팝업이 열려있는지 확인하고 그림
-            if (ImGui::BeginPopup("ComponentMenu")) 
-            {                
-                auto& componentsMap = ComponentFactory::Instance().GetRegisteredComponents();
-            
-                for(auto& [name, creatorFunc] : componentsMap)
-                {
-                    // 컴포넌트 이름을 버튼 (MenuItem)으로 노출
-                    if(ImGui::MenuItem(name.c_str()))
+                    rttr::variant value = prop.get_value(obj);   // 프로퍼티 값
+                    std::string name = prop.get_name().to_string();         // 프로퍼티 이름
+                    if (value.is_type<std::string>() && name == "Name")
                     {
-                        // 1. 생성 람다 함수를 통해 새 컴포넌트 생성
-                        creatorFunc(obj.get());
-                    
-                        // 2. 현재 작업 중인 오브젝트에 추가
-                        // GameObject에 AddComponent(std::shared_ptr<Component>) 형태의 함수가 있어야 합니다.
-                        // obj->AddComponent(newComp); 
-                        ImGui::CloseCurrentPopup();
+                        ImGui::Text("Name : %s", name.c_str());
+                        char buf[256]{};
+                        strncpy_s(buf, value.get_value<std::string>().c_str(), sizeof(buf) - 1);
+                        ImGui::InputText(name.c_str(), buf, sizeof(buf), ImGuiInputTextFlags_EnterReturnsTrue);
+                        prop.set_value(obj, std::string(buf));
                     }
-                }            
-            
-                ImGui::Separator();
-                if (ImGui::MenuItem("Close")) { ImGui::CloseCurrentPopup(); }
-            
-                ImGui::EndPopup();
-            }
+                }
 
-            /* ------------------------------- 컴포넌트 내용 출력 ------------------------------- */
-            for(auto& comp : obj->GetIComponents())
-            {                
-                auto registeredComps = ComponentFactory::Instance().GetRegisteredComponents();
-                auto name = comp->GetName();
-                if(auto it = registeredComps.find(name); it != registeredComps.end())
+                /* -------------------------------- transform ------------------------------- */
+                if (ImGui::Button("Destory"))
                 {
-                    RenderComponentInfo(it->first, comp);
-                    ImGui::NewLine();
+                    selectedObject = nullptr;
+                    obj->Destory();
+                }
+
+                /* ---------------------------- add component 내용 ---------------------------- */
+                if (ImGui::Button("Add Component"))
+                {
+                    ImGui::OpenPopup("ComponentMenu"); // 1. popup 열라고 명령 
+                    // open component menu
+                    // - select component -> ???
+                    // - call obj->AddComponent<T>()
+                }
+
+                // 2. 해당 ID를 가진 팝업이 열려있는지 확인하고 그림
+                if (ImGui::BeginPopup("ComponentMenu"))
+                {
+                    auto& componentsMap = ComponentFactory::Instance().GetRegisteredComponents();
+
+                    for (auto& [name, creatorFunc] : componentsMap)
+                    {
+                        // 컴포넌트 이름을 버튼 (MenuItem)으로 노출
+                        if (ImGui::MenuItem(name.c_str()))
+                        {
+                            // 1. 생성 람다 함수를 통해 새 컴포넌트 생성
+                            creatorFunc(obj);
+
+                            // 2. 현재 작업 중인 오브젝트에 추가
+                            // GameObject에 AddComponent(std::shared_ptr<Component>) 형태의 함수가 있어야 합니다.
+                            // obj->AddComponent(newComp); 
+                            ImGui::CloseCurrentPopup();
+                        }
+                    }
+
+                    ImGui::Separator();
+                    if (ImGui::MenuItem("Close")) { ImGui::CloseCurrentPopup(); }
+
+                    ImGui::EndPopup();
+                }
+
+                /* ------------------------------- 컴포넌트 내용 출력 ------------------------------- */
+                for (auto& comp : obj->GetIComponents())
+                {
+                    auto registeredComps = ComponentFactory::Instance().GetRegisteredComponents();
+                    auto name = comp->GetName();
+                    if (auto it = registeredComps.find(name); it != registeredComps.end())
+                    {
+                        RenderComponentInfo(it->first, comp);
+                        ImGui::NewLine();
+                    }
                 }
             }
         }
@@ -216,7 +235,7 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
                 if (ImGui::Button("Browse..."))
                 {
                     IGFD::FileDialogConfig config;
-                    config.path = ".";
+                    config.path = "../";
                     ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", ".fbx", config);
                 }
                     // display
@@ -274,10 +293,42 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
         ImGui::PushID(comp.get());
         if(ImGui::Button("Remove Component"))
         {
-            selectedObject.lock()->RemoveComponent(comp);
+            selectedObject->RemoveComponent(comp);
         }
         ImGui::PopID();
     }
+}
+
+void Editor::RenderDebugAABBDraw()
+{
+    // 렌더타겟 다시 설정 (ImGui가 변경했을 수 있음)
+    context->OMSetRenderTargets(1, renderTargetView.GetAddressOf(), depthStencliView.Get());
+
+    // DebugDraw의 BasicEffect 설정
+    auto cam = CameraSystem::Instance().GetFreeCamera();
+    DebugDraw::g_BatchEffect->SetWorld(Matrix::Identity);
+    DebugDraw::g_BatchEffect->SetView(cam->GetView());
+    DebugDraw::g_BatchEffect->SetProjection(cam->GetProjection());
+    DebugDraw::g_BatchEffect->Apply(context.Get());
+
+    // InputLayout 설정
+    context->IASetInputLayout(DebugDraw::g_pBatchInputLayout.Get());
+
+    // 블렌드 스테이트 설정 (깊이 테스트 활성화)
+    context->OMSetBlendState(DebugDraw::g_States->AlphaBlend(), nullptr, 0xFFFFFFFF);
+    context->OMSetDepthStencilState(DebugDraw::g_States->DepthRead(), 0);
+    context->RSSetState(DebugDraw::g_States->CullNone());
+
+
+    // 선택된 오브젝트는 밝은 초록색
+    SceneSystem::Instance().GetCurrentScene()->ForEachGameObject([&](std::shared_ptr<GameObject> gameObject) {
+        if (gameObject->IsDestory()) return;
+
+        XMVECTOR color = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
+        DebugDraw::g_Batch->Begin();
+        DebugDraw::Draw(DebugDraw::g_Batch.get(), gameObject->GetAABB(), color);
+        DebugDraw::g_Batch->End();
+     });
 }
 
 void Editor::SaveCurrentScene(HWND& hwnd)
@@ -345,7 +396,6 @@ void Editor::LoadScene(HWND &hwnd)
     if (scene->LoadToJson(filename))
     {
     	MessageBoxA(hwnd, "Scene loaded successfully!", "Load", MB_OK | MB_ICONINFORMATION);
-        // TODO 컴포넌트 등록안되는거 수정하기
     }
     else
     {
@@ -389,7 +439,7 @@ void Editor::OnInputProcess(const Keyboard::State &KeyState, const Keyboard::Key
             float outHitDistance = 0.0f;
             auto hitObject = SceneSystem::Instance().GetCurrentScene()->RayCastGameObject(ray, &outHitDistance);
 
-            selectedObject = hitObject;
+            SelectObject(hitObject.lock());
         }
     }
 }

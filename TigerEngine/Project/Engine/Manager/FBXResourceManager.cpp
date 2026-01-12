@@ -4,6 +4,17 @@
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
 #include <DirectXTex.h>
+#include <algorithm>
+
+inline Matrix ToSimpleMathMatrix(const aiMatrix4x4& m)
+{
+	return Matrix(
+		m.a1, m.b1, m.c1, m.d1,
+		m.a2, m.b2, m.c2, m.d2,
+		m.a3, m.b3, m.c3, m.d3,
+		m.a4, m.b4, m.c4, m.d4
+	);
+}
 
 void FBXResourceManager::ProcessNode(std::shared_ptr<FBXResourceAsset>& pAsset, aiNode* pNode, const aiScene* pScene)
 {
@@ -51,6 +62,9 @@ Mesh FBXResourceManager::ProcessMesh(std::shared_ptr<FBXResourceAsset>& pAsset, 
 			vertex.texture.x = (float)pMesh->mTextureCoords[0][i].x;
 			vertex.texture.y = (float)pMesh->mTextureCoords[0][i].y;
 		}
+
+		pAsset->boxMin = Vector3::Min(pAsset->boxMin, vertex.position);
+		pAsset->boxMax = Vector3::Max(pAsset->boxMax, vertex.position);
 
 		vertices.push_back(vertex);
 	}
@@ -256,6 +270,7 @@ std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(std::string 
 		aiProcess_GenUVCoords |				// UV 생성
 		aiProcess_CalcTangentSpace |		// 탄젠트 생성
 		aiProcess_LimitBoneWeights |		// 본의 영향을 받는 정점의 최대 개수 4개로 제한
+		aiProcess_GenBoundingBoxes |		// Bounding box 만들기
 		aiProcess_ConvertToLeftHanded;		// 왼손 좌표계로 변환
 
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, 0);
@@ -288,6 +303,28 @@ std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(std::string 
 	// mesh 저장, texture 저장 
 	ProcessNode(sharedAsset , pScene->mRootNode, pScene); // 내부에서 mesh의 텍스처 저장함
 
+	// save aabb
+	if (pScene->HasAnimations())
+	{
+		// auto firstAnimKey = sharedAsset->animations[0].m_boneAnimations[0].m_keys[0];
+		// Matrix mat = Matrix::CreateScale(firstAnimKey.m_scale) * 
+		// 			Matrix::CreateFromQuaternion(firstAnimKey.m_rotation) * 
+		// 			Matrix::CreateTranslation(firstAnimKey.m_position);
+		// sharedAsset->boxMin = Vector3::Transform(sharedAsset->boxMin, mat);
+		// sharedAsset->boxMax = Vector3::Transform(sharedAsset->boxMax, mat);
+
+		// NOTE : 애니메이션 박스들은 절반씩 위로 올려줌 ( 모델이랑 어긋나서 하드 코딩 )
+		sharedAsset->boxMin = Vector3::Transform(sharedAsset->boxMin, ToSimpleMathMatrix(pScene->mRootNode->mChildren[0]->mTransformation));
+		sharedAsset->boxMax = Vector3::Transform(sharedAsset->boxMax, ToSimpleMathMatrix(pScene->mRootNode->mChildren[0]->mTransformation));
+		sharedAsset->boxCenter = { 0.0f, (sharedAsset->boxMax - sharedAsset->boxMin).y / 2.0f, 0.0f };
+	}
+	else
+	{
+		sharedAsset->boxMin = Vector3::Transform(sharedAsset->boxMin, ToSimpleMathMatrix(pScene->mRootNode->mChildren[0]->mTransformation));
+		sharedAsset->boxMax = Vector3::Transform(sharedAsset->boxMax, ToSimpleMathMatrix(pScene->mRootNode->mChildren[0]->mTransformation));
+		sharedAsset->boxCenter = Vector3::Zero;
+	}
+
 	// mesh의 정점 버퍼, 인덱스 버퍼 생성
 	for (auto& mesh : sharedAsset->meshes)
 	{
@@ -313,6 +350,7 @@ std::shared_ptr<FBXResourceAsset> FBXResourceManager::LoadFBXByPath(std::string 
 	// map에 저장하기
 	weak_ptr<FBXResourceAsset> weakAsset = sharedAsset;
 	assets.insert({ path, weakAsset });
+
 
 	return sharedAsset;
 }

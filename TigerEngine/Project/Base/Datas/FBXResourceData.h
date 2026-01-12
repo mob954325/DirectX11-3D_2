@@ -23,6 +23,10 @@ struct FBXResourceAsset
 	std::vector<Animation> animations;
 	std::vector<Mesh> meshes;
 	std::vector<Texture> textures;
+	
+	Vector3 boxMin { FLT_MAX, FLT_MAX, FLT_MAX };
+	Vector3 boxMax{};
+	Vector3 boxCenter{};
 
 	std::string directory = "";
 	BoneOffsetBuffer m_BoneOffsets{};

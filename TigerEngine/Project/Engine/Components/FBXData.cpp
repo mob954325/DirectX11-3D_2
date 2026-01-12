@@ -14,9 +14,11 @@ RTTR_REGISTRATION
 void FBXData::OnInitialize()
 {
     // 임시
-    path = "..\\Assets\\Resource\\char.fbx";
+    path = "..\\Assets\\Resource\\sphere.fbx";
     fbxAsset = FBXResourceManager::Instance().LoadFBXByPath("..\\Assets\\Resource\\sphere.fbx");
     meshes = fbxAsset->meshes; 
+
+    owner->SetAABB(fbxAsset->boxMin, fbxAsset->boxMax, fbxAsset->boxCenter);
 
     auto renderer = owner->GetComponent<FBXRenderer>(); // TODO load 후 컴포넌트 추가할 때 터짐 이거 수정하면 이 주석 제거할 것
     if(!renderer.expired()) renderer.lock()->OnInitialize();
@@ -37,6 +39,7 @@ void FBXData::ChangeData(std::string path)
     fbxAsset = FBXResourceManager::Instance().LoadFBXByPath(path);
     meshes = fbxAsset->meshes; 
     this->path = path;
+    owner->SetAABB(fbxAsset->boxMin, fbxAsset->boxMax, fbxAsset->boxCenter);
 
     auto renderer = owner->GetComponent<FBXRenderer>(); // TODO load 후 컴포넌트 추가할 때 터짐 이거 수정하면 이 주석 제거할 것
     if(!renderer.expired()) renderer.lock()->OnInitialize();
@@ -82,6 +85,7 @@ void FBXData::Deserialize(nlohmann::json data)
 
             fbxAsset = FBXResourceManager::Instance().LoadFBXByPath(str);
             meshes = fbxAsset->meshes; 
+            owner->SetAABB(fbxAsset->boxMin, fbxAsset->boxMax, fbxAsset->boxCenter);
         }
 	}
 }

@@ -15,14 +15,14 @@ class GameObject
 public:
 	GameObject() { Initialize(); };
 	GameObject(Scene* scene, std::string name) : GameObject()
-	{ 
+	{
 		this->name = name;
-		SetScene(scene); 
+		SetScene(scene);
 	}
 
 	template<typename T>
-	std::weak_ptr<T> AddComponent();	
-		
+	std::weak_ptr<T> AddComponent();
+
 	template<typename T>
 	std::weak_ptr<T> GetComponent();
 
@@ -30,13 +30,13 @@ public:
 
 	std::weak_ptr<Transform> GetTransform() const;
 	std::vector<std::shared_ptr<IComponent>> GetIComponents();
-	
+
 	bool IsDestory();
 	void Destory();
-	
+
 	std::string GetName() const;
 	void SetName(std::string str);
-	
+
 	Scene* GetScene();
 	/// @brief 게임 오브젝트가 포함될 씬 설정 함수
 	void SetScene(Scene* scene);
@@ -48,7 +48,9 @@ public:
 
 	/// @brief 에디터 오브젝트 피킹을 위한 AABB 업데이트
 	void UpdateAABB();
-	const BoundingBox GetAABB() { return aabbBox; }
+	const BoundingBox GetAABB() const { return aabbBox; }
+	void SetAABB(BoundingBox aabb);
+	void SetAABB(Vector3 min, Vector3 max, Vector3 centor);
 
 	std::string name = "NoNamed";	// 리플렉션을 위해 public으로 공개
 
@@ -59,6 +61,8 @@ protected:
 	bool isDestory = false;
 
 	BoundingBox aabbBox{};
+	Vector3 aabbBoxExtent{};
+	Vector3 aabbCenter{};
 
 	void Initialize();
 };

@@ -34,6 +34,9 @@ bool EngineApp::OnInitialize()
 
 	editor = std::make_unique<Editor>();
 	editor->GetScreenSize(clientWidth, clientHeight);
+	editor->Initialize(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
+	editor->GetDSV(dxRenderer->GetDepthStencilView());
+	editor->GetRTV(dxRenderer->GetBackBufferRTV());
 
 	SceneSystem::Instance().AddScene();				// create first scene
 	SceneSystem::Instance().SetCurrentSceneByIndex(); 	// render first scene
@@ -67,12 +70,6 @@ bool EngineApp::OnInitialize()
 	sbpass->SetRenderTargetView(dxRenderer->GetBackBufferRTV());
 	renderPasses.push_back(sbpass);
 
-	auto debugpass = std::make_shared<DebugDrawPass>();
-	debugpass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext());
-	debugpass->SetDepthStencilView(dxRenderer->GetDepthStencilView());
-	debugpass->SetRenderTargetView(dxRenderer->GetBackBufferRTV());
-	renderPasses.push_back(debugpass);
-
 	return true;
 }
 
@@ -98,7 +95,7 @@ void EngineApp::OnRender()
 	{	
 		if(typeid(*pass) == typeid(GBufferRenderPass))
 		{
-			dxRenderer->ProcessScene(SceneSystem::Instance().GetCurrentScene(), pass, freeCam);  // 렌더러가 씬을 렌더링
+			dxRenderer->ProcessScene(SceneSystem::Instance().GetCurrentScene(), pass, freeCam);
 		}
 		else if(typeid(*pass) == typeid(ShadowRenderPass))
 		{
@@ -113,6 +110,7 @@ void EngineApp::OnRender()
 	editor->Render(hwnd); 	// 엔진 오버레이 렌더링
 	imguiRenderer->Render();		// imgui 렌더링
 
+	editor->RenderEnd(dxRenderer->GetDeviceContext());
 	EndRender(); 					// 업데이트 마무리
 }
 

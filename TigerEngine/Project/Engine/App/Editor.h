@@ -10,8 +10,14 @@ class Editor : public InputProcesser
 {
 public:
     void GetScreenSize(int width, int height) { screenWidth = width; screenHeight = height; }
+    void Initialize(const ComPtr<ID3D11Device>& device, const ComPtr<ID3D11DeviceContext>& context);
+    void GetDSV(const ComPtr<ID3D11DepthStencilView>& dsv) { depthStencliView = dsv; };
+    void GetRTV(const ComPtr <ID3D11RenderTargetView>& rtv) { renderTargetView = rtv; };
+
     void Update();
     void Render(HWND& hwnd);
+    void RenderEnd(const ComPtr<ID3D11DeviceContext>& context);
+
     void SelectObject(std::shared_ptr<GameObject> obj);
 
 private:
@@ -22,15 +28,28 @@ private:
     template<typename T>
     void RenderComponentInfo(std::string name, std::shared_ptr<T> comp);
 
+    void RenderDebugAABBDraw();
+
     void SaveCurrentScene(HWND& hwnd);
     void LoadScene(HWND& hwnd);
     
-    std::weak_ptr<GameObject> selectedObject; // 현재 inspector 정보를 보고 있는 게임 오브젝트
+    GameObject* selectedObject; // 현재 inspector 정보를 보고 있는 게임 오브젝트
 
+    // 카메라 정보
     Matrix cameraView{};
     Matrix cameraProjection{};
+
+    // 화면 정보
     int screenWidth = 0;
     int screenHeight = 0;
+
+    // 디버그 바인드 
+    ComPtr<ID3D11Device>                device{};
+    ComPtr<ID3D11DeviceContext>         context{};
+    ComPtr<ID3D11InputLayout> 			inputLayout{};
+    ComPtr<ID3D11RenderTargetView> 		renderTargetView{};
+    ComPtr<ID3D11DepthStencilView>		depthStencliView{};
+    ComPtr<ID3D11RasterizerState>       rasterizerState{};
 
 public:
 	void OnInputProcess(const Keyboard::State& KeyState, const Keyboard::KeyboardStateTracker& KeyTracker,

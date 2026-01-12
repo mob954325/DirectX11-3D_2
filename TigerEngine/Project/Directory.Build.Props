@@ -32,6 +32,7 @@
         directxtex.lib;
         imguid.lib;
         assimp-vc143-mtd.lib;
+        rttr_core_d.lib;
         %(AdditionalDependencies)
       </AdditionalDependencies>
     </Link>
@@ -58,6 +59,7 @@
         directxtex.lib;
         imgui.lib;
         assimp-vc143-mt.lib;
+        rttr_core.lib;
         %(AdditionalDependencies)
       </AdditionalDependencies>
     </Link>

@@ -148,19 +148,29 @@ void GameObject::Deserialize(const nlohmann::json objData)
 
 void GameObject::UpdateAABB()
 {
-    BoundingBox aabb({0.0f,0.0f,0.0f}, {2.5f,2.5f,2.5f});
-
     Transform* trans = transform.lock().get();
-
-    //Vector3 updatedExtent = aabb.Extents * trans->scale;
-    //aabbBox.Center = trans->position;
-    //aabbBox.Extents = updatedExtent;
-
-    Matrix worldMatrix = trans->GetWorldTransform();
-    aabbBox.Transform(aabbBox, worldMatrix);
+    Vector3 updatedExtent = aabbBoxExtent * trans->scale;
+    aabbBox.Center = trans->position + aabbCenter;
+    aabbBox.Extents = updatedExtent;
 }
 
 void GameObject::Initialize()
 {
+    aabbBoxExtent = { 10.0f, 10.0f, 10.0f };
+    aabbBox = { {0.0f, 0.0f, 0.0f}, aabbBoxExtent };
     transform = AddComponent<Transform>();
+}
+
+void GameObject::SetAABB(BoundingBox aabb)
+{
+    aabbBox = aabb;
+}
+
+void GameObject::SetAABB(Vector3 min, Vector3 max, Vector3 centor)
+{
+    auto tran = transform.lock();
+
+    aabbBox.Center = tran->position;
+    aabbBoxExtent = (max - min) / 2.0f;
+    aabbCenter = centor;
 }
