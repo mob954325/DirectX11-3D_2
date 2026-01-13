@@ -8,6 +8,7 @@
 #include "../Components/FBXData.h"
 #include "Entity/Camera.h"
 #include "../Util/DebugDraw.h"
+#include "../Manager/WorldManager.h"
 
 void Editor::Initialize(const ComPtr<ID3D11Device>& device, const ComPtr<ID3D11DeviceContext>& deviceContext)
 {
@@ -32,6 +33,99 @@ void Editor::Render(HWND &hwnd)
     RenderHierarchy();
     RenderInspector();
     RenderDebugAABBDraw();
+
+
+    // aaaa
+    ImGui::Begin("ShadowMap");
+    {
+        ImTextureID img = (ImTextureID)(intptr_t)(WorldManager::Instance().shaderResourceView.Get());
+        ImGui::Image(img, ImVec2(256, 256));
+
+
+            // Direction
+            auto& world = WorldManager::Instance();
+
+               // Direction
+               ImGui::Text("Light Direction");
+               ImGui::SliderFloat3(
+                   "Direction",
+                   &world.lightDirection.x,
+                   -1.0f,
+                   1.0f
+               );
+               if (ImGui::Button("Normalize Direction"))
+               {
+                   XMVECTOR dir = XMVectorSet(
+                       world.lightDirection.x,
+                       world.lightDirection.y,
+                       world.lightDirection.z,
+                       0.0f
+                   );
+                   dir = XMVector3Normalize(dir);
+                   XMStoreFloat4(&world.lightDirection, dir);
+               }
+               ImGui::Separator();
+               // LookAt / Position
+               ImGui::Text("Light Transform");
+               ImGui::DragFloat3(
+                   "LookAt",
+                   &world.directionalLightLookAt.x,
+                   1.0f
+               );
+               ImGui::DragFloat3(
+                   "Position",
+                   &world.directionalLightPos.x,
+                   1.0f
+               );
+               ImGui::DragFloat3(
+                   "Up Offset",
+                   &world.directionalLightUpDistFromLookAt.x,
+                   1.0f,
+                   -5000.0f,
+                   5000.0f
+               );
+               ImGui::Separator();
+               // Frustum
+               ImGui::Text("Frustum");
+               ImGui::SliderAngle(
+                   "Frustum Angle",
+                   &world.directionalLightFrustumAngle,
+                   1.0f,
+                   120.0f
+               );
+               ImGui::DragFloat(
+                   "Forward Dist From Camera",
+                   &world.directionalLightForwardDistFromCamera,
+                   1.0f,
+                   0.0f,
+                   5000.0f
+               );
+               ImGui::DragFloat(
+                   "Near Plane",
+                   &world.directionalLightNear,
+                   1.0f,
+                   1.0f,
+                   world.directionalLightFar - 1.0f
+               );
+               ImGui::DragFloat(
+                   "Far Plane",
+                   &world.directionalLightFar,
+                   10.0f,
+                   world.directionalLightNear + 1.0f,
+                   20000.0f
+               );
+               ImGui::Separator();
+               // Shadow Map Viewport
+               ImGui::Text("Shadow Map Viewport");
+               ImGui::DragFloat2(
+                   "Size",
+                   &world.directionalLightViewport.width,
+                   1.0f,
+                   256.0f,
+                   16384.0f
+               );
+    }
+    ImGui::End();
 }
 
 void Editor::RenderEnd(const ComPtr<ID3D11DeviceContext>& context)

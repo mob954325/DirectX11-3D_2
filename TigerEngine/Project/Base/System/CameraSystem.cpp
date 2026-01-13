@@ -69,6 +69,6 @@ void CameraSystem::CreateFreeCamera(int clientWidth, int clientHeight, Scene *cu
 	freeCamObj->SetName("FreeCamera");
     freeCamera = freeCamObj->AddComponent<Camera>().lock().get();
 
-	freeCamera->SetProjection(DirectX::XM_PIDIV2, clientWidth, clientHeight, 0.1, 1000);
+	freeCamera->SetProjection(DirectX::XM_PIDIV2, clientWidth, clientHeight, 0.1, 3000);
     Register(freeCamera);
 }

@@ -1,5 +1,7 @@
 #include "ShadowRenderPass.h"
 #include "Entity/GameObject.h"
+#include "../Manager/WorldManager.h"
+#include "System/CameraSystem.h"
 
 struct ConstantBuffer   // TODO 정리하기
 {
@@ -62,8 +64,9 @@ void ShadowRenderPass::Init(const ComPtr<ID3D11Device>& device, const ComPtr<ID3
 
     /* ---------------------------- shadowMapTexture ---------------------------- */
 	D3D11_TEXTURE2D_DESC texDesc = {}; // https://learn.microsoft.com/ko-kr/windows/win32/api/d3d11/ns-d3d11-d3d11_texture2d_desc
-	texDesc.Width = (UINT)shadowViewport.width;
-	texDesc.Height = (UINT)shadowViewport.height;
+	auto viewport = WorldManager::Instance().directionalLightViewport;
+	texDesc.Width = (UINT)viewport.width;
+	texDesc.Height = (UINT)viewport.height;
 	texDesc.MipLevels = 1;
 	texDesc.ArraySize = 1;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -93,14 +96,6 @@ void ShadowRenderPass::Init(const ComPtr<ID3D11Device>& device, const ComPtr<ID3
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	HR_T(device->CreateBuffer(&bufferDesc, nullptr, constantBuffer.GetAddressOf()));
-
-	/* ----------------------------- // 빛 계산 ( pov ) ---------------------------- */
-    camera = cam;
-    auto camTran = camera->GetOwner()->GetTransform().lock();
-	shadowProj = XMMatrixPerspectiveFovLH(shadowFrustumAngle, shadowViewport.width / (FLOAT)shadowViewport.height, shadowNear, shadowFar); // 그림자 절두체
-	shadowLookAt = camTran->position + camera->GetForward() * shadowForwardDistFromCamera;	// 바라보는 방향 = 카메라 위치 + 카메라 바라보는 방향으로부터 떨어진 태양의 위치
-	shadowPos = camTran->position + ((Vector3)-lightDirection * shadowUpDistFromLookAt);	// 위치
-	shadowView = XMMatrixLookAtLH(shadowPos, shadowLookAt, Vector3(0.0f, 1.0f, 0.0f));
 }
 
 void ShadowRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared_ptr<Scene> scene, Camera* cam)
@@ -112,18 +107,19 @@ void ShadowRenderPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::shared
 
 	//상수 버퍼 갱신
 	ConstantBuffer cb;
-	cb.cameraView = XMMatrixTranspose(camera->GetView());
-	cb.cameraProjection = XMMatrixTranspose(camera->GetProjection());
-	cb.shadowView = XMMatrixTranspose(shadowView);
-	cb.shadowProjection = XMMatrixTranspose(shadowProj);
-	cb.CameraPos = camera->GetOwner()->GetTransform().lock()->position;
+	cb.cameraView = XMMatrixTranspose(CameraSystem::Instance().GetFreeCamera()->GetView());
+	cb.cameraProjection = XMMatrixTranspose(CameraSystem::Instance().GetFreeCamera()->GetProjection());
+	cb.shadowView = XMMatrixTranspose(WorldManager::Instance().directionalLightView);
+	cb.shadowProjection = XMMatrixTranspose(WorldManager::Instance().directionalLightProj);
+	cb.CameraPos = CameraSystem::Instance().GetFreeCamera()->GetOwner()->GetTransform().lock()->position;
 
 	// 뷰포트 설정 + DSV 초기화, RS, OM 설정
+	auto dlviewport = WorldManager::Instance().directionalLightViewport;
 	D3D11_VIEWPORT viewport
 	{
-		shadowViewport.x, shadowViewport.y,
-		shadowViewport.width, shadowViewport.height,
-		shadowViewport.minDepth, shadowViewport.maxDepth
+		dlviewport.x, dlviewport.y,
+		dlviewport.width, dlviewport.height,
+		dlviewport.minDepth, dlviewport.maxDepth
 	};
 	context->RSSetViewports(1, &viewport);
 	context->OMSetDepthStencilState(depthStencliState.Get(), 1);

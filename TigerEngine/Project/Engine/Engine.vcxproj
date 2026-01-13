@@ -142,6 +142,7 @@
     <ClCompile Include="Components\MeshRenderer.cpp" />
     <ClCompile Include="Manager\FBXResourceManager.cpp" />
     <ClCompile Include="Manager\ShaderManager.cpp" />
+    <ClCompile Include="Manager\WorldManager.cpp" />
     <ClCompile Include="RenderPass\BasicRenderPass.cpp" />
     <ClCompile Include="RenderPass\DebugDrawPass.cpp" />
     <ClCompile Include="RenderPass\DirectionalLightPass.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="RenderPass\ShadowRenderPass.h" />
     <ClInclude Include="RenderPass\SkyboxRenderPass.h" />
     <ClInclude Include="Util\DebugDraw.h" />
+    <ClInclude Include="Manager\WorldManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Base\Base.vcxproj">

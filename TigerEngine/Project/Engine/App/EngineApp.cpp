@@ -2,6 +2,7 @@
 #include "imgui_impl_win32.h" // ImGui_ImplWin32_WndProcHandler 사용하기 위함
 #include "../Manager/FBXResourceManager.h"
 #include "../Manager/ShaderManager.h"
+#include "../Manager/WorldManager.h"
 #include "Entity/GameObject.h"
 #include "../RenderPass/DirectionalLightPass.h"
 #include "../RenderPass/GBufferRenderPass.h"
@@ -43,12 +44,16 @@ bool EngineApp::OnInitialize()
 
 	/* --------------------------- create free camera --------------------------- */
 	CameraSystem::Instance().CreateFreeCamera(clientWidth, clientHeight, SceneSystem::Instance().GetCurrentScene().get());
+	WorldManager::Instance().CreateDirectionalLightFrustum(); // create directional light 
+
 
 	/* ----------------------------- init renderpass ---------------------------- */
 	// NOTE : 랜더링하는 순서대로 추가 할 것
 	auto shadowPass = std::make_shared<ShadowRenderPass>();
 	shadowPass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext(), CameraSystem::Instance().GetFreeCamera());
 	renderPasses.push_back(shadowPass);
+
+	WorldManager::Instance().shaderResourceView = shadowPass->GetShadowSRV();
 
 	auto gpass = std::make_shared<GBufferRenderPass>();
 	gpass->Init(dxRenderer->GetDevice(), dxRenderer->GetDeviceContext(), clientWidth, clientHeight);
@@ -60,7 +65,6 @@ bool EngineApp::OnInitialize()
 	dlpass->SetGBufferSRV(gpass->GetShaderResourceViews());
 	dlpass->SetDepthStencilView(dxRenderer->GetDepthStencilView());
 	dlpass->SetRenderTargetView(dxRenderer->GetBackBufferRTV());
-	dlpass->SetShadowViewProj(shadowPass->GetShadowView(), shadowPass->GetShadowProjection());
 	dlpass->SetShadowSRV(shadowPass->GetShadowSRV());
 	renderPasses.push_back(dlpass);
 
@@ -81,6 +85,8 @@ void EngineApp::OnUpdate()
 	SceneSystem::Instance().UpdateScene(GameTimer::Instance().DeltaTime());
 
 	CameraSystem::Instance().FreeCameraUpdate(GameTimer::Instance().DeltaTime());
+
+	WorldManager::Instance().Update();
 
 	editor->Update();
 }

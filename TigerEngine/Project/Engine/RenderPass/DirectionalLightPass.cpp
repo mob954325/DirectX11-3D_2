@@ -2,6 +2,9 @@
 #include "directxtk/DDSTextureLoader.h"
 #include "Entity/GameObject.h"
 
+#include "System/CameraSystem.h"
+#include "../Manager/WorldManager.h"
+
 struct ConstantBuffer   // TODO 정리하기
 {
 	Matrix cameraView;
@@ -129,9 +132,9 @@ void DirectionalLightPass::Execute(ComPtr<ID3D11DeviceContext> &context, std::sh
 	lightdirCB.lightColor = lightColor;
 
 	ConstantBuffer cb;
-	cb.CameraPos = cam->GetOwner()->GetTransform().lock()->position;
-	cb.shadowView = shadowView;
-	cb.shadowProjection = shadowProj;
+	cb.CameraPos = CameraSystem::Instance().GetFreeCamera()->GetOwner()->GetTransform().lock()->position;
+	cb.shadowView = XMMatrixTranspose(WorldManager::Instance().directionalLightView);
+	cb.shadowProjection = XMMatrixTranspose(WorldManager::Instance().directionalLightProj);
 
 	// 11, 12, 13 -> color, normal, worldpos
 	// 4 shadow depth
@@ -204,12 +207,6 @@ void DirectionalLightPass::SetDepthStencilView(const ComPtr<ID3D11DepthStencilVi
 void DirectionalLightPass::SetRenderTargetView(const ComPtr<ID3D11RenderTargetView> &rtv)
 {
     renderTargetView = rtv;
-}
-
-void DirectionalLightPass::SetShadowViewProj(Matrix view, Matrix proj)
-{
-	shadowView = view;
-	shadowProj = proj;
 }
 
 void DirectionalLightPass::SetShadowSRV(const ComPtr<ID3D11ShaderResourceView> &srv)

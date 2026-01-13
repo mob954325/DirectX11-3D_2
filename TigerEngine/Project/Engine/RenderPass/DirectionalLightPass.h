@@ -17,7 +17,6 @@ public:
     void SetDepthStencilView(const ComPtr<ID3D11DepthStencilView>& dsv);
     void SetRenderTargetView(const ComPtr<ID3D11RenderTargetView>& rtv);
 
-    void SetShadowViewProj(Matrix view, Matrix proj);
     void SetShadowSRV(const ComPtr<ID3D11ShaderResourceView>& srv);
 
 private:
@@ -43,10 +42,6 @@ private:
 	D3D11_VIEWPORT 						renderViewport = {};
     UINT clientWidth{};
     UINT clientHeight{};
-
-    Camera* camera{};
-    Matrix shadowView{};
-    Matrix shadowProj{};
     
     std::vector<ComPtr<ID3D11ShaderResourceView>>* gbufferSRVs{};
     ComPtr<ID3D11ShaderResourceView> shadowSRV;
