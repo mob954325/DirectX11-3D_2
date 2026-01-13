@@ -28,6 +28,7 @@ Engine
   
 ### 종속성 세팅
 ```
+vcpkg install rttr
 vcpkg install nlohmann-json
 vcpkg install assimp:x64-windows
 vcpkg install imgui[docking-experimental]:x64-windows-static-md
