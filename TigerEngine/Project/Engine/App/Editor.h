@@ -51,6 +51,10 @@ private:
     ComPtr<ID3D11DepthStencilView>		depthStencliView{};
     ComPtr<ID3D11RasterizerState>       rasterizerState{};
 
+    // flags
+    bool isDiretionalLightDebugOpen = false;
+    void DirectionalLightDebug();
+
 public:
 	void OnInputProcess(const Keyboard::State& KeyState, const Keyboard::KeyboardStateTracker& KeyTracker,
 		const Mouse::State& MouseState, const Mouse::ButtonStateTracker& MouseTracker) override;
