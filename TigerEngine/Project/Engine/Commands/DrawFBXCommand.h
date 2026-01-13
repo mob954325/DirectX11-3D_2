@@ -10,6 +10,10 @@ public:
     void CreateCommand(std::weak_ptr<FBXResourceAsset> fbxData, BonePoseBuffer& bonePoses, Transform* transform);
     void Execute(ComPtr<ID3D11DeviceContext>& context) override;
 
+	float roughnessFactor = 0.0f;
+	float matalnessFactor = 0.0f;
+	Color colorFactor{};
+
 private:	
     std::weak_ptr<FBXResourceAsset> fbxData{};	
 	BonePoseBuffer bonePoses{};

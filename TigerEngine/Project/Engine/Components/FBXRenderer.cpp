@@ -11,7 +11,19 @@ RTTR_REGISTRATION
 			(rttr::policy::ctor::as_std_shared_ptr)
 		.property("AnimationIndex", 	&FBXRenderer::GetAnimationIndex,			&FBXRenderer::SetAnimationIndex)
 		.property("AnimationPlayTime", 	&FBXRenderer::GetProgressAnimationTime,		&FBXRenderer::SetProgressAnimationTime)
-		.property("IsAnimationPlay", 	&FBXRenderer::GetIsAnimationPlay,			&FBXRenderer::SetIsAnimationPlay);
+		.property("IsAnimationPlay", 	&FBXRenderer::GetIsAnimationPlay,			&FBXRenderer::SetIsAnimationPlay)
+		.property("Roughness", 			&FBXRenderer::GetRoughness,					&FBXRenderer::SetRoughness)
+		.property("Metalic", 			&FBXRenderer::GetMatalic,					&FBXRenderer::SetMatalic)
+		.property("Color", 				&FBXRenderer::GetColor,						&FBXRenderer::SetColor);
+
+
+		rttr::registration::class_<DirectX::SimpleMath::Color>("Color")
+		.constructor<>()
+		.constructor<float, float, float>()
+		.property("r", &Color::x)
+		.property("g", &Color::y)
+		.property("b", &Color::z)
+		.property("a", &Color::w);
 }
 
 void FBXRenderer::OnInitialize()
@@ -80,7 +92,23 @@ nlohmann::json FBXRenderer::Serialize()
 
     for(auto& prop : t.get_properties())
     {
-		
+		std::string propName = prop.get_name().to_string();
+		rttr::variant value = prop.get_value(*this);
+		if (value.is_type<float>() && propName == "Roughness")
+		{
+			auto v = value.get_value<float>();
+			datas["properties"][propName] = v;
+		}
+		else if (value.is_type<float>() && propName == "Metalic")
+		{
+			auto v = value.get_value<float>();
+			datas["properties"][propName] = v;
+		}
+		else if (value.is_type<Color>() && propName == "Color")
+		{
+			auto v = value.get_value<Color>();
+			datas["properties"][propName] = { v.x, v.y, v.z, v.w };
+		}
 	}
 
     return datas;
@@ -95,7 +123,23 @@ void FBXRenderer::Deserialize(nlohmann::json data)
     rttr::type t = rttr::type::get(*this);
     for(auto& prop : t.get_properties())
     {
-		
+		std::string propName = prop.get_name().to_string();
+		rttr::variant value = prop.get_value(*this);
+		if (value.is_type<float>() && propName == "Roughness")
+		{
+			float data = propData["Roughness"];
+			prop.set_value(*this, data);
+		}
+		else if (value.is_type<float>() && propName == "Metalic")
+		{
+			float data = propData["Metalic"];
+			prop.set_value(*this, data);
+		}
+		else if (value.is_type<Color>() && propName == "Color")
+		{
+			Color color = { propData["Color"][0], propData["Color"][1], propData["Color"][2], propData["Color"][3] };
+			prop.set_value(*this, color);
+		}
 	}
 }
 
@@ -141,5 +185,9 @@ void FBXRenderer::CreateCommand()
 {	
 	auto command = std::make_shared<DrawFBXCommand>();
 	command->CreateCommand(fbxData.lock()->GetFBXInfo(), bonePoses, owner->GetTransform().lock().get());
+	command->roughnessFactor = roughness;
+	command->matalnessFactor = matalness;
+	command->colorFactor	 = color;
+
 	SetCommand(command); //
 }

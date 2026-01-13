@@ -27,6 +27,15 @@ public:
 	bool GetIsAnimationPlay() { return isAnimPlay; }
 	void SetIsAnimationPlay(bool value) { isAnimPlay = value; }
 
+	float GetRoughness() { return roughness; }
+	void SetRoughness(float value) { roughness = value > 1.0f ? 1.0f : value; }
+
+	float GetMatalic() { return matalness; }
+	void SetMatalic(float value) { matalness = value > 1.0f ? 1.0f : value; }
+
+	Color GetColor() { return color; }
+	void SetColor(Color value) { color = value; }
+
 private:
     void CreateBoneInfo();
 	void CreateCommand();	// 매 프레임마다 어떻게 그려질지 정한다.
@@ -44,5 +53,9 @@ private:
     // animation info
     int animationIndex = 0;             // 현재 실행 중인 애니메이션 인덱스
     float progressAnimationTime = 0.0f;   // 현재 애니메이션 시간
-    bool isAnimPlay = true;             
+    bool isAnimPlay = true;   
+
+	float roughness = 0.0f;
+	float matalness = 0.0f;
+	Color color{};
 };

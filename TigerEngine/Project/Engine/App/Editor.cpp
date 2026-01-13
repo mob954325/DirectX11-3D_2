@@ -277,7 +277,25 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
         {
             rttr::variant value = prop.get_value(*comp);            // 프로퍼티 값
             std::string name = prop.get_name().to_string();         // 프로퍼티 이름
-            if(value.is_type<int>() && name == "AnimationIndex")
+            if (value.is_type<Color>() && name == "Color")
+            {
+                Color v = value.get_value<Color>();
+                ImGui::ColorEdit3("Color", &v.x);
+                prop.set_value(*comp, v);
+            }
+            else if (value.is_type<float>() && name == "Roughness")
+            {
+                float v = value.get_value<float>();
+                ImGui::DragFloat("Roughness", &v, 0.1f, 0.0f, 1.0f);
+                prop.set_value(*comp, v);
+            }
+            else if (value.is_type<float>() && name == "Metalic")
+            {
+                float v = value.get_value<float>();
+                ImGui::DragFloat("Metalic", &v, 0.1f, 0.0f, 1.0f);
+                prop.set_value(*comp, v);
+            }
+            else if(value.is_type<int>() && name == "AnimationIndex")
             {
                 int v = value.get_value<int>();
                 ImGui::InputInt("Play Animation Index", &v);

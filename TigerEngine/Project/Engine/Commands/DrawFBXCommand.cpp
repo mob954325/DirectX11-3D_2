@@ -32,6 +32,12 @@ void DrawFBXCommand::Execute(ComPtr<ID3D11DeviceContext> &context)
 	for (size_t i = 0; i < size; i++)
 	{
 		MaterialData meshMaterial = lockedFbxData->meshes[i].GetMaterial();
+
+		// NOTE : 260104 FBXRenderer의 매개변수인 roughness와 matalic을 반영한다 -> 모든 메쉬가 다 변함
+		meshMaterial.Roughness = roughnessFactor;
+		meshMaterial.Matalness = matalnessFactor;
+		meshMaterial.ambient   = colorFactor;
+
 		context->UpdateSubresource(materialBuffer.Get(), 0, nullptr, &meshMaterial, 0, 0);		
 		tb.refBoneIndex = lockedFbxData->meshes[i].refBoneIndex;
     
