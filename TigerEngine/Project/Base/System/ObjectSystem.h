@@ -8,34 +8,34 @@
 class Object;
 
 /// <summary>
-/// slotMap ÀÎµ¦½º ÂüÁ¶ ±¸Á¶Ã¼
+/// slotMap ì¸ë±ìŠ¤ ì°¸ì¡° êµ¬ì¡°ì²´
 /// </summary>
 struct Handle
 {
-	// HandleÀº slot¸¦ ÂüÁ¶ÇÏ±â À§ÇÑ °ª
-	uint32_t index;		// slot ¹è¿­ À§Ä¡
-	uint32_t generation;	// ¼¼´ë 
+	// Handleì€ slotë¥¼ ì°¸ì¡°í•˜ê¸° ìœ„í•œ ê°’
+	uint32_t index;		// slot ë°°ì—´ ìœ„ì¹˜
+	uint32_t generation;	// ì„¸ëŒ€ 
 };
 
 /// <summary>
-/// slotMapÀÇ ½½·Ô ³»¿ë
+/// slotMapì˜ ìŠ¬ë¡¯ ë‚´ìš©
 /// </summary>
 struct Slot
 {
-	// ÇØ´ç °´Ã¼ÀÇ »ı¸í »óÅÂ
+	// í•´ë‹¹ ê°ì²´ì˜ ìƒëª… ìƒíƒœ
 	Object* ptr;
 	uint32_t generation;
 };
 
 /// <summary>
-/// Object·ÎºÎÅÍ ÆÄ»ıµÈ °´Ã¼ concept
+/// Objectë¡œë¶€í„° íŒŒìƒëœ ê°ì²´ concept
 /// </summary>
 template<typename T>
 concept DerivedOfObject = std::is_base_of_v<Object, T>;
 
 /// <summary>
-/// ¿£Áø¿¡¼­ »ı¼ºµÇ´Â °´Ã¼ °ü¸® ½Ã½ºÅÛ Å¬·¡½º.
-/// °ÔÀÓ ¿ÀºêÁ§Æ®, ÆÄ»ıµÈ ÄÄÆ÷³ÍÆ®ÀÇ Æ÷ÀÎÅÍ¸¦ °ü¸®ÇÕ´Ï´Ù.
+/// ì—”ì§„ì—ì„œ ìƒì„±ë˜ëŠ” ê°ì²´ ê´€ë¦¬ ì‹œìŠ¤í…œ í´ë˜ìŠ¤.
+/// ê²Œì„ ì˜¤ë¸Œì íŠ¸, íŒŒìƒëœ ì»´í¬ë„ŒíŠ¸ì˜ í¬ì¸í„°ë¥¼ ê´€ë¦¬í•©ë‹ˆë‹¤.
 /// </summary>
 class ObjectSystem : public Singleton<ObjectSystem>
 {
@@ -68,7 +68,7 @@ inline Handle ObjectSystem::Create()
 	else
 	{
 		index = static_cast<uint32_t>(slots.size());
-		slots.emplace_back(); // ? T ¸¸µé¸é ¿Ö ÄÁÅ×ÀÌ³Ê¿¡ ÇÏ³ª ´õ Ãß°¡µÉ±î
+		slots.emplace_back(); // ? T ë§Œë“¤ë©´ ì™œ ì»¨í…Œì´ë„ˆì— í•˜ë‚˜ ë” ì¶”ê°€ë ê¹Œ
 	}
 
 	Slot& slot = slots[index];

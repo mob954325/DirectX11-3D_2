@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "../pch.h"
 #include "../Renderer/RenderQueue.h"
 #include "../Entity/RenderComponent.h"
