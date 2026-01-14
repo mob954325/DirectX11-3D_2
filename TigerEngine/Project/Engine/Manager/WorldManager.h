@@ -3,8 +3,8 @@
 #include <System/Singleton.h>
 
 /// <summary>
-/// [ ╫л╠шеФ ] 
-/// ╟тюс©║╪╜ ╩Г©Кго╢б ©Ы╣Е а╓╨╦ ╣╔юлем╦╕ ╟║аЖ╟М юж╢б ╦е╢оюЗ
+/// [ Л▀╠Й╦─М├╓ ] 
+/// Й╡▄Л·└Л≈░Л└° Л┌╛Л ╘М∙≤К┼■ Л⌡■К⌠° Л═∙КЁ╢ К█╟Л²╢М└╟К╔╪ Й╟─Л╖─ЙЁ═ Л·┬К┼■ К╖╓К▀┬Л═─
 /// </summary>
 class WorldManager : public Singleton<WorldManager>
 {

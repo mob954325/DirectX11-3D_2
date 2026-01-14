@@ -35,7 +35,7 @@ void DrawFBXCommand::Execute(ComPtr<ID3D11DeviceContext> &context)
 
 		// NOTE : 260104 FBXRenderer의 매개변수인 roughness와 matalic을 반영한다 -> 모든 메쉬가 다 변함
 		meshMaterial.Roughness = roughnessFactor;
-		meshMaterial.Matalness = matalnessFactor;
+		meshMaterial.Matalness = metalicFactor;
 		meshMaterial.ambient   = colorFactor;
 
 		context->UpdateSubresource(materialBuffer.Get(), 0, nullptr, &meshMaterial, 0, 0);		

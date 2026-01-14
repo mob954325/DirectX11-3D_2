@@ -21,7 +21,7 @@ void Editor::Update()
 {
     Scene* currScene = SceneSystem::Instance().GetCurrentScene().get();
 
-    currScene->ForEachGameObject([](std::shared_ptr<GameObject> obj){
+    currScene->ForEachGameObject([](GameObject* obj){
         if(obj->GetName() == "FreeCamera") return;        
         obj->UpdateAABB();
      });    
@@ -43,9 +43,9 @@ void Editor::RenderEnd(const ComPtr<ID3D11DeviceContext>& context)
     context->RSSetState(nullptr);
 }
 
-void Editor::SelectObject(std::shared_ptr<GameObject> obj)
+void Editor::SelectObject(GameObject* obj)
 {
-    selectedObject = obj.get();
+    selectedObject = obj;
 }
 
 void Editor::RenderMenuBar(HWND& hwnd)
@@ -86,11 +86,11 @@ void Editor::RenderHierarchy()
             SceneSystem::Instance().GetCurrentScene()->AddGameObjectByName("NewGameObject");
         }
 
-        SceneSystem::Instance().GetCurrentScene()->ForEachGameObject([this](std::shared_ptr<GameObject> obj)
+        SceneSystem::Instance().GetCurrentScene()->ForEachGameObject([this](GameObject* obj)
         {
-            ImGui::PushID(obj.get()); // 고유 ID 부여 (ID 충돌 방지)
+            ImGui::PushID(obj); // 고유 ID 부여 (ID 충돌 방지)
             
-            if (ImGui::Selectable(obj->GetName().c_str(), selectedObject == obj.get()))
+            if (ImGui::Selectable(obj->GetName().c_str(), selectedObject == obj))
             {
                 SelectObject(obj);
             }
@@ -105,7 +105,7 @@ void Editor::RenderInspector()
 {
     ImGui::Begin("Inspector");
     {
-        if(!selectedObject)
+        if(selectedObject == nullptr)
         {
             ImGui::Text("No gameObject selected");
         }
@@ -175,7 +175,7 @@ void Editor::RenderInspector()
                 }
 
                 /* ------------------------------- 컴포넌트 내용 출력 ------------------------------- */
-                for (auto& comp : obj->GetIComponents())
+                for (auto& comp : obj->GetComponents())
                 {
                     auto registeredComps = ComponentFactory::Instance().GetRegisteredComponents();
                     auto name = comp->GetName();
@@ -192,7 +192,7 @@ void Editor::RenderInspector()
 }
 
 template<typename T>
-void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
+void Editor::RenderComponentInfo(std::string compName, T* comp)
 {
     if(compName == "Transform")
     {
@@ -259,7 +259,7 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
                         std::string fileFilterPath = ImGuiFileDialog::Instance()->GetCurrentFilter();   // 확장자만 나옴
                         // action
 
-                        std::shared_ptr<FBXData> fbxDataComp = std::dynamic_pointer_cast<FBXData>(comp);
+                        FBXData* fbxDataComp = dynamic_cast<FBXData*>(comp);
                         fbxDataComp->ChangeData(filePathName);
                     }
                     // close
@@ -318,7 +318,7 @@ void Editor::RenderComponentInfo(std::string compName, std::shared_ptr<T> comp)
 
     if (compName != "Transform") 
     {
-        ImGui::PushID(comp.get());
+        ImGui::PushID(comp);
         if(ImGui::Button("Remove Component"))
         {
             selectedObject->RemoveComponent(comp);
@@ -349,7 +349,7 @@ void Editor::RenderDebugAABBDraw()
 
 
     // 선택된 오브젝트는 밝은 초록색
-    SceneSystem::Instance().GetCurrentScene()->ForEachGameObject([&](std::shared_ptr<GameObject> gameObject) {
+    SceneSystem::Instance().GetCurrentScene()->ForEachGameObject([&](GameObject* gameObject) {
         if (gameObject->IsDestory()) return;
 
         XMVECTOR color = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
@@ -563,7 +563,7 @@ void Editor::OnInputProcess(const Keyboard::State &KeyState, const Keyboard::Key
             float outHitDistance = 0.0f;
             auto hitObject = SceneSystem::Instance().GetCurrentScene()->RayCastGameObject(ray, &outHitDistance);
 
-            SelectObject(hitObject.lock());
+            SelectObject(hitObject);
         }
     }
 }

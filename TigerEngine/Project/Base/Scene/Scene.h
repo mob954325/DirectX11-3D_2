@@ -1,10 +1,22 @@
-﻿#pragma once
+#pragma once
 #include "../pch.h"
 #include "../Renderer/RenderQueue.h"
 #include "../Entity/RenderComponent.h"
 #include <map>
 
 class GameObject;
+
+struct GameObjectEntity
+{
+	GameObject* objPtr;
+	Handle handle;
+};
+
+struct RCEntity
+{
+	RenderComponent* rcPtr;
+	Handle handle;
+};
 
 class Scene
 {
@@ -13,14 +25,13 @@ public:
 	void OnUpdate(float deltaTime);	
 	void CheckDestroy();
 
-	void ForEachGameObject(std::function<void(std::shared_ptr<GameObject>)> fn);
+	void ForEachGameObject(std::function<void(GameObject*)> fn);
 
-	void AddGameObject(std::shared_ptr<GameObject> obj);
-	std::shared_ptr<GameObject> AddGameObjectByName(std::string name); // add empty gameObject to Scene
-	std::shared_ptr<GameObject> GetGameObjectByName(std::string name);
+	GameObject* AddGameObjectByName(std::string name); // add empty gameObject to Scene
+	GameObject* GetGameObjectByName(std::string name);
 
-	void AddRenderable(std::shared_ptr<RenderComponent> comp);
-	std::vector<std::weak_ptr<RenderComponent>>& GetRenderables();
+	void AddRenderable(RenderComponent* comp, Handle handle);
+	std::vector<RCEntity>& GetRenderables();
 
 	/// @brief 모든 씬 오브젝트들을 제거하는 함수
 	void ClearScene();
@@ -34,12 +45,11 @@ public:
 	bool LoadToJson(const std::string& filename);
 	
 	int GetObjectCount() { return gameObjects.size(); }
-	std::weak_ptr<GameObject> GetGameobjectFromScene(std::string name);
+	GameObject* GetGameobjectFromScene(std::string name);
 
-	std::weak_ptr<GameObject> RayCastGameObject(const Ray& ray, float* outDistance);
+	GameObject* RayCastGameObject(const Ray& ray, float* outDistance);
 
 protected:
-	// std::vector<GameObject> gameObjects;
-	std::multimap<std::string, std::shared_ptr<GameObject>> gameObjects; // TODO 나중에 어떻게 관리할지 정하기
-	std::vector<std::weak_ptr<RenderComponent>> renderableComponents;
+	std::multimap<std::string, GameObjectEntity> gameObjects;
+	std::vector<RCEntity> renderableComponents;
 };

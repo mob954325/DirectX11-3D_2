@@ -18,7 +18,7 @@ public:
     void Render(HWND& hwnd);
     void RenderEnd(const ComPtr<ID3D11DeviceContext>& context);
 
-    void SelectObject(std::shared_ptr<GameObject> obj);
+    void SelectObject(GameObject* obj);
 
 private:
     void RenderMenuBar(HWND& hwnd);
@@ -26,7 +26,7 @@ private:
     void RenderInspector();
 
     template<typename T>
-    void RenderComponentInfo(std::string name, std::shared_ptr<T> comp);
+    void RenderComponentInfo(std::string name, T* comp);
 
     void RenderDebugAABBDraw();
 

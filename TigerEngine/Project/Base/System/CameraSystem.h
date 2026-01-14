@@ -30,7 +30,7 @@ public:
     void Clear();
 
 private:
-    std::shared_ptr<GameObject> freeCamObj{};
+    GameObject* freeCamObj{};
     Camera* freeCamera{};    // 프로그램 시작 시 등록
     Camera* currentCamera{}; // 현재 카메라
 

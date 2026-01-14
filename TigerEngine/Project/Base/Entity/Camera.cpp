@@ -15,19 +15,19 @@ RTTR_REGISTRATION
 
 Vector3 Camera::GetForward()
 {
-	Matrix world = owner->GetTransform().lock()->GetWorldTransform();
+	Matrix world = owner->GetTransform()->GetWorldTransform();
 	return -world.Forward();
 }
 
 Vector3 Camera::GetRight()
 {
-	Matrix world = owner->GetTransform().lock()->GetWorldTransform();
+	Matrix world = owner->GetTransform()->GetWorldTransform();
     return world.Right();
 }
 
 Matrix Camera::GetView()
 {
-	Matrix world = owner->GetTransform().lock()->GetWorldTransform();
+	Matrix world = owner->GetTransform()->GetWorldTransform();
 	Vector3 eye = world.Translation();
 	Vector3 target = world.Translation() + GetForward();
 	Vector3 up = world.Up();
@@ -38,7 +38,7 @@ Matrix Camera::GetView()
 
 void Camera::AddPitch(float value)
 {
-	auto& rot = owner->GetTransform().lock()->rotation;
+	auto& rot = owner->GetTransform()->rotation;
 	rot.x += value;
 
 	if(rot.x > XM_PI)
@@ -53,7 +53,7 @@ void Camera::AddPitch(float value)
 
 void Camera::AddYaw(float value)
 {
-	auto& rot = owner->GetTransform().lock()->rotation;
+	auto& rot = owner->GetTransform()->rotation;
 	rot.y += value;
 
 	if(rot.y > XM_PI)
@@ -83,7 +83,7 @@ void Camera::OnStart()
 
 void Camera::OnUpdate(float delta)
 {
-	auto& transform = *owner->GetTransform().lock();
+	auto& transform = *owner->GetTransform();
 	auto& position = transform.position;
 	auto& rotation = transform.rotation;
 	if (inputVec.Length() > 0.0f)
@@ -210,12 +210,12 @@ void Camera::OnInputProcess(const Keyboard::State &KeyState, const Keyboard::Key
 
 	if (KeyState.IsKeyDown(DirectX::Keyboard::Keys::E))
 	{
-		Matrix world = owner->GetTransform().lock()->GetWorldTransform();		
+		Matrix world = owner->GetTransform()->GetWorldTransform();		
 		SetInputVec(-world.Up());
 	}
 	else if (KeyState.IsKeyDown(DirectX::Keyboard::Keys::Q))
 	{
-		Matrix world = owner->GetTransform().lock()->GetWorldTransform();		
+		Matrix world = owner->GetTransform()->GetWorldTransform();		
 		SetInputVec(world.Up());
 	}
 

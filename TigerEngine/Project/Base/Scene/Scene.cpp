@@ -1,5 +1,6 @@
 #include "Scene.h"	
 #include "../Entity/GameObject.h"
+#include "../System/ObjectSystem.h"
 
 void Scene::OnRender(std::unique_ptr<RenderQueue>& renderQueue)
 {
@@ -15,7 +16,7 @@ void Scene::OnUpdate(float deltaTime)
 	for(auto it = gameObjects.begin(); it != gameObjects.end(); it++)
 	{
 		auto gameObject = it->second;
-		for(auto& rComp : gameObject->GetIComponents())
+		for(auto& rComp : gameObject.objPtr->GetComponents())
 		{
 			rComp->OnUpdate(deltaTime);
 		}
@@ -27,8 +28,10 @@ void Scene::CheckDestroy()
 	for(auto it = gameObjects.begin(); it != gameObjects.end();)
 	{
 		auto gameObject = it->second;
-		if(gameObject->IsDestory())
-		{	
+		if(gameObject.objPtr->IsDestory())
+		{				
+			gameObject.objPtr->ClearAll();
+			ObjectSystem::Instance().Destory(gameObject.handle);
 			it = gameObjects.erase(it);
 		}
 		else
@@ -38,38 +41,36 @@ void Scene::CheckDestroy()
 	}
 }
 
-void Scene::ForEachGameObject(std::function<void(std::shared_ptr<GameObject>)> fn)
+void Scene::ForEachGameObject(std::function<void(GameObject*)> fn)
 {
 	for(auto& obj : gameObjects)
 	{
-		fn(obj.second);
+		fn(obj.second.objPtr);
 	}
 }
 
-void Scene::AddGameObject(std::shared_ptr<GameObject> obj)
+GameObject* Scene::AddGameObjectByName(std::string name)
 {
-	gameObjects.insert({obj->GetName(), obj});
-}
+	Handle handle = ObjectSystem::Instance().Create<GameObject>();
+	auto obj = ObjectSystem::Instance().Get<GameObject>(handle);
+	obj->SetScene(this);
+	obj->SetName(name);
 
-std::shared_ptr<GameObject> Scene::AddGameObjectByName(std::string name)
-{
-	auto obj = std::make_shared<GameObject>(this, name);
-
-	gameObjects.insert({name, obj});
+	gameObjects.insert({ name, {obj, handle} });
     return obj;
 }
 
-std::shared_ptr<GameObject> Scene::GetGameObjectByName(std::string name)
+GameObject* Scene::GetGameObjectByName(std::string name)
 {
-    return gameObjects.find(name)->second;
+    return gameObjects.find(name)->second.objPtr;
 }
 
-void Scene::AddRenderable(std::shared_ptr<RenderComponent> comp)
+void Scene::AddRenderable(RenderComponent* comp, Handle handle)
 {
-	renderableComponents.push_back(comp);
+	renderableComponents.push_back({ comp, handle });
 }
 
-std::vector<std::weak_ptr<RenderComponent>>& Scene::GetRenderables()
+std::vector<RCEntity>& Scene::GetRenderables()
 {
 	return renderableComponents;
 }
@@ -79,7 +80,7 @@ void Scene::ClearScene()
 	for(auto& it : gameObjects)
 	{
 		auto obj = it.second;
-		obj->Destory();	
+		obj.objPtr->Destory();	
 	}
 	
 	gameObjects.clear();
@@ -92,9 +93,9 @@ bool Scene::SaveToJson(const std::string &filename) const
 	root["objects"] = nlohmann::json::array();
 	for(auto& obj : gameObjects)
 	{
-		if(!obj.second) continue;
+		if(!obj.second.objPtr) continue;
 		
-		nlohmann::json objData = obj.second->Serialize();
+		nlohmann::json objData = obj.second.objPtr->Serialize();
 		root["objects"].push_back(objData);
 	}
 
@@ -150,34 +151,34 @@ bool Scene::LoadToJson(const std::string &filename)
     return true;
 }
 
-std::weak_ptr<GameObject> Scene::GetGameobjectFromScene(std::string name)
+GameObject* Scene::GetGameobjectFromScene(std::string name)
 {
 	if(auto it = gameObjects.find(name); it != gameObjects.end())
 	{
-		return it->second;
+		return it->second.objPtr;
 	}
 	else
 	{
-		return std::shared_ptr<GameObject>(); // 빈 객체 보내기
+		return nullptr;
 	}
 }
 
-std::weak_ptr<GameObject> Scene::RayCastGameObject(const Ray &ray, float *outDistance)
+GameObject* Scene::RayCastGameObject(const Ray &ray, float *outDistance)
 {
-	std::shared_ptr<GameObject> hitObject{};
+	GameObject* hitObject = nullptr;
 	float minDistant = FLT_MAX;
 
 	for(auto& [name, obj]: gameObjects)
 	{
-		if(!obj) continue;
+		if(!obj.objPtr) continue;
 
 		float outDist = 0.0f;
-		if(ray.Intersects(obj->GetAABB(), outDist))
+		if(ray.Intersects(obj.objPtr->GetAABB(), outDist))
 		{
 			if(outDist < minDistant)
 			{
 				minDistant = outDist;
-				hitObject = obj;
+				hitObject = obj.objPtr;
 			}
 		}
 	}
