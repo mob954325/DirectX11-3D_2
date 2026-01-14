@@ -28,9 +28,9 @@ RTTR_REGISTRATION
 
 void FBXRenderer::OnInitialize()
 {
-    fbxData = owner->GetComponent<FBXData>().lock();
+    fbxData = owner->GetComponent<FBXData>();
 	bones.clear();
-	if(!fbxData.expired()) CreateBoneInfo(); // 임시
+	if(fbxData != nullptr) CreateBoneInfo(); // 임시
 }
 
 void FBXRenderer::OnStart()
@@ -39,9 +39,9 @@ void FBXRenderer::OnStart()
 
 void FBXRenderer::OnUpdate(float delta)
 {
-	if(fbxData.expired()) return;
+	if(fbxData != nullptr) return;
 
-    auto modelAsset = fbxData.lock()->GetFBXInfo();
+    auto modelAsset = fbxData->GetFBXInfo();
     if (!modelAsset->animations.empty() && isAnimPlay)
 	{
 		progressAnimationTime += delta;
@@ -145,7 +145,7 @@ void FBXRenderer::Deserialize(nlohmann::json data)
 
 void FBXRenderer::CreateBoneInfo()
 {
-    auto modelAsset = fbxData.lock()->GetFBXInfo();
+    auto modelAsset = fbxData->GetFBXInfo();
     int size = modelAsset->skeletalInfo.m_bones.size();
 	for (int i = 0; i < size; i++)
 	{
@@ -184,10 +184,10 @@ void FBXRenderer::CreateBoneInfo()
 void FBXRenderer::CreateCommand()
 {	
 	auto command = std::make_shared<DrawFBXCommand>();
-	command->CreateCommand(fbxData.lock()->GetFBXInfo(), bonePoses, owner->GetTransform().lock().get());
-	command->roughnessFactor = roughness;
-	command->matalnessFactor = matalness;
-	command->colorFactor	 = color;
+	command->CreateCommand(fbxData->GetFBXInfo(), bonePoses, owner->GetTransform());
+	command->SetColor(color);
+	command->SetMetalic(metalic);
+	command->SetRoughness(roughness);
 
 	SetCommand(command); //
 }

@@ -20,25 +20,36 @@ void GameObject::SetName(std::string str)
     name = str;
 }
 
-void GameObject::RemoveComponent(std::weak_ptr<IComponent> comp)
+void GameObject::RemoveComponent(Component* comp)
 {
     // 찾기
     for(auto it = components.begin(); it != components.end(); it++)
     {       
-        if(*it == comp.lock())
+        if(*it == comp)
         {
             components.erase(it);
             break;
         }
     }   
+
+    // handle 찾기
+    for (auto it = handles.begin(); it != handles.end(); it++)
+    {
+        auto objPtr = ObjectSystem::Instance().Get<Component>(*it);
+        if (objPtr == comp)
+        {
+            handles.erase(it);
+            break;
+        }
+    }
 }
 
-std::weak_ptr<Transform> GameObject::GetTransform() const
+Transform* GameObject::GetTransform() const
 {
 	return transform;
 }
 
-std::vector<std::shared_ptr<IComponent>> GameObject::GetIComponents()
+std::vector<Component*> GameObject::GetComponents()
 {
     return components;
 }
@@ -122,8 +133,8 @@ void GameObject::Deserialize(const nlohmann::json objData)
         std::string compName = prop["type"];
         if(compName == "Transform") // Transform은 게임 오브젝트가 생성 시에 추가된다.
         {
-            auto weak = this->GetComponent<Transform>();
-            weak.lock()->Deserialize(prop);
+            auto trans = this->GetComponent<Transform>();
+            trans->Deserialize(prop);
         }
         else    // 그 외 컴포넌트는 추가한다.
         {
@@ -131,13 +142,9 @@ void GameObject::Deserialize(const nlohmann::json objData)
             for (auto [name, create] : registered)
             {
                 if (compName == name)
-                {
-
+                {                   
                     auto createdComp = create(this);
-                    if(!createdComp.expired())
-                    {
-                        createdComp.lock()->Deserialize(prop);
-                    }
+                    createdComp->Deserialize(prop);
 
                     break;
                 }
@@ -148,7 +155,7 @@ void GameObject::Deserialize(const nlohmann::json objData)
 
 void GameObject::UpdateAABB()
 {
-    Transform* trans = transform.lock().get();
+    Transform* trans = transform;
     Vector3 updatedExtent = aabbBoxExtent * trans->scale;
     aabbBox.Center = trans->position + aabbCenter;
     aabbBox.Extents = updatedExtent;
@@ -168,7 +175,7 @@ void GameObject::SetAABB(BoundingBox aabb)
 
 void GameObject::SetAABB(Vector3 min, Vector3 max, Vector3 centor)
 {
-    auto tran = transform.lock();
+    auto tran = transform;
 
     aabbBox.Center = tran->position;
     aabbBoxExtent = (max - min) / 2.0f;

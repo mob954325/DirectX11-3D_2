@@ -8,7 +8,7 @@
 
 class FBXRenderer : public RenderComponent
 {
-	RTTR_ENABLE(IComponent)
+	RTTR_ENABLE(Component)
 public:
 	void OnInitialize() override;
 	void OnStart() override;
@@ -30,8 +30,8 @@ public:
 	float GetRoughness() { return roughness; }
 	void SetRoughness(float value) { roughness = value > 1.0f ? 1.0f : value; }
 
-	float GetMatalic() { return matalness; }
-	void SetMatalic(float value) { matalness = value > 1.0f ? 1.0f : value; }
+	float GetMatalic() { return metalic; }
+	void SetMatalic(float value) { metalic = value > 1.0f ? 1.0f : value; }
 
 	Color GetColor() { return color; }
 	void SetColor(Color value) { color = value; }
@@ -40,7 +40,7 @@ private:
     void CreateBoneInfo();
 	void CreateCommand();	// 매 프레임마다 어떻게 그려질지 정한다.
 
-    std::weak_ptr<FBXData> fbxData{}; // 참조할 FBX 데이터
+    FBXData* fbxData{}; // 참조할 FBX 데이터
 	std::shared_ptr<DrawFBXCommand> command;
 
 	// 모델 인스턴스 데이터
@@ -56,6 +56,6 @@ private:
     bool isAnimPlay = true;   
 
 	float roughness = 0.0f;
-	float matalness = 0.0f;
+	float metalic = 0.0f;
 	Color color{};
 };

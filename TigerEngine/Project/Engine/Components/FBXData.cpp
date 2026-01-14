@@ -21,7 +21,7 @@ void FBXData::OnInitialize()
     owner->SetAABB(fbxAsset->boxMin, fbxAsset->boxMax, fbxAsset->boxCenter);
 
     auto renderer = owner->GetComponent<FBXRenderer>(); // TODO load 후 컴포넌트 추가할 때 터짐 이거 수정하면 이 주석 제거할 것
-    if(!renderer.expired()) renderer.lock()->OnInitialize();
+    if(renderer != nullptr) renderer->OnInitialize();
 }
 
 const std::vector<Mesh>& FBXData::GetMesh() const
@@ -42,7 +42,7 @@ void FBXData::ChangeData(std::string path)
     owner->SetAABB(fbxAsset->boxMin, fbxAsset->boxMax, fbxAsset->boxCenter);
 
     auto renderer = owner->GetComponent<FBXRenderer>(); // TODO load 후 컴포넌트 추가할 때 터짐 이거 수정하면 이 주석 제거할 것
-    if(!renderer.expired()) renderer.lock()->OnInitialize();
+    if(renderer != nullptr) renderer->OnInitialize();
 }
 
 nlohmann::json FBXData::Serialize()

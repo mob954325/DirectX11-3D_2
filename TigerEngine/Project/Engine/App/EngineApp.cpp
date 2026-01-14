@@ -11,6 +11,9 @@
 #include "../RenderPass/DebugDrawPass.h"
 #include "System/CameraSystem.h"
 
+#include "Entity/Object.h"
+#include "System/ObjectSystem.h"
+
 EngineApp::EngineApp(HINSTANCE hInstance)
 	: GameApp(hInstance)
 {

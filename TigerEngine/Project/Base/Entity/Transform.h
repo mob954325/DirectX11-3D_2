@@ -1,10 +1,10 @@
 #pragma once
 #include "../pch.h"
-#include "IComponent.h"
+#include "Component.h"
 
-class Transform : public IComponent
+class Transform : public Component
 {
-	RTTR_ENABLE(IComponent)
+	RTTR_ENABLE(Component)
 public:
 	Transform() { SetName("Transform"); }
 	~Transform() = default;

@@ -1,12 +1,12 @@
 ﻿#pragma once
 #include <pch.h>
-#include "Entity/IComponent.h"
+#include "Entity/Component.h"
 #include "Datas/Mesh.h"
 #include "../Manager/FBXResourceManager.h"
 
-class FBXData : public IComponent
+class FBXData : public Component
 {
-    RTTR_ENABLE(IComponent)
+    RTTR_ENABLE(Component)
 public:
     void OnInitialize() override;
     const std::vector<Mesh>& GetMesh() const;

@@ -5,12 +5,14 @@
 #include <vector>
 #include "../Scene/Scene.h"
 #include "../Entity/RenderComponent.h"
-class RenderComponent; // NOTE : IComponent 있는 거랑 순환 참조 조심하기
+#include "../System/ObjectSystem.h"
+
+class RenderComponent; // NOTE : Component 있는 거랑 순환 참조 조심하기
 
 /// <summary>
 /// GameObject는 컴포넌트를 담고 있는 순수한 컨테이너
 /// </summary>
-class GameObject
+class GameObject : public Object
 {
 public:
 	GameObject() { Initialize(); };
@@ -21,15 +23,15 @@ public:
 	}
 
 	template<typename T>
-	std::weak_ptr<T> AddComponent();
+	T* AddComponent();
 
 	template<typename T>
-	std::weak_ptr<T> GetComponent();
+	T* GetComponent();
 
-	void RemoveComponent(std::weak_ptr<IComponent> comp);
+	void RemoveComponent(Component* comp);
 
-	std::weak_ptr<Transform> GetTransform() const;
-	std::vector<std::shared_ptr<IComponent>> GetIComponents();
+	Transform* GetTransform() const;
+	std::vector<Component*> GetComponents();
 
 	bool IsDestory();
 	void Destory();
@@ -56,8 +58,9 @@ public:
 
 protected:
 	Scene* currentScene{}; // 현재 게임 오브젝트가 존재하는 씬 참조 변수
-	std::weak_ptr<Transform> transform{};
-	std::vector<std::shared_ptr<IComponent>> 	components;
+	Transform* transform{};
+	std::vector<Component*> components;
+	std::vector<Handle> handles;
 	bool isDestory = false;
 
 	BoundingBox aabbBox{};
@@ -68,17 +71,19 @@ protected:
 };
 
 template <typename T>
-inline std::weak_ptr<T> GameObject::AddComponent()
+inline T* GameObject::AddComponent()
 {
-	static_assert(std::is_base_of_v<IComponent, T>,
-		"T must inherit from IComponent"); // T는 IComponent를 상속받았는가? 
+	static_assert(std::is_base_of_v<Component, T>,
+		"T must inherit from Component"); // T는 Component를 상속받았는가? 
 
-	auto comp = std::make_shared<T>();
+	Handle handle = ObjectSystem::Instance().Create<T>();
+	auto comp = ObjectSystem::Instance().Get<T>(handle);
 	comp->SetOwner(this);
 	components.push_back(comp);
+	handles.push_back(handle);
 	comp->OnInitialize(); // 컴포넌트 초기화 실행
 
-	if (auto renderComp = std::dynamic_pointer_cast<RenderComponent>(comp))
+	if (auto renderComp = dynamic_cast<RenderComponent*>(comp))
 	{
 		currentScene->AddRenderable(renderComp); // 렌더링하는 컴포넌트 등록
 	}
@@ -87,12 +92,12 @@ inline std::weak_ptr<T> GameObject::AddComponent()
 }
 
 template <typename T>
-inline std::weak_ptr<T> GameObject::GetComponent()
+inline T* GameObject::GetComponent()
 {
-	std::weak_ptr<T> res = {};
+	T* res = {};
 	std::for_each(components.begin(), components.end(), [&res](auto comp)
 	{
-		if(typeid(*comp) == typeid(T)) res = std::dynamic_pointer_cast<T>(comp);
+		if(typeid(*comp) == typeid(T)) res = dynamic_cast<T*>(comp);
 	});
 
     return res;

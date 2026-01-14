@@ -1,13 +1,13 @@
 #pragma once
 #include "../pch.h"
 #include "../System/InputSystem.h"
-#include "IComponent.h"
+#include "Component.h"
 
 using namespace DirectX::SimpleMath;
 
-class Camera : public IComponent, public InputProcesser
+class Camera : public Component, public InputProcesser
 {
-	RTTR_ENABLE(IComponent)
+	RTTR_ENABLE(Component)
 public:
 	Camera() { SetName("Camera"); } 
 	~Camera() {};

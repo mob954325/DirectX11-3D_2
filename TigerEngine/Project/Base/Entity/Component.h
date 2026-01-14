@@ -1,9 +1,10 @@
 ﻿#pragma once
 #include "../pch.h"
+#include "../System/ObjectSystem.h"
 
 class GameObject; // forward declear
 
-class IComponent
+class Component : public Object
 {
 	RTTR_ENABLE()
 protected:
@@ -11,11 +12,11 @@ protected:
 	std::string name{};		// 해당 컴포넌트 이름
 
 public:
-	IComponent() = default;
-	virtual ~IComponent() = default;
+	Component() = default;
+	virtual ~Component() = default;
 	
 	/// <summary>
-	/// IComponent가 처음 실행될 때 실행됩니다.
+	/// Component가 처음 실행될 때 실행됩니다.
 	/// </summary>
 	virtual void OnInitialize() {};
 

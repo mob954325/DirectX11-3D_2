@@ -10,7 +10,7 @@ void WorldManager::CreateDirectionalLightFrustum()
 
 	auto camera = CameraSystem::Instance().GetFreeCamera();
 
-	auto camTran = camera->GetOwner()->GetTransform().lock();
+	auto camTran = camera->GetOwner()->GetTransform();
 	directionalLightProj = XMMatrixPerspectiveFovLH(directionalLightFrustumAngle, directionalLightViewport.width / (FLOAT)directionalLightViewport.height, directionalLightNear, directionalLightFar); // 그림자 절두체
 	directionalLightLookAt = camTran->position + camera->GetForward() * directionalLightForwardDistFromCamera;	// 바라보는 방향 = 카메라 위치 + 카메라 바라보는 방향으로부터 떨어진 태양의 위치
 	directionalLightPos = camTran->position + ((Vector3)-lightDirection * directionalLightUpDistFromLookAt);	// 위치
@@ -21,7 +21,7 @@ void WorldManager::Update()
 {
 	auto camera = CameraSystem::Instance().GetFreeCamera();
 
-	auto camTran = camera->GetOwner()->GetTransform().lock();
+	auto camTran = camera->GetOwner()->GetTransform();
 	directionalLightProj = XMMatrixPerspectiveFovLH(directionalLightFrustumAngle, directionalLightViewport.width / (FLOAT)directionalLightViewport.height, directionalLightNear, directionalLightFar); // 그림자 절두체
 	directionalLightLookAt = camTran->position + camera->GetForward() * directionalLightForwardDistFromCamera;	// 바라보는 방향 = 카메라 위치 + 카메라 바라보는 방향으로부터 떨어진 태양의 위치
 	directionalLightPos = camTran->position + ((Vector3)-lightDirection * directionalLightUpDistFromLookAt);	// 위치

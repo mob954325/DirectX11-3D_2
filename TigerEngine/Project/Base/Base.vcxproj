@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -138,6 +138,8 @@
     <ClCompile Include="Entity\Transform.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="Entity\Object.cpp" />
+    <ClCompile Include="System\ObjectSystem.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Renderer\DirectX11Renderer.cpp" />
     <ClCompile Include="Renderer\ImguiRenderer.cpp" />
@@ -161,12 +163,14 @@
     <ClInclude Include="Datas\Vertex.h" />
     <ClInclude Include="Entity\Camera.h" />
     <ClInclude Include="Entity\GameObject.h" />
-    <ClInclude Include="Entity\IComponent.h" />
+    <ClInclude Include="Entity\Component.h" />
     <ClInclude Include="Entity\RenderComponent.h" />
     <ClInclude Include="Entity\Transform.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Entity\Object.h" />
+    <ClInclude Include="System\ObjectSystem.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Renderer\DirectX11Renderer.h" />
     <ClInclude Include="Renderer\ImguiRenderer.h" />

@@ -55,7 +55,7 @@ void CameraSystem::Clear()
 void CameraSystem::FreeCameraUpdate(float delta)
 {
     if(!freeCamObj) return;
-    auto comps = freeCamObj->GetIComponents();
+    auto comps = freeCamObj->GetComponents();
     for(auto& comp : comps)
     {
         comp->OnUpdate(delta);
@@ -65,9 +65,10 @@ void CameraSystem::FreeCameraUpdate(float delta)
 void CameraSystem::CreateFreeCamera(int clientWidth, int clientHeight, Scene *currScene)
 {
     // TODO 카메라 씬에 등록하기 아니면 다른 업데이트 방법 찾기
-    freeCamObj = std::make_shared<GameObject>();
+    Handle handle = ObjectSystem::Instance().Create<GameObject>();
+    freeCamObj = ObjectSystem::Instance().Get<GameObject>(handle);
 	freeCamObj->SetName("FreeCamera");
-    freeCamera = freeCamObj->AddComponent<Camera>().lock().get();
+    freeCamera = freeCamObj->AddComponent<Camera>();
 
 	freeCamera->SetProjection(DirectX::XM_PIDIV2, clientWidth, clientHeight, 0.1, 3000);
     Register(freeCamera);

@@ -69,6 +69,12 @@
     <ClCompile Include="System\ComponentFactory.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="System\ObjectSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity\Object.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Datas\Animation.h">
@@ -107,7 +113,7 @@
     <ClInclude Include="Entity\GameObject.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Entity\IComponent.h">
+    <ClInclude Include="Entity\Component.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Entity\RenderComponent.h">
@@ -165,6 +171,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ObjectSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Object.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

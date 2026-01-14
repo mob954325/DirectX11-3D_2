@@ -1,5 +1,6 @@
 #include "Scene.h"	
 #include "../Entity/GameObject.h"
+#include "../System/ObjectSystem.h"
 
 void Scene::OnRender(std::unique_ptr<RenderQueue>& renderQueue)
 {
@@ -15,7 +16,7 @@ void Scene::OnUpdate(float deltaTime)
 	for(auto it = gameObjects.begin(); it != gameObjects.end(); it++)
 	{
 		auto gameObject = it->second;
-		for(auto& rComp : gameObject->GetIComponents())
+		for(auto& rComp : gameObject->GetComponents())
 		{
 			rComp->OnUpdate(deltaTime);
 		}
@@ -38,7 +39,7 @@ void Scene::CheckDestroy()
 	}
 }
 
-void Scene::ForEachGameObject(std::function<void(std::shared_ptr<GameObject>)> fn)
+void Scene::ForEachGameObject(std::function<void(GameObject*)> fn)
 {
 	for(auto& obj : gameObjects)
 	{
@@ -46,30 +47,32 @@ void Scene::ForEachGameObject(std::function<void(std::shared_ptr<GameObject>)> f
 	}
 }
 
-void Scene::AddGameObject(std::shared_ptr<GameObject> obj)
+void Scene::AddGameObject(GameObject* obj)
 {
 	gameObjects.insert({obj->GetName(), obj});
 }
 
-std::shared_ptr<GameObject> Scene::AddGameObjectByName(std::string name)
+GameObject* Scene::AddGameObjectByName(std::string name)
 {
-	auto obj = std::make_shared<GameObject>(this, name);
+	Handle handle = ObjectSystem::Instance().Create<GameObject>();
+	auto obj = ObjectSystem::Instance().Get<GameObject>(handle);
+	obj->SetScene(this);
 
 	gameObjects.insert({name, obj});
     return obj;
 }
 
-std::shared_ptr<GameObject> Scene::GetGameObjectByName(std::string name)
+GameObject* Scene::GetGameObjectByName(std::string name)
 {
     return gameObjects.find(name)->second;
 }
 
-void Scene::AddRenderable(std::shared_ptr<RenderComponent> comp)
+void Scene::AddRenderable(RenderComponent* comp)
 {
 	renderableComponents.push_back(comp);
 }
 
-std::vector<std::weak_ptr<RenderComponent>>& Scene::GetRenderables()
+std::vector<RenderComponent*>& Scene::GetRenderables()
 {
 	return renderableComponents;
 }
@@ -150,7 +153,7 @@ bool Scene::LoadToJson(const std::string &filename)
     return true;
 }
 
-std::weak_ptr<GameObject> Scene::GetGameobjectFromScene(std::string name)
+GameObject* Scene::GetGameobjectFromScene(std::string name)
 {
 	if(auto it = gameObjects.find(name); it != gameObjects.end())
 	{
@@ -158,13 +161,13 @@ std::weak_ptr<GameObject> Scene::GetGameobjectFromScene(std::string name)
 	}
 	else
 	{
-		return std::shared_ptr<GameObject>(); // 빈 객체 보내기
+		return nullptr;
 	}
 }
 
-std::weak_ptr<GameObject> Scene::RayCastGameObject(const Ray &ray, float *outDistance)
+GameObject* Scene::RayCastGameObject(const Ray &ray, float *outDistance)
 {
-	std::shared_ptr<GameObject> hitObject{};
+	GameObject* hitObject = nullptr;
 	float minDistant = FLT_MAX;
 
 	for(auto& [name, obj]: gameObjects)
