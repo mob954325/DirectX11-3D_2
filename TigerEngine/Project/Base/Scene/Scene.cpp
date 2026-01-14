@@ -16,7 +16,7 @@ void Scene::OnUpdate(float deltaTime)
 	for(auto it = gameObjects.begin(); it != gameObjects.end(); it++)
 	{
 		auto gameObject = it->second;
-		for(auto& rComp : gameObject->GetComponents())
+		for(auto& rComp : gameObject.objPtr->GetComponents())
 		{
 			rComp->OnUpdate(deltaTime);
 		}
@@ -28,8 +28,10 @@ void Scene::CheckDestroy()
 	for(auto it = gameObjects.begin(); it != gameObjects.end();)
 	{
 		auto gameObject = it->second;
-		if(gameObject->IsDestory())
-		{	
+		if(gameObject.objPtr->IsDestory())
+		{				
+			gameObject.objPtr->ClearAll();
+			ObjectSystem::Instance().Destory(gameObject.handle);
 			it = gameObjects.erase(it);
 		}
 		else
@@ -43,13 +45,8 @@ void Scene::ForEachGameObject(std::function<void(GameObject*)> fn)
 {
 	for(auto& obj : gameObjects)
 	{
-		fn(obj.second);
+		fn(obj.second.objPtr);
 	}
-}
-
-void Scene::AddGameObject(GameObject* obj)
-{
-	gameObjects.insert({obj->GetName(), obj});
 }
 
 GameObject* Scene::AddGameObjectByName(std::string name)
@@ -57,22 +54,23 @@ GameObject* Scene::AddGameObjectByName(std::string name)
 	Handle handle = ObjectSystem::Instance().Create<GameObject>();
 	auto obj = ObjectSystem::Instance().Get<GameObject>(handle);
 	obj->SetScene(this);
+	obj->SetName(name);
 
-	gameObjects.insert({name, obj});
+	gameObjects.insert({ name, {obj, handle} });
     return obj;
 }
 
 GameObject* Scene::GetGameObjectByName(std::string name)
 {
-    return gameObjects.find(name)->second;
+    return gameObjects.find(name)->second.objPtr;
 }
 
-void Scene::AddRenderable(RenderComponent* comp)
+void Scene::AddRenderable(RenderComponent* comp, Handle handle)
 {
-	renderableComponents.push_back(comp);
+	renderableComponents.push_back({ comp, handle });
 }
 
-std::vector<RenderComponent*>& Scene::GetRenderables()
+std::vector<RCEntity>& Scene::GetRenderables()
 {
 	return renderableComponents;
 }
@@ -82,7 +80,7 @@ void Scene::ClearScene()
 	for(auto& it : gameObjects)
 	{
 		auto obj = it.second;
-		obj->Destory();	
+		obj.objPtr->Destory();	
 	}
 	
 	gameObjects.clear();
@@ -95,9 +93,9 @@ bool Scene::SaveToJson(const std::string &filename) const
 	root["objects"] = nlohmann::json::array();
 	for(auto& obj : gameObjects)
 	{
-		if(!obj.second) continue;
+		if(!obj.second.objPtr) continue;
 		
-		nlohmann::json objData = obj.second->Serialize();
+		nlohmann::json objData = obj.second.objPtr->Serialize();
 		root["objects"].push_back(objData);
 	}
 
@@ -157,7 +155,7 @@ GameObject* Scene::GetGameobjectFromScene(std::string name)
 {
 	if(auto it = gameObjects.find(name); it != gameObjects.end())
 	{
-		return it->second;
+		return it->second.objPtr;
 	}
 	else
 	{
@@ -172,15 +170,15 @@ GameObject* Scene::RayCastGameObject(const Ray &ray, float *outDistance)
 
 	for(auto& [name, obj]: gameObjects)
 	{
-		if(!obj) continue;
+		if(!obj.objPtr) continue;
 
 		float outDist = 0.0f;
-		if(ray.Intersects(obj->GetAABB(), outDist))
+		if(ray.Intersects(obj.objPtr->GetAABB(), outDist))
 		{
 			if(outDist < minDistant)
 			{
 				minDistant = outDist;
-				hitObject = obj;
+				hitObject = obj.objPtr;
 			}
 		}
 	}

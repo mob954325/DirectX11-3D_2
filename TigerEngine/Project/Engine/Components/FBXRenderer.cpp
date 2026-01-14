@@ -39,7 +39,7 @@ void FBXRenderer::OnStart()
 
 void FBXRenderer::OnUpdate(float delta)
 {
-	if(fbxData != nullptr) return;
+	if(fbxData == nullptr) return;
 
     auto modelAsset = fbxData->GetFBXInfo();
     if (!modelAsset->animations.empty() && isAnimPlay)

@@ -56,6 +56,11 @@ public:
 
 	std::string name = "NoNamed";	// 리플렉션을 위해 public으로 공개
 
+	/// <summary>
+	/// 게임 오브젝트의 모든 컴포넌트를 지우는 함수
+	/// </summary>
+	void ClearAll();
+
 protected:
 	Scene* currentScene{}; // 현재 게임 오브젝트가 존재하는 씬 참조 변수
 	Transform* transform{};
@@ -85,7 +90,7 @@ inline T* GameObject::AddComponent()
 
 	if (auto renderComp = dynamic_cast<RenderComponent*>(comp))
 	{
-		currentScene->AddRenderable(renderComp); // 렌더링하는 컴포넌트 등록
+		currentScene->AddRenderable(renderComp, handle); // 렌더링하는 컴포넌트 등록
 	}
 
 	return comp;

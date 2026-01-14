@@ -6,6 +6,18 @@
 
 class GameObject;
 
+struct GameObjectEntity
+{
+	GameObject* objPtr;
+	Handle handle;
+};
+
+struct RCEntity
+{
+	RenderComponent* rcPtr;
+	Handle handle;
+};
+
 class Scene
 {
 public:
@@ -15,12 +27,11 @@ public:
 
 	void ForEachGameObject(std::function<void(GameObject*)> fn);
 
-	void AddGameObject(GameObject* obj);
 	GameObject* AddGameObjectByName(std::string name); // add empty gameObject to Scene
 	GameObject* GetGameObjectByName(std::string name);
 
-	void AddRenderable(RenderComponent* comp);
-	std::vector<RenderComponent*>& GetRenderables();
+	void AddRenderable(RenderComponent* comp, Handle handle);
+	std::vector<RCEntity>& GetRenderables();
 
 	/// @brief 모든 씬 오브젝트들을 제거하는 함수
 	void ClearScene();
@@ -39,7 +50,6 @@ public:
 	GameObject* RayCastGameObject(const Ray& ray, float* outDistance);
 
 protected:
-	// std::vector<GameObject> gameObjects;
-	std::multimap<std::string, GameObject*> gameObjects; // TODO 나중에 어떻게 관리할지 정하기
-	std::vector<RenderComponent*> renderableComponents;
+	std::multimap<std::string, GameObjectEntity> gameObjects;
+	std::vector<RCEntity> renderableComponents;
 };

@@ -181,3 +181,14 @@ void GameObject::SetAABB(Vector3 min, Vector3 max, Vector3 centor)
     aabbBoxExtent = (max - min) / 2.0f;
     aabbCenter = centor;
 }
+
+void GameObject::ClearAll()
+{
+    components.clear();
+
+    for (auto it = handles.begin(); it != handles.end();)
+    {
+        ObjectSystem::Instance().Destory(*it);
+        it = handles.erase(it);
+    }
+}

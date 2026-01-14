@@ -67,11 +67,11 @@ inline Handle ObjectSystem::Create()
 	}
 	else
 	{
-		index = static_cast<uint32_t>(freeSlots.size());
+		index = static_cast<uint32_t>(slots.size());
 		slots.emplace_back(); // ? T 만들면 왜 컨테이너에 하나 더 추가될까
 	}
 
-	// Slot& slot = slots[index];
+	Slot& slot = slots[index];
 	T* t = new T();
 	slots[index].ptr = t;
 

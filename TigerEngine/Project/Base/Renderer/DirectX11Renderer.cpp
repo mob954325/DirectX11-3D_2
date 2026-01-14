@@ -168,21 +168,22 @@ void DirectX11Renderer::ProcessScene
 	// getrenderable from scene
 	if(scene)
 	{		
-		auto renderComps = scene->GetRenderables();
+		auto rcEntities = scene->GetRenderables();
 		
 		// add queue
-		for(auto it = renderComps.begin(); it != renderComps.end();)
+		for(auto it = rcEntities.begin(); it != rcEntities.end();)
 		{
-			if(*it) // renderable 컴포넌트가 소멸함
+			
+			if(ObjectSystem::Instance().Get<RenderComponent>((*it).handle) == nullptr) // renderable 컴포넌트가 소멸함
 			{
-				it = renderComps.erase(it);
+				it = rcEntities.erase(it);
 				continue;
 			}
 			
 			auto comp = *it;
-			if(!comp->GetCommand().expired()) // renderable이 데이터가 있을 때만 커맨드 생성
+			if(!comp.rcPtr->GetCommand().expired()) // renderable이 데이터가 있을 때만 커맨드 생성
 			{
-				renderQueue.AddCommand(comp->GetCommand().lock()); 
+				renderQueue.AddCommand(comp.rcPtr->GetCommand().lock()); 
 			}
 			
 			it++;
