@@ -24,9 +24,42 @@
     <ClInclude Include="imguiFileDialog\ImGuiFileDialogConfig.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="imguizmo\GraphEditor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="imguizmo\ImCurveEdit.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="imguizmo\ImGradient.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="imguizmo\ImGuizmo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="imguizmo\ImSequencer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="imguizmo\ImZoomSlider.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imguiFileDialog\ImGuiFileDialog.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="imguizmo\GraphEditor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="imguizmo\ImCurveEdit.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="imguizmo\ImGradient.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="imguizmo\ImGuizmo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="imguizmo\ImSequencer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
