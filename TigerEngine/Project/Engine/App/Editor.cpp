@@ -151,6 +151,12 @@ void Editor::RenderInspector()
                 // 2. 해당 ID를 가진 팝업이 열려있는지 확인하고 그림
                 if (ImGui::BeginPopup("ComponentMenu"))
                 {
+                    if (rttr::type::get_by_name("Player"))
+                    {
+                        int a = 0;
+
+                    }
+
                     auto& componentsMap = ComponentFactory::Instance().GetRegisteredComponents();
 
                     for (auto& [name, creatorFunc] : componentsMap)

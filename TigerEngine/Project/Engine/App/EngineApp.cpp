@@ -13,6 +13,7 @@
 
 #include "Entity/Object.h"
 #include "System/ObjectSystem.h"
+#include "System/ComponentFactory.h"
 
 EngineApp::EngineApp(HINSTANCE hInstance)
 	: GameApp(hInstance)
@@ -133,6 +134,23 @@ void EngineApp::EndRender()
 {	
 	renderer->EndRender();
 	imguiRenderer->EndRender();
+}
+
+// clinet dll 로드하기
+using InitClientFunc = void(*)(ComponentFactory*);
+
+void EngineApp::LoadClientDLL()
+{
+    HMODULE hDll = LoadLibrary(L"Client.dll");
+    if (!hDll) return;
+
+    auto InitFunc = reinterpret_cast<InitClientFunc>(GetProcAddress(hDll, "InitializeClient"));
+
+    if (InitFunc)
+    {
+        // 엔진이 가진 싱글톤 인스턴스 전달
+        InitFunc(&ComponentFactory::Instance());
+    }
 }
 
 // Forward declare message handler from imgui_impl_win32.cpp

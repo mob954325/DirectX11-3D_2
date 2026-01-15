@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Base", "Base\Base.vcxproj", "{4C1F3704-A5D9-452C-B899-CA7C088D1941}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{520CCF68-62C6-4874-9ED6-BB019C47496A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CA91D42F-E794-4730-85D1-4A97A8D75B2D} = {CA91D42F-E794-4730-85D1-4A97A8D75B2D}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Externals", "Externals\Externals.vcxproj", "{AC2D8CA6-730B-408F-B2E7-7DCF4BA9E7D8}"
 EndProject

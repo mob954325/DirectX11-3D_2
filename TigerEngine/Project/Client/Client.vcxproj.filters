@@ -18,9 +18,15 @@
     <ClInclude Include="Player\Player.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ClientGlobal.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Player\Player.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Initialize.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
