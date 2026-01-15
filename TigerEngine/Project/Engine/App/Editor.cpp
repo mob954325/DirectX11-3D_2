@@ -205,25 +205,19 @@ void Editor::RenderComponentInfo(std::string compName, T* comp)
         {
             rttr::variant value = prop.get_value(*comp);        // 프로퍼티 값
             std::string name = prop.get_name().to_string();     // 프로퍼티 이름
-            if(value.is_type<DirectX::SimpleMath::Vector3>() && name == "Position")
+            if(value.is_type<DirectX::SimpleMath::Vector3>())
             {
                 DirectX::SimpleMath::Vector3 pos = value.get_value<DirectX::SimpleMath::Vector3>();
-                ImGui::DragFloat3("Position", &pos.x, 0.1f);
+                ImGui::DragFloat3(name.c_str(), &pos.x, 0.1f);
                 prop.set_value(*comp, pos);
             }
-            else if(value.is_type<DirectX::SimpleMath::Vector3>() && name == "Rotation")
+            else if(value.is_type<DirectX::SimpleMath::Vector3>() && name == "Rotation") // Rotate는 라디안 값 처리를 해야하기 때문에 분리
             {
                 DirectX::SimpleMath::Vector3 rot = value.get_value<DirectX::SimpleMath::Vector3>();
                 DirectX::SimpleMath::Vector3 rotEuler = { XMConvertToDegrees(rot.x), XMConvertToDegrees(rot.y),  XMConvertToDegrees(rot.z) };
                 ImGui::DragFloat3("Rotation", &rotEuler.x, 0.1f);
                 rot = { XMConvertToRadians(rotEuler.x), XMConvertToRadians(rotEuler.y),  XMConvertToRadians(rotEuler.z) };
                 prop.set_value(*comp, rot);
-            }
-            else if(value.is_type<DirectX::SimpleMath::Vector3>() && name == "Scale")
-            {
-                DirectX::SimpleMath::Vector3 scl = value.get_value<DirectX::SimpleMath::Vector3>();
-                ImGui::DragFloat3("Scale", &scl.x, 0.1f);
-                prop.set_value(*comp, scl);
             }
         } 
     }
@@ -285,34 +279,22 @@ void Editor::RenderComponentInfo(std::string compName, T* comp)
                 ImGui::ColorEdit3("Color", &v.x);
                 prop.set_value(*comp, v);
             }
-            else if (value.is_type<float>() && name == "Roughness")
+            else if (value.is_type<float>())
             {
                 float v = value.get_value<float>();
-                ImGui::DragFloat("Roughness", &v, 0.1f, 0.0f, 1.0f);
+                ImGui::DragFloat(name.c_str(), &v, 0.1f, 0.0f, 1.0f);
                 prop.set_value(*comp, v);
             }
-            else if (value.is_type<float>() && name == "Metalic")
-            {
-                float v = value.get_value<float>();
-                ImGui::DragFloat("Metalic", &v, 0.1f, 0.0f, 1.0f);
-                prop.set_value(*comp, v);
-            }
-            else if(value.is_type<int>() && name == "AnimationIndex")
+            else if(value.is_type<int>())
             {
                 int v = value.get_value<int>();
-                ImGui::InputInt("Play Animation Index", &v);
+                ImGui::InputInt(name.c_str(), &v);
                 // prop.set_value(*comp, v);
             }
-            else if(value.is_type<float>() && name == "AnimationPlayTime")
-            {
-                float v = value.get_value<float>();
-                ImGui::DragFloat("Time", &v, 0.1f);
-                prop.set_value(*comp, v);
-            }
-            else if(value.is_type<bool>() && name == "IsAnimationPlay")
+            else if(value.is_type<bool>())
             {
                 bool v = value.get_value<bool>();
-                ImGui::Checkbox("isPlay", &v);
+                ImGui::Checkbox(name.c_str(), &v);
                 prop.set_value(*comp, v);
             }
         } 
