@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "../pch.h"
 #include "../Renderer/IRenderCommand.h"
 
@@ -27,7 +27,7 @@ public:
         // execute command
         std::for_each(commands.begin(), commands.end(), [&context](auto comm)
         { 
-            comm->Execute(context);
+            if(comm) comm->Execute(context);
         });
     }
 

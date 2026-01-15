@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "../pch.h"
 #include "../System/ObjectSystem.h"
 
@@ -29,6 +29,11 @@ public:
 	/// GameEngine에 매 프레임마다 OnUpdate()내 에서 호출됩니다.
 	/// </summary>
 	virtual void OnUpdate(float delta) {};
+
+    /// <summary>
+    /// 객체가 파괴 될 때 호출됩니다.
+    /// </summary>
+    virtual void OnDestory() {};
 
 	// 컴포넌트 내용 직렬화해서 json으로 반환하는 함수
 	virtual nlohmann::json Serialize() { return nlohmann::json::object(); }

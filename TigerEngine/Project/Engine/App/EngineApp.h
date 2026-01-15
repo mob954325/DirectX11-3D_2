@@ -36,5 +36,7 @@ private:
 	void BeginRender();
 	void EndRender();
 
+    void LoadClientDLL();
+
 	std::shared_ptr<DirectX11Renderer> dxRenderer{};
 };

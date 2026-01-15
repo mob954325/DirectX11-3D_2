@@ -12,12 +12,6 @@ struct GameObjectEntity
 	Handle handle;
 };
 
-struct RCEntity
-{
-	RenderComponent* rcPtr;
-	Handle handle;
-};
-
 class Scene
 {
 public:
@@ -29,9 +23,6 @@ public:
 
 	GameObject* AddGameObjectByName(std::string name); // add empty gameObject to Scene
 	GameObject* GetGameObjectByName(std::string name);
-
-	void AddRenderable(RenderComponent* comp, Handle handle);
-	std::vector<RCEntity>& GetRenderables();
 
 	/// @brief 모든 씬 오브젝트들을 제거하는 함수
 	void ClearScene();
@@ -51,5 +42,4 @@ public:
 
 protected:
 	std::multimap<std::string, GameObjectEntity> gameObjects;
-	std::vector<RCEntity> renderableComponents;
 };

@@ -13,6 +13,7 @@ public:
 	void OnInitialize() override;
 	void OnStart() override;
 	void OnUpdate(float delta) override;
+    void OnDestory() override;
 	
 	nlohmann::json Serialize() override;
 	void Deserialize(nlohmann::json data) override;

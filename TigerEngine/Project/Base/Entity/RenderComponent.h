@@ -9,6 +9,7 @@ class RenderComponent : public Component
 public:
     std::weak_ptr<IRenderCommand> GetCommand() { return command; }
     void SetCommand(std::shared_ptr<IRenderCommand> rc) { command = rc; }
+    void ClearCommand() { command.reset(); }
 protected:
     std::shared_ptr<IRenderCommand> command;
 };

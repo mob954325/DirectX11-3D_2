@@ -4,7 +4,7 @@
 #include <string> 
 #include <vector>
 #include "../Scene/Scene.h"
-#include "../Entity/RenderComponent.h"
+#include "../System/RenderSystem.h"
 #include "../System/ObjectSystem.h"
 
 class RenderComponent; // NOTE : Component 있는 거랑 순환 참조 조심하기
@@ -90,7 +90,7 @@ inline T* GameObject::AddComponent()
 
 	if (auto renderComp = dynamic_cast<RenderComponent*>(comp))
 	{
-		currentScene->AddRenderable(renderComp, handle); // 렌더링하는 컴포넌트 등록
+        RenderSystem::Instance().Register(renderComp);
 	}
 
 	return comp;

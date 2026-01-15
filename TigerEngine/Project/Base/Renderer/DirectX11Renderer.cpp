@@ -1,6 +1,7 @@
 #include "DirectX11Renderer.h"
-#include "../Helper.h"
 #include <algorithm>
+#include "../Helper.h"
+#include "../System/RenderSystem.h"
 
 // datas
 #include "../Datas/Mesh.h"
@@ -168,27 +169,9 @@ void DirectX11Renderer::ProcessScene
 	// getrenderable from scene
 	if(scene)
 	{		
-		auto rcEntities = scene->GetRenderables();
-		
-		// add queue
-		for(auto it = rcEntities.begin(); it != rcEntities.end();)
-		{
-			
-			if(ObjectSystem::Instance().Get<RenderComponent>((*it).handle) == nullptr) // renderable 컴포넌트가 소멸함
-			{
-				it = rcEntities.erase(it);
-				continue;
-			}
-			
-			auto comp = *it;
-			if(!comp.rcPtr->GetCommand().expired()) // renderable이 데이터가 있을 때만 커맨드 생성
-			{
-				renderQueue.AddCommand(comp.rcPtr->GetCommand().lock()); 
-			}
-			
-			it++;
-		}
-		
+        // add command from render system
+        RenderSystem::Instance().Render(renderQueue);		
+
 		// execute pass, queue
 		renderQueue.Execute(deviceContext);
 	}
