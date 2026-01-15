@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "pch.h"
 #include "System/InputSystem.h"
 #include "Entity/GameObject.h"
@@ -54,6 +54,9 @@ private:
     // flags
     bool isDiretionalLightDebugOpen = false;
     void DirectionalLightDebug();
+
+    // gizmo
+    const float gridsize = 10;
 
 public:
 	void OnInputProcess(const Keyboard::State& KeyState, const Keyboard::KeyboardStateTracker& KeyTracker,

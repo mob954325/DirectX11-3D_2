@@ -9,6 +9,7 @@
 #include "Entity/Camera.h"
 #include "../Util/DebugDraw.h"
 #include "../Manager/WorldManager.h"
+#include "imguizmo/ImGuizmo.h"
 
 void Editor::Initialize(const ComPtr<ID3D11Device>& device, const ComPtr<ID3D11DeviceContext>& deviceContext)
 {
@@ -196,13 +197,14 @@ void Editor::RenderComponentInfo(std::string compName, T* comp)
 {
     if(compName == "Transform")
     {
+        // transform reflection
         rttr::type t = rttr::type::get(*comp); // 역참조로 실제 인스턴스 정보 가져오기
         ImGui::Text(t.get_name().to_string().c_str());
 
         for(auto& prop : t.get_properties())
         {
-            rttr::variant value = prop.get_value(*comp);   // 프로퍼티 값
-            std::string name = prop.get_name().to_string();         // 프로퍼티 이름
+            rttr::variant value = prop.get_value(*comp);        // 프로퍼티 값
+            std::string name = prop.get_name().to_string();     // 프로퍼티 이름
             if(value.is_type<DirectX::SimpleMath::Vector3>() && name == "Position")
             {
                 DirectX::SimpleMath::Vector3 pos = value.get_value<DirectX::SimpleMath::Vector3>();
