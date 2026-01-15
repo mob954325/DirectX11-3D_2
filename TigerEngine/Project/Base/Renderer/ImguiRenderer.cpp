@@ -1,4 +1,7 @@
-﻿#include "ImguiRenderer.h"
+#include "ImguiRenderer.h"
+
+// note
+#define BASE_IMGUI_DOCKING
 
 void ImguiRenderer::BeginRender()
 {
@@ -21,11 +24,14 @@ void ImguiRenderer::Render()
     // ==
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
     ImGuiIO& current_io = ImGui::GetIO();
+#ifdef BASE_IMGUI_DOCKING
+
     if (current_io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
     }
+#endif // BASE_IMGUI_DOCKING
 }
 
 void ImguiRenderer::EndRender()
@@ -51,8 +57,12 @@ void ImguiRenderer::Initialize(HWND hwnd, ComPtr<ID3D11Device> device, ComPtr<ID
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+#ifdef BASE_IMGUI_DOCKING
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+#endif // DEBUG
+
     ImGui::StyleColorsDark();
 
     ImGui_ImplWin32_Init(hwnd);
