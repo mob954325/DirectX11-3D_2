@@ -49,6 +49,7 @@ void GameObject::RemoveComponent(Component* comp)
                 ScriptSystem::Instance().UnRegister(objPtr);
             }
 
+            ObjectSystem::Instance().Destory(*it);
             handles.erase(it);
             break;
         }
@@ -213,8 +214,8 @@ void GameObject::ClearAll()
             ScriptSystem::Instance().UnRegister(objPtr);
         }
 
+        ObjectSystem::Instance().Destory(*it);
         it = handles.erase(it);
-        break;
     }
 
     components.clear();
