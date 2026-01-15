@@ -139,6 +139,8 @@
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="Entity\Object.cpp" />
+    <ClCompile Include="System\RenderSystem.cpp" />
+    <ClCompile Include="System\ScriptSystem.cpp" />
     <ClCompile Include="System\ObjectSystem.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Renderer\DirectX11Renderer.cpp" />
@@ -170,6 +172,8 @@
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="Entity\Object.h" />
+    <ClInclude Include="System\RenderSystem.h" />
+    <ClInclude Include="System\ScriptSystem.h" />
     <ClInclude Include="System\ObjectSystem.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Renderer\DirectX11Renderer.h" />

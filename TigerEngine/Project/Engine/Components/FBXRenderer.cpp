@@ -82,6 +82,11 @@ void FBXRenderer::OnUpdate(float delta)
 	CreateCommand();
 }
 
+void FBXRenderer::OnDestory()
+{
+    ClearCommand();
+}
+
 nlohmann::json FBXRenderer::Serialize()
 {
 	nlohmann::json datas;

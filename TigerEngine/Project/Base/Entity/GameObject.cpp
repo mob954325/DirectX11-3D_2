@@ -1,6 +1,8 @@
 #include "GameObject.h"
 #include "DirectXCollision.h"
-#include "../System//ComponentFactory.h"
+#include "../System/ComponentFactory.h"
+#include "../System/ScriptSystem.h"
+#include "../System/RenderSystem.h"
 
 RTTR_REGISTRATION
 {
@@ -32,12 +34,21 @@ void GameObject::RemoveComponent(Component* comp)
         }
     }   
 
-    // handle 찾기
+    // handle 찾기 - 실제 객체 파괴하는 단계
     for (auto it = handles.begin(); it != handles.end(); it++)
     {
         auto objPtr = ObjectSystem::Instance().Get<Component>(*it);
         if (objPtr == comp)
         {
+            if (auto renderComp = dynamic_cast<RenderComponent*>(objPtr))
+            {
+                RenderSystem::Instance().UnRegister(renderComp);
+            }
+            else
+            {
+                ScriptSystem::Instance().UnRegister(objPtr);
+            }
+
             handles.erase(it);
             break;
         }
@@ -184,11 +195,27 @@ void GameObject::SetAABB(Vector3 min, Vector3 max, Vector3 centor)
 
 void GameObject::ClearAll()
 {
-    components.clear();
+    for (auto it = components.begin(); it != components.end();)
+    {
+        it = components.erase(it);
+    }
 
+    // handle 찾기 - 실제 객체 파괴하는 단계
     for (auto it = handles.begin(); it != handles.end();)
     {
-        ObjectSystem::Instance().Destory(*it);
+        auto objPtr = ObjectSystem::Instance().Get<Component>(*it);
+        if (auto renderComp = dynamic_cast<RenderComponent*>(objPtr))
+        {
+            RenderSystem::Instance().UnRegister(renderComp);
+        }
+        else
+        {
+            ScriptSystem::Instance().UnRegister(objPtr);
+        }
+
         it = handles.erase(it);
+        break;
     }
+
+    components.clear();
 }

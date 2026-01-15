@@ -65,22 +65,15 @@ GameObject* Scene::GetGameObjectByName(std::string name)
     return gameObjects.find(name)->second.objPtr;
 }
 
-void Scene::AddRenderable(RenderComponent* comp, Handle handle)
-{
-	renderableComponents.push_back({ comp, handle });
-}
-
-std::vector<RCEntity>& Scene::GetRenderables()
-{
-	return renderableComponents;
-}
-
 void Scene::ClearScene()
 {
-	for(auto& it : gameObjects)
+	for(auto it = gameObjects.begin(); it != gameObjects.end();)
 	{
-		auto obj = it.second;
-		obj.objPtr->Destory();	
+		auto [ptr, handle] = it->second;
+
+        ptr->ClearAll();
+        ObjectSystem::Instance().Destory(handle);
+        it = gameObjects.erase(it);
 	}
 	
 	gameObjects.clear();
